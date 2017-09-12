@@ -1,1 +1,1 @@
-# -Implementation-of-Curvy-RED-in-ns-3
+Implementation of Curvy RED in ns-3
