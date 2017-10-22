@@ -304,6 +304,7 @@ private:
   bool m_isWait;            //!< True for waiting between dropped packets
   bool m_isGentle;          //!< True to increase dropping prob. slowly when m_qAvg exceeds m_maxTh
   bool m_isARED;            //!< True to enable Adaptive RED
+  bool m_isCurvy;           //!< True to enable Curvy RED
   bool m_isAdaptMaxP;       //!< True to adapt m_curMaxP
   double m_minTh;           //!< Minimum threshold for m_qAvg (bytes or packets)
   double m_maxTh;           //!< Maximum threshold for m_qAvg (bytes or packets), should be >= 2 * m_minTh

@@ -63,7 +63,7 @@ int main (int argc, char *argv[])
   cmd.AddValue ("redMaxTh", "RED queue maximum threshold", maxTh);
   cmd.Parse (argc,argv);
 
-  if ((queueDiscType != "RED") && (queueDiscType != "curvy"))
+  if ((queueDiscType != "RED") && (queueDiscType != "Curvy"))
     {
       std::cout << "Invalid queue disc type: Use --queueDiscType=RED or --queueDiscType=curvy" << std::endl;
       exit (1);
@@ -94,10 +94,10 @@ int main (int argc, char *argv[])
   Config::SetDefault ("ns3::RedQueueDisc::LinkDelay", StringValue (bottleNeckLinkDelay));
   Config::SetDefault ("ns3::RedQueueDisc::MeanPktSize", UintegerValue (pktSize));
 
-  if (queueDiscType == "curvy")
+  if (queueDiscType == "Curvy")
     {
       // Turn on Curvy RED
-      Config::SetDefault ("ns3::RedQueueDisc::curvy", BooleanValue (true));
+      Config::SetDefault ("ns3::RedQueueDisc::Curvy", BooleanValue (true));
     }
 
   // Create the point-to-point link helpers

@@ -124,6 +124,11 @@ TypeId RedQueueDisc::GetTypeId (void)
                    BooleanValue (false),
                    MakeBooleanAccessor (&RedQueueDisc::m_isNonlinear),
                    MakeBooleanChecker ())
+    .AddAttribute ("Curvy",
+                   "True to enable Curvy RED",
+                   BooleanValue (false),
+                   MakeBooleanAccessor (&RedQueueDisc::m_isCurvy),
+                   MakeBooleanChecker ()) 
     .AddAttribute ("MinTh",
                    "Minimum average length threshold in packets/bytes",
                    DoubleValue (5),
