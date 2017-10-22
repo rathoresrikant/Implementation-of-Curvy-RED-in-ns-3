@@ -19,9 +19,7 @@
  */
 
 #include "ns3/log.h"
-#include "ns3/double.h"
 #include "ns3/simulator.h"
-#include "ns3/trace-source-accessor.h"
 #include "ns3/pointer.h"
 #include "ns3/energy-source.h"
 #include "wifi-radio-energy-model.h"
@@ -111,18 +109,11 @@ WifiRadioEnergyModel::~WifiRadioEnergyModel ()
 }
 
 void
-WifiRadioEnergyModel::SetEnergySource (Ptr<EnergySource> source)
+WifiRadioEnergyModel::SetEnergySource (const Ptr<EnergySource> source)
 {
   NS_LOG_FUNCTION (this << source);
   NS_ASSERT (source != NULL);
   m_source = source;
-}
-
-double
-WifiRadioEnergyModel::GetTotalEnergyConsumption (void) const
-{
-  NS_LOG_FUNCTION (this);
-  return m_totalEnergyConsumption;
 }
 
 double
@@ -241,7 +232,7 @@ WifiRadioEnergyModel::SetEnergyRechargedCallback (
 }
 
 void
-WifiRadioEnergyModel::SetTxCurrentModel (Ptr<WifiTxCurrentModel> model)
+WifiRadioEnergyModel::SetTxCurrentModel (const Ptr<WifiTxCurrentModel> model)
 {
   m_txCurrentModel = model;
 }
