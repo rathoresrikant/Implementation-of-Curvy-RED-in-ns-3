@@ -23,7 +23,6 @@
 #include "ns3/ptr.h"
 #include "ns3/simple-ref-count.h"
 #include <ns3/address.h>
-#include "ns3/nstime.h"
 
 namespace ns3 {
 
@@ -182,18 +181,6 @@ public:
   void SetTxQueueIndex (uint8_t txq);
 
   /**
-   * \brief Get the timestamp included in this item
-   * \return the timestamp included in this item.
-   */
-  Time GetTimeStamp (void) const;
-
-  /**
-   * \brief Set the timestamp included in this item
-   * \param t the timestamp to include in this item.
-   */
-  void SetTimeStamp (Time t);
-
-  /**
    * \brief Add the header to the packet
    *
    * Subclasses may keep header and payload separate to allow manipulating the header,
@@ -214,6 +201,13 @@ public:
    * \return true if the packet gets marked, false otherwise
    */
   virtual bool Mark (void) = 0;
+
+  /**
+   * \brief Checks if the packet is of L4S traffic when DualQ AQM Framework is used
+   *
+   * \return true if the packet is of L4S traffic, false otherwise
+   */
+  virtual bool IsL4S (void);
 
 private:
   /**
@@ -239,7 +233,6 @@ private:
   Address m_address;      //!< MAC destination address
   uint16_t m_protocol;    //!< L3 Protocol number
   uint8_t m_txq;          //!< Transmission queue index
-  Time m_tstamp;          //!< timestamp when the packet was enqueued
 };
 
 } // namespace ns3

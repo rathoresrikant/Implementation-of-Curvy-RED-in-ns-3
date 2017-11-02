@@ -82,6 +82,12 @@ public:
    */
   virtual bool Mark (void);
 
+  /**
+   * \brief Determines if the packet is of L4S traffic by checking it's ECN_ECT1 bit 
+   * \Returns true if the packet is of L4S traffic, false otherwise
+   */
+  virtual bool IsL4S (void);
+
 private:
   /**
    * \brief Default constructor
