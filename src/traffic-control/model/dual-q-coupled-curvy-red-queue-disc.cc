@@ -51,6 +51,76 @@ TypeId CurvyREDQueueDisc::GetTypeId (void)
   return tid;
 }
 
+DualQCoupledCurvyREDQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
+{
+  NS_LOG_FUNCTION (this << item);
+  uint8_t queueNumber;
+
+  // attach arrival time to packet
+  Ptr<Packet> p = item->GetPacket ();
+  DualQCoupledCurvyREDTimestampTag tag;
+  p->AddPacketTag (tag);
+
+
+if ((GetMode () == QUEUE_DISC_MODE_PACKETS && nQueued >= m_queueLimit)
+      || (GetMode () == QUEUE_DISC_MODE_BYTES && nQueued + item->GetSize () > m_queueLimit))
+    {
+      // Drops due to queue limit
+      Drop (item);
+      m_stats.forcedDrop++;
+      return false;
+    }
+  else
+    {
+      if (item->IsL4S ())
+        {
+          queueNumber = 1;
+        }
+      else
+        {
+          queueNumber = 0;
+        }
+    }
+
+
+
+Ptr<const QueueDiscItem>
+DualQCoupledCurvyREDQueueDisc::DoPeek () const
+{
+  NS_LOG_FUNCTION (this);
+  Ptr<const QueueDiscItem> item;
+
+  for (uint32_t i = 0; i < GetNInternalQueues (); i++)
+    {
+      if ((item = GetInternalQueue (i)->Peek ()) != 0)
+        {
+          NS_LOG_LOGIC ("Peeked from queue number " << i << ": " << item);
+          NS_LOG_LOGIC ("Number packets queue number " << i << ": " << GetInternalQueue (i)->GetNPackets ());
+          NS_LOG_LOGIC ("Number bytes queue number " << i << ": " << GetInternalQueue (i)->GetNBytes ());
+          return item;
+        }
+    }
+
+  NS_LOG_LOGIC ("Queue empty");
+  return item;
+}
+
+bool
+DualQCoupledCurvyREDQueueDisc::CheckConfig (void)
+{
+  NS_LOG_FUNCTION (this);
+  if (GetNQueueDiscClasses () > 0)
+    {
+      NS_LOG_ERROR ("DualQCoupledCurvyREDQueueDisc cannot have classes");
+      return false;
+    }
+
+  if (GetNPacketFilters () > 0)
+    {
+      NS_LOG_ERROR ("DualQCoupledCurvyREDQueueDisc cannot have packet filters");
+      return false;
+    }
+
 
   if (GetNInternalQueues () == 0)
     {
