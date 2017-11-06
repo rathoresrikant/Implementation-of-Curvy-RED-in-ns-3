@@ -18,20 +18,18 @@
  * Authors: 
  *          
  *          
- */
-
-/*
- * PORT NOTE: This code was ported from ns-2.36rc1 (queue/pie.cc).
- * Most of the comments are also ported from the same.
- */
-
+ *
+*/
+#include "math.h"
 #include "ns3/log.h"
 #include "ns3/enum.h"
 #include "ns3/uinteger.h"
 #include "ns3/double.h"
 #include "ns3/simulator.h"
 #include "ns3/abort.h"
-#include "pie-queue-disc.h"
+#include "ns3/object-factory.h"
+#include "ns3/string.h"
+#include "dual-q-coupled-curvy-red-queue-disc.h"
 #include "ns3/drop-tail-queue.h"
 #include "ns3/net-device-queue-interface.h"
 
@@ -49,6 +47,165 @@ TypeId CurvyREDQueueDisc::GetTypeId (void)
     .AddConstructor<DualQCoupledCurvyREDQueueDisc> ()
     
   return tid;
+}
+class DualQCoupledCurvyREDTimestampTag : public Tag
+{
+public:
+  DualQCoupledCurvyREDTimestampTag ();
+  /**
+   * \brief Get the type ID.
+   * \return the object TypeId
+   */
+  static TypeId GetTypeId (void);
+  virtual TypeId GetInstanceTypeId (void) const;
+
+  virtual uint32_t GetSerializedSize (void) const;
+  virtual void Serialize (TagBuffer i) const;
+  virtual void Deserialize (TagBuffer i);
+  virtual void Print (std::ostream &os) const;
+
+  /**
+   * \brief Gets the Tag creation time
+   *
+   * \return the time object stored in the tag
+   */
+  Time GetTxTime (void) const;
+
+private:
+  uint64_t m_creationTime; //!< Tag creation time
+};
+
+
+DualQCoupledCurvyREDTimestampTag::DualQCoupledCurvyREDTimestampTag ()
+  : m_creationTime (Simulator::Now ().GetTimeStep ())
+{
+}
+
+TypeId
+DualQCoupledCurvyREDTimestampTag::GetInstanceTypeId (void) const
+{
+  return GetTypeId ();
+}
+
+uint32_t
+DualQCoupledCurvyREDTimestampTag::GetSerializedSize (void) const
+{
+  return 8; 
+}
+
+void
+DualQCoupledCurvyREDTimestampTag::Serialize (TagBuffer i) const
+{
+  i.WriteU64 (m_creationTime);
+}
+
+void
+DualQCoupledCurvyREDTimestampTag::Deserialize (TagBuffer i)
+{
+  m_creationTime = i.ReadU64 ();
+}
+
+void
+DualQCoupledCurvyREDTimestampTag::Print (std::ostream &os) const
+{
+  os << "CreationTime=" << m_creationTime;
+}
+
+Time
+DualQCoupledCurvyREDTimestampTag::GetTxTime (void) const
+{
+  return TimeStep (m_creationTime);
+}
+TypeId
+DualQCoupledCurvyREDTimestampTag::GetTypeId (void)
+{
+  static TypeId tid = TypeId ("ns3::DualQCoupledCurvyREDTimestampTag")
+    .SetParent<Tag> ()
+    .AddConstructor<DualQCoupledCurvyREDTimestampTag> ()
+    .AddAttribute ("CreationTime",
+                   "The time at which the timestamp was created",
+                   StringValue ("0.0s"),
+                   MakeTimeAccessor (&DualQCoupledCurvyREDTimestampTag::GetTxTime),
+                   MakeTimeChecker ())
+  ;
+  return tid;
+}
+
+Time
+DualQCoupledCurvyREDTimestampTag::GetTxTime (void) const
+{
+  return TimeStep (m_creationTime);
+}
+
+
+DualQCoupledCurvyREDQueueDisc::DualQCoupledCurvyREDQueueDisc ()
+  : QueueDisc ()
+{
+  NS_LOG_FUNCTION (this);
+  m_uv = CreateObject<UniformRandomVariable> ();
+  m_rtrsEvent = Simulator::Schedule (m_sUpdate, &DualQCoupledCurvyREDQueueDisc::CalculateP, this);
+}
+DualQCoupledCurvyREDQueueDisc::~DualQCoupledCurvyREDQueueDisc ()
+{
+  NS_LOG_FUNCTION (this);
+}
+
+void
+DualQCoupledCurvyREDQueueDisc::DoDispose (void)
+{
+  NS_LOG_FUNCTION (this);
+  m_uv = 0;
+  Simulator::Remove (m_rtrsEvent);
+  QueueDisc::DoDispose ();
+}
+
+void
+DualQCoupledCurvyREDQueueDisc::SetMode (QueueDiscMode mode)
+{
+  NS_LOG_FUNCTION (this << mode);
+  m_mode = mode;
+}
+
+DualQCoupledCurvyREDQueueDisc::QueueDiscMode
+DualQCoupledCurvyREDQueueDisc::GetMode (void)
+{
+  NS_LOG_FUNCTION (this);
+  return m_mode;
+}
+
+void
+DualQCoupledCurvyREDQueueDisc::SetQueueLimit (uint32_t lim)
+{
+  NS_LOG_FUNCTION (this << lim);
+  m_queueLimit = lim;
+}
+DualQCoupledCurvyREDQueueDisc::Stats
+DualQCoupledCurvyREDQueueDisc::GetStats ()
+{
+  NS_LOG_FUNCTION (this);
+  return m_stats;
+}
+
+Time
+DualQCoupledCurvyREDQueueDisc::GetQueueDelay (void)
+{
+  NS_LOG_FUNCTION (this);
+  return m_qDelay;
+}
+
+double
+DualQCoupledCurvyREDQueueDisc::GetDropProb (void)
+{
+  NS_LOG_FUNCTION (this);
+  return m_dropProb;
+}
+
+int64_t
+DualQCoupledCurvyREDQueueDisc::AssignStreams (int64_t stream)
+{
+  NS_LOG_FUNCTION (this << stream);
+  m_uv->SetStream (stream);
+  return 1;
 }
 
 DualQCoupledCurvyREDQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
@@ -148,14 +305,14 @@ DualQCoupledCurvyREDQueueDisc::CheckConfig (void)
     }
         || (GetInternalQueue (0)->GetMode () == QueueBase::QUEUE_MODE_BYTES && m_mode == QUEUE_DISC_MODE_PACKETS))
     {
-      NS_LOG_ERROR ("The mode provided for Classic traffic queue does not match the mode set on the DualQCoupledPiSquareQueueDisc");
+      NS_LOG_ERROR ("The mode provided for Classic traffic queue does not match the mode set on the DualQCoupledCurvyQueueDisc");
       return false;
     }
 
   if ((GetInternalQueue (1)->GetMode () == QueueBase::QUEUE_MODE_PACKETS && m_mode == QUEUE_DISC_MODE_BYTES)
       || (GetInternalQueue (1)->GetMode () == QueueBase::QUEUE_MODE_BYTES && m_mode == QUEUE_DISC_MODE_PACKETS))
     {
-      NS_LOG_ERROR ("The mode provided for L4S traffic queue does not match the mode set on the DualQCoupledPiSquareQueueDisc");
+      NS_LOG_ERROR ("The mode provided for L4S traffic queue does not match the mode set on the DualQCoupledCurvyREDQueueDisc");
       return false;
     }
 

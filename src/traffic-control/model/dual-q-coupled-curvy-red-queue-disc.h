@@ -168,11 +168,14 @@ private:
   QueueDiscMode m_mode;                         //!< Mode (bytes or packets)
   Time m_classicQueueDelayRef;                  //!< Queue delay target for Classic traffic
   uint32_t m_meanPktSize;                       //!< Average packet size in bytes
-  double m_alpha;                               //!< Parameter to PI Square controller
   Time m_l4sThreshold;                          //!< L4S marking threshold (in time)
   uint32_t m_k;                                 //!< Coupling factor
+  uint32_t m_k0;                                //!< constant to adjust the value of m_k
   uint32_t m_queueLimit;                        //!< Queue limit in bytes / packets
-
+  uint32_t  classicQScalingFact;                //!< scaling factor for Classic queuing time
+  uint32_t calcAlpha;                           //!< parameter used to calculate alpha
+  int32_t  l4SQScalingFact;                     //!<scaling factor for L4S queuing time
+  uint32_t cUrviness;                           //!< cUrviness parameter for Curvy RED
   // ** Variables maintained by DualQ Coupled Curvy RED
   Time m_classicQueueTime;                      //!< Arrival time of a packet of Classic Traffic
   Time m_l4sQueueTime;                          //!< Arrival time of a packet of L4S Traffic
@@ -181,11 +184,7 @@ private:
   double m_dropProb;                            //!< Variable used in calculation of drop probability
   double m_classicDropProb;                     //!< Variable used in calculation of drop probability of Classic traffic
   double m_l4sDropProb;                         //!< Variable used in calculation of drop probability of L4S traffic
- 
-  double s_c;                                   //!< scaling factor for Classic queuing time
-  double f_c;                                   //!< parameter used to calculate alpha
-  double s_l;                                   //!<scaling factor for L4S queuing time
-  double qsize_thres;                           //!<queue size in bytes at which threshold marking starts in the queue
+  Time avgQueuingTime;                          //!< Averaged Queuing time
   Time m_qDelayOld;                             //!< Old value of queue delay
   Time m_qDelay;                                //!< Current value of queue delay
   EventId m_rtrsEvent;                          //!< Event used to decide the decision of interval of drop probability calculation
