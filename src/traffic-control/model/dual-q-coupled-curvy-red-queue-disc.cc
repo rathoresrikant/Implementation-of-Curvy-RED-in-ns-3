@@ -303,6 +303,75 @@ if ((GetMode () == QUEUE_DISC_MODE_PACKETS && nQueued >= m_queueLimit)
     }
 
 
+Ptr<QueueDiscItem>
+DualQCoupledCurvyREDQueueDisc::DoDequeue ()
+{
+  NS_LOG_FUNCTION (this);
+  Ptr<const QueueDiscItem> item1;
+  Ptr<const QueueDiscItem> item2;
+  Time classicQueueTime;
+  Time l4sQueueTime;
+  DualQCoupledCurvyREDTimestampTag tag1;
+  DualQCoupledCurvyREDTimestampTag tag2;
+  avgQueueTime = Simulator::Now () - tag.GetTxTime ();
+  while (GetQueueSize () > 0)
+    {
+      if ((item1 = GetInternalQueue (0)->Peek ()) != 0)
+        {
+          item1->GetPacket ()->PeekPacketTag (tag1);
+          classicQueueTime = tag1.GetTxTime ();
+        }
+      else
+        {
+          classicQueueTime = Time (Seconds (0));
+        }
+
+      if ((item2 = GetInternalQueue (1)->Peek ()) != 0)
+        {
+          item2->GetPacket ()->PeekPacketTag (tag2);
+          l4sQueueTime = tag2.GetTxTime ();
+        }
+      else
+        {
+          l4sQueueTime = Time (Seconds (0));
+        }
+      if ( GetInternalQueue (1)->Dequeue () )            
+        {
+         
+          Ptr<QueueDiscItem> item = GetInternalQueue (1)->Dequeue ();
+          DualQCoupledCurvyREDTimestampTag tag;
+          item->GetPacket ()->PeekPacketTag (tag);
+          bool minL4SQueueSizeFlag = false;
+          
+           m_l4sDropProb = classicQueueTime.GetSeconds() >> l4sQScalingFact;
+            
+           if(m_l4sDropProb > MaxRand(U) || l4sQueueSize > m_minL4SLength)
+           {
+             item->Mark();
+             m_stats.unforcedL4SMark++;
+           }
+             return item;
+        while(GetInternalQueue (0)->Dequeue () )               
+        {
+        Ptr<QueueDiscItem> item = GetInternalQueue (0)->Dequeue ();
+        avgQueuingTime += (classicQueueTime- avgQueuingTime) >> f_C;
+        m_classicDropProb = avgQueuingTime >> (S_C);
+        if((avgQueuingTime >> classicQScalingFact) > MaxRand(2*U))
+        {
+           if(!item -> Mark())
+           {
+              Drop(item);
+              m_stats.unforcedClassicDrop++;
+           }
+           else
+           { 
+              m_stats.unforcedClassicMark++;
+              return item;
+        }
+              return 0; 
+        }
+
+
 
 Ptr<const QueueDiscItem>
 DualQCoupledCurvyREDQueueDisc::DoPeek () const
