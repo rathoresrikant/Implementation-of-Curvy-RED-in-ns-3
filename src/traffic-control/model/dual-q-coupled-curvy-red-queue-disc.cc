@@ -32,7 +32,7 @@
 #include "dual-q-coupled-curvy-red-queue-disc.h"
 #include "ns3/drop-tail-queue.h"
 #include "ns3/net-device-queue-interface.h"
-
+#define max (a,b) ((a) > (b) ? (a) : (b))
 namespace ns3 {
 
 NS_LOG_COMPONENT_DEFINE ("DualQCoupledCurvyREDQueueDisc");
@@ -284,7 +284,6 @@ void DualQCoupledCurvyREDQueueDisc::InitializeParams (void)
   m_stats.unforcedL4SMark = 0;
 }
 
-
 DualQCoupledCurvyREDQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
 {
   NS_LOG_FUNCTION (this << item);
@@ -315,6 +314,18 @@ if ((GetMode () == QUEUE_DISC_MODE_PACKETS && nQueued >= m_queueLimit)
           queueNumber = 0;
         }
     }
+
+double DualQCoupledCurvyREDQueueDisc : MaxRand( int U )
+{
+   
+  NS_LOG_FUNCTION (this);
+  double maxr = 0;
+    while(u-- > 0)
+    {
+       maxr = max(maxr, m_uv->GetValue());
+    }
+   return maxr;
+}
 
 
 Ptr<QueueDiscItem>
@@ -384,7 +395,6 @@ DualQCoupledCurvyREDQueueDisc::DoDequeue ()
         }
               return 0; 
         }
-
 
 
 Ptr<const QueueDiscItem>
