@@ -271,6 +271,20 @@ DualQCoupledCurvyREDQueueDisc::AssignStreams (int64_t stream)
   return 1;
 }
 
+void DualQCoupledCurvyREDQueueDisc::InitializeParams (void)
+{
+  m_k = pow(2,m_k0);
+  l4sQScalingFact = classicQSalingFact + m_k0;
+  m_minL4SLength = 5 * m_meanPktSize;
+  m_dropProb = 0.0;
+  m_qDelayOld = Time (Seconds (0));
+  m_stats.forcedDrop = 0;
+  m_stats.unforcedClassicDrop = 0;
+  m_stats.unforcedClassicMark = 0;
+  m_stats.unforcedL4SMark = 0;
+}
+
+
 DualQCoupledCurvyREDQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
 {
   NS_LOG_FUNCTION (this << item);
