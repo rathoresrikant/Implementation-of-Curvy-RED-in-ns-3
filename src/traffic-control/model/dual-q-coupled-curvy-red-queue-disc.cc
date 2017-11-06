@@ -137,6 +137,69 @@ DualQCoupledCurvyREDTimestampTag::GetTxTime (void) const
   return TimeStep (m_creationTime);
 }
 
+NS_OBJECT_ENSURE_REGISTERED (DualQCoupledCurvyREDQueueDisc);
+
+TypeId CurvyREDQueueDisc::GetTypeId (void)
+{
+  static TypeId tid = TypeId ("ns3::DualQCoupledCurvyREDQueueDisc")
+    .SetParent<QueueDisc> ()
+    .SetGroupName ("TrafficControl")
+    .AddConstructor<DualQCoupledCurvyREDQueueDisc> ()
+    .AddAttribute ("Mode",
+                   "Determines unit for QueueLimit",
+                   EnumValue (QUEUE_DISC_MODE_PACKETS),
+                   MakeEnumAccessor (&CurvyREDQueueDisc::SetMode),
+                   MakeEnumChecker (QUEUE_DISC_MODE_BYTES, "QUEUE_DISC_MODE_BYTES",
+                                    QUEUE_DISC_MODE_PACKETS, "QUEUE_DISC_MODE_PACKETS"))
+    .AddAttribute ("MeanPktSize",
+                   "Average of packet size",
+                   UintegerValue (1000),
+                   MakeUintegerAccessor (&CurvyREDQueueDisc::m_meanPktSize),
+                   MakeUintegerChecker<uint32_t> ())
+    .AddAttribute ("K0",
+                   "Constant to adjust the value of K",
+                   UintegerValue (1),
+                   MakeUintegerAccesor (&CurvyREDQueueDisc::m_k0),
+                   MakeUintegerChecker<uint32_t> ())
+    .AddAttribute ("S_C",
+                   "Scaling factor for Classic Queuing time",
+                   UintegerValue (-1),
+                   MakeUintegerAccessor (&CurvyREDQueueDisc::classicQScalingFact),
+                   MakeUintegerChecker<uint32_t> ()) 
+    .AddAttribute ("U",
+                   "Curviness Parameter",
+                   UintegerValue ((1)),
+                   MakeUintegerAccessor (&CurvyREDQueueDisc::cUrviness),
+                   MakeUintegerChecker<uint32_t> ())
+    .AddAttribute ("f_C",
+                   "Used in the EWMA equation to calculate alpha",
+                   UintegerValue ((5)),
+                   MakeUintegerAccessor (&CurvyREDQueueDisc::calcAlpha),
+                   MakeUintegerChecker<uint32_t> ())
+    .AddAttribute ("QueueLimit",
+                   "Queue limit in bytes/packets",
+                   UintegerValue (25),
+                   MakeUintegerAccessor (&CurvyREDQueueDisc::SetQueueLimit),
+                   MakeUintegerChecker<uint32_t> ())
+    .AddAttribute ("DequeueThreshold",
+                   "Minimum queue size in bytes before dequeue rate is measured",
+                   UintegerValue (10000),
+                   MakeUintegerAccessor (&CurvyREDQueueDisc::m_dqThreshold),
+                   MakeUintegerChecker<uint32_t> ())
+    .AddAttribute ("QueueDelayReference",
+                   "Desired queue delay",
+                   TimeValue (Seconds (0.02)),
+                   MakeTimeAccessor (&CurvyREDQueueDisc::m_qDelayRef),
+                   MakeTimeChecker ())
+    .AddAttribute ("MaxBurstAllowance",
+                   "Current max burst allowance in seconds before random drop",
+                   TimeValue (Seconds (0.1)),
+                   MakeTimeAccessor (&CurvyREDQueueDisc::m_maxBurst),
+                   MakeTimeChecker ())
+  ;
+
+  return tid;
+}
 
 DualQCoupledCurvyREDQueueDisc::DualQCoupledCurvyREDQueueDisc ()
   : QueueDisc ()
