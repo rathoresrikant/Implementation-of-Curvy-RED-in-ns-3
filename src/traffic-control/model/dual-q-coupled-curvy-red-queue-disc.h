@@ -172,10 +172,10 @@ private:
   uint32_t m_k;                                 //!< Coupling factor
   uint32_t m_k0;                                //!< constant to adjust the value of m_k
   uint32_t m_queueLimit;                        //!< Queue limit in bytes / packets
-  uint32_t  classicQScalingFact;                //!< scaling factor for Classic queuing time
-  uint32_t calcAlpha;                           //!< parameter used to calculate alpha
-  int32_t  l4SQScalingFact;                     //!<scaling factor for L4S queuing time
-  uint32_t cUrviness;                           //!< cUrviness parameter for Curvy RED
+  uint32_t m_classicQScalingFact;               //!< scaling factor for Classic queuing time
+  uint32_t m_calcAlpha;                         //!< parameter used to calculate alpha
+  int32_t  m_l4SQScalingFact;                   //!<scaling factor for L4S queuing time
+  uint32_t m_cUrviness;                         //!< cUrviness parameter for Curvy RED
   // ** Variables maintained by DualQ Coupled Curvy RED
   Time m_classicQueueTime;                      //!< Arrival time of a packet of Classic Traffic
   Time m_l4sQueueTime;                          //!< Arrival time of a packet of L4S Traffic
@@ -184,7 +184,7 @@ private:
   double m_dropProb;                            //!< Variable used in calculation of drop probability
   double m_classicDropProb;                     //!< Variable used in calculation of drop probability of Classic traffic
   double m_l4sDropProb;                         //!< Variable used in calculation of drop probability of L4S traffic
-  Time avgQueuingTime;                          //!< Averaged Queuing time
+  Time m_avgQueuingTime;                        //!< Averaged Queuing time
   Time m_qDelayOld;                             //!< Old value of queue delay
   Time m_qDelay;                                //!< Current value of queue delay
   EventId m_rtrsEvent;                          //!< Event used to decide the decision of interval of drop probability calculation
