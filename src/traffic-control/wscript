@@ -13,11 +13,14 @@ def build(bld):
       'model/packet-filter.cc',
       'model/queue-disc.cc',
       'model/pfifo-fast-queue-disc.cc',
+      'model/pi-square-queue-disc.cc',
       'model/red-queue-disc.cc',
       'model/codel-queue-disc.cc',
       'model/fq-codel-queue-disc.cc',
       'model/pie-queue-disc.cc',
       'model/mq-queue-disc.cc',
+      'model/dual-q-coupled-pi-square-queue-disc.cc',
+      'model/dual-q-coupled-curvy-red-queue-disc.cc',
       'helper/traffic-control-helper.cc',
       'helper/queue-disc-container.cc'
         ]
@@ -28,7 +31,9 @@ def build(bld):
       'test/codel-queue-disc-test-suite.cc',
       'test/adaptive-red-queue-disc-test-suite.cc',
       'test/pie-queue-disc-test-suite.cc',
-      'test/tc-flow-control-test-suite.cc'
+      'test/tc-flow-control-test-suite.cc',
+      'test/pi-square-queue-disc-test-suite.cc',
+      'test/dual-q-coupled-pi-square-queue-disc-test-suite.cc'
         ]
 
     headers = bld(features='ns3header')
@@ -43,6 +48,9 @@ def build(bld):
       'model/fq-codel-queue-disc.h',
       'model/pie-queue-disc.h',
       'model/mq-queue-disc.h',
+      'model/pi-square-queue-disc.h',
+      'model/dual-q-coupled-pi-square-queue-disc.h',
+      'model/dual-q-coupled-curvy-red-queue-disc.h',
       'helper/traffic-control-helper.h',
       'helper/queue-disc-container.h'
         ]
