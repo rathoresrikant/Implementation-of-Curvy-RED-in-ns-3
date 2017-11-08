@@ -105,6 +105,12 @@ public:
    * \returns The queue size in bytes or packets.
    */
   uint32_t GetQueueSize (void);
+/**
+   * \brief Get the current value of the l4s queue in bytes or packets.
+   *
+   * \returns The queue size in bytes or packets.
+   */
+  uint32_t Getl4sQueueSize ( void );
 
   /**
    * \brief Set the limit of the queue in bytes or packets.
@@ -169,25 +175,22 @@ private:
   Time m_classicQueueDelayRef;                  //!< Queue delay target for Classic traffic
   uint32_t m_meanPktSize;                       //!< Average packet size in bytes
   Time m_l4sThreshold;                          //!< L4S marking threshold (in time)
-  uint32_t m_k;                                 //!< Coupling factor
+  //uint32_t m_k;                                 //!< Coupling factor
   uint32_t m_k0;                                //!< constant to adjust the value of m_k
   uint32_t m_queueLimit;                        //!< Queue limit in bytes / packets
   uint32_t m_classicQScalingFact;               //!< scaling factor for Classic queuing time
   uint32_t m_calcAlpha;                         //!< parameter used to calculate alpha
-  int32_t  m_l4SQScalingFact;                   //!<scaling factor for L4S queuing time
+  int32_t  m_l4SQScalingFact;                   //! <scaling factor for L4S queuing time
   uint32_t m_cUrviness;                         //!< cUrviness parameter for Curvy RED
   // ** Variables maintained by DualQ Coupled Curvy RED
   Time m_classicQueueTime;                      //!< Arrival time of a packet of Classic Traffic
   Time m_l4sQueueTime;                          //!< Arrival time of a packet of L4S Traffic
-  Time m_tShift;                                //!< Scheduler time bias
   uint32_t m_minL4SLength;                      //!< Mininum threshold (in bytes) for marking L4S traffic
-  double m_dropProb;                            //!< Variable used in calculation of drop probability
-  double m_classicDropProb;                     //!< Variable used in calculation of drop probability of Classic traffic
+  double m_sqrtClassicDropProb                  //!< Variable used in calculation of drop probability of Classic traffic
   double m_l4sDropProb;                         //!< Variable used in calculation of drop probability of L4S traffic
   Time m_avgQueuingTime;                        //!< Averaged Queuing time
-  Time m_qDelayOld;                             //!< Old value of queue delay
-  Time m_qDelay;                                //!< Current value of queue delay
-  EventId m_rtrsEvent;                          //!< Event used to decide the decision of interval of drop probability calculation
+  //Time m_qDelay;                              //!< value of queue delay
+  Time m_classicQueueDelay;                     //!< Current value of queue delay of classic packet
   Ptr<UniformRandomVariable> m_uv;              //!< Rng stream
 };
 

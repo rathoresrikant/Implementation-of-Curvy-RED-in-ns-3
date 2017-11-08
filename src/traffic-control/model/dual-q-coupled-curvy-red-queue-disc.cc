@@ -165,22 +165,7 @@ TypeId CurvyREDQueueDisc::GetTypeId (void)
                    UintegerValue (25),
                    MakeUintegerAccessor (&DualQCoupledCurvyREDQueueDisc::SetQueueLimit),
                    MakeUintegerChecker<uint32_t> ())
-    .AddAttribute ("DequeueThreshold",
-                   "Minimum queue size in bytes before dequeue rate is measured",
-                   UintegerValue (10000),
-                   MakeUintegerAccessor (&DualQCoupledCurvyREDQueueDisc::m_dqThreshold),
-                   MakeUintegerChecker<uint32_t> ())
-    .AddAttribute ("QueueDelayReference",
-                   "Desired queue delay",
-                   TimeValue (Seconds (0.02)),
-                   MakeTimeAccessor (&DualQCoupledCurvyREDQueueDisc::m_qDelayRef),
-                   MakeTimeChecker ())
-    .AddAttribute ("MaxBurstAllowance",
-                   "Current max burst allowance in seconds before random drop",
-                   TimeValue (Seconds (0.1)),
-                   MakeTimeAccessor (&DualQCoupledCurvyREDQueueDisc::m_maxBurst),
-                   MakeTimeChecker ())
-  ;
+    ;
 
   return tid;
 }
@@ -245,20 +230,27 @@ DualQCoupledCurvyREDQueueDisc::GetQueueSize (void)
     }
 }
 
+uint32_t
+DualQCoupledCurvyREDQueueDisc::Getl4sQueueSize (void)        //to calculate the current size of l4s queue in bytes
+{
+  NS_LOG_FUNCTION (this);
+  return (GetInternalQueue (1)->GetNBytes ()) 
+}
+
 DualQCoupledCurvyREDQueueDisc::Stats
 DualQCoupledCurvyREDQueueDisc::GetStats ()
 {
   NS_LOG_FUNCTION (this);
   return m_stats;
 }
-
+/*
 Time
 DualQCoupledCurvyREDQueueDisc::GetQueueDelay (void)
 {
   NS_LOG_FUNCTION (this);
   return m_qDelay;
 }
-
+*/
 double
 DualQCoupledCurvyREDQueueDisc::GetDropProb (void)
 {
@@ -294,7 +286,7 @@ DualQCoupledCurvyREDQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
       m_stats.forcedDrop++;
       return false;
     }
-
+    else
   if (item->IsL4S ())
     {
       queueNumber = 1;
@@ -302,10 +294,11 @@ DualQCoupledCurvyREDQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
   else
     {
       queueNumber = 0;
-      if (classicQueueTime == Seconds (0))
+     /* if (classicQueueTime == Seconds (0))
         {
           classicQueueTime = Simulator::Now ();
         }
+     */
     }
 
   bool retval = GetInternalQueue (queueNumber)->Enqueue (item);
@@ -319,11 +312,11 @@ void DualQCoupledCurvyREDQueueDisc::InitializeParams (void)
   m_l4sQScalingFact = classicQScalingFact + m_k0;
   m_minL4SLength = 5 * m_meanPktSize;
   m_dropProb = 0.0;
-  m_qDelayOld = Time (Seconds (0));
   m_stats.forcedDrop = 0;
   m_stats.unforcedClassicDrop = 0;
   m_stats.unforcedClassicMark = 0;
   m_stats.unforcedL4SMark = 0;
+  m_avgQueuingTime = Time (Seconds (0));
 }
 double DualQCoupledCurvyREDQueueDisc : MaxRand( int U )
 {
@@ -337,31 +330,30 @@ double DualQCoupledCurvyREDQueueDisc : MaxRand( int U )
    return maxr;
 }
 
-
 Ptr<QueueDiscItem>
 DualQCoupledCurvyREDQueueDisc::DoDequeue ()
 {
   NS_LOG_FUNCTION (this);
   Ptr<const QueueDiscItem> item1;
   Ptr<const QueueDiscItem> item2;
-  Time classicQueueTime;
+  Time classicQueueTime;              
   Time l4sQueueTime;
   DualQCoupledCurvyREDTimestampTag tag1;
   DualQCoupledCurvyREDTimestampTag tag2;
   avgQueueTime = Simulator::Now () - tag.GetTxTime ();
   while (GetQueueSize () > 0)
     {
-      if ((item1 = GetInternalQueue (0)->Peek ()) != 0)
+      if ((item1 = GetInternalQueue (0)->Peek ()) != 0)                
         {
           item1->GetPacket ()->PeekPacketTag (tag1);
-          classicQueueTime = tag1.GetTxTime ();
+          m_classicQueueTime = tag1.GetTxTime ();                   //arrival time of the packet at the head of classic queue            
         }
       else
         {
-          classicQueueTime = Time (Seconds (0));
+          m_classicQueueTime = Time (Seconds (0));
         }
 
-      if ((item2 = GetInternalQueue (1)->Peek ()) != 0)
+      if ((item2 = GetInternalQueue (1)->Peek ()) != 0)     
         {
           item2->GetPacket ()->PeekPacketTag (tag2);
           l4sQueueTime = tag2.GetTxTime ();
@@ -370,29 +362,33 @@ DualQCoupledCurvyREDQueueDisc::DoDequeue ()
         {
           l4sQueueTime = Time (Seconds (0));
         }
-      if ( GetInternalQueue (1)->Dequeue () )            
+      
+      if ( GetInternalQueue (1)->Dequeue () )        //if there is a packet in l4s queue to drop    
         {
-         
           Ptr<QueueDiscItem> item = GetInternalQueue (1)->Dequeue ();
           DualQCoupledCurvyREDTimestampTag tag;
           item->GetPacket ()->PeekPacketTag (tag);
           bool minL4SQueueSizeFlag = false;
-          
-           m_l4sDropProb = classicQueueTime.GetSeconds() >> l4sQScalingFact;
+          m_l4sDropProb = (Simulator :: Now() - m_classicQueueTime.GetSeconds()) >> l4sQScalingFact;
             
-           if(m_l4sDropProb > MaxRand(U) || l4sQueueSize > m_minL4SLength)
+          if(m_l4sDropProb > MaxRand (m_cUrviness) || Getl4sQueueSize() > m_minL4SLength)
            {
              item->Mark();
              m_stats.unforcedL4SMark++;
            }
              return item;
         }
-        while(GetInternalQueue (0)->Dequeue () )               
+
+        while(GetInternalQueue (0)->Dequeue () )            //if there is a packet in classic queue to drop
         {
         Ptr<QueueDiscItem> item = GetInternalQueue (0)->Dequeue ();
-        avgQueuingTime += (classicQueueTime- avgQueuingTime) >> f_C;
-        m_classicDropProb = avgQueuingTime >> (S_C);
-        if((avgQueuingTime >> classicQScalingFact) > MaxRand(2*U))
+        DualQCoupledCurvyREDTimestampTag tag;
+        item->GetPacket ()->PeekPacketTag (tag);
+        m_classicQueueDelay = Simulator::Now () - tag.GetTxTime ();           //instantaneous queuing time of the current classic packet
+        m_avgQueuingTime += (m_classicQueueDelay.GetSeconds() - m_avgQueuingTime.GetSeconds()) >> m_calcAlpha;          // classic Queue EWMA
+        m_sqrtClassicDropProb = m_avgQueuingTime.GetSeconds() >> m_classicQScalingFact;
+      
+        if((m_sqrtClassicDropProb > MaxRand (2 * m_cUrviness))
         {
            if(!item -> Mark())
            {
@@ -409,6 +405,7 @@ DualQCoupledCurvyREDQueueDisc::DoDequeue ()
         }
     }
 }
+
 Ptr<const QueueDiscItem>
 DualQCoupledCurvyREDQueueDisc::DoPeek () const
 {
