@@ -1,6 +1,6 @@
 /* -*- Mode:C++; c-file-style:"gnu"; indent-tabs-mode:nil; -*- */
 /*
- * Copyright (c) 2016 NITK Surathkal
+ * Copyright (c) 2017 NITK Surathkal
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License version 2 as
@@ -15,9 +15,9 @@
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
  *
- * Authors: 
- *          
- *          
+ * Authors:
+ *
+ *
  *
 */
 #include "math.h"
@@ -32,15 +32,15 @@
 #include "dual-q-coupled-curvy-red-queue-disc.h"
 #include "ns3/drop-tail-queue.h"
 #include "ns3/net-device-queue-interface.h"
-#define max (a,b) ((a) > (b) ? (a) : (b))
+#define max(a,b)  (a > b) ? a : b
 namespace ns3 {
 
-NS_LOG_COMPONENT_DEFINE ("DualQCoupledCurvyREDQueueDisc");
+NS_LOG_COMPONENT_DEFINE ("DualQCoupledCurvyRedQueueDisc");
 
-class DualQCoupledCurvyREDTimestampTag : public Tag
+class DualQCoupledCurvyRedTimestampTag : public Tag
 {
 public:
-  DualQCoupledCurvyREDTimestampTag ();
+  DualQCoupledCurvyRedTimestampTag ();
   /**
    * \brief Get the type ID.
    * \return the object TypeId
@@ -65,155 +65,155 @@ private:
 };
 
 
-DualQCoupledCurvyREDTimestampTag::DualQCoupledCurvyREDTimestampTag ()
+DualQCoupledCurvyRedTimestampTag::DualQCoupledCurvyRedTimestampTag ()
   : m_creationTime (Simulator::Now ().GetTimeStep ())
 {
 }
 
 TypeId
-DualQCoupledCurvyREDTimestampTag::GetTypeId (void)
+DualQCoupledCurvyRedTimestampTag::GetTypeId (void)
 {
-  static TypeId tid = TypeId ("ns3::DualQCoupledCurvyREDTimestampTag")
+  static TypeId tid = TypeId ("ns3::DualQCoupledCurvyRedTimestampTag")
     .SetParent<Tag> ()
-    .AddConstructor<DualQCoupledCurvyREDTimestampTag> ()
+    .AddConstructor<DualQCoupledCurvyRedTimestampTag> ()
     .AddAttribute ("CreationTime",
                    "The time at which the timestamp was created",
                    StringValue ("0.0s"),
-                   MakeTimeAccessor (&DualQCoupledCurvyREDTimestampTag::GetTxTime),
+                   MakeTimeAccessor (&DualQCoupledCurvyRedTimestampTag::GetTxTime),
                    MakeTimeChecker ())
   ;
   return tid;
 }
 
 TypeId
-DualQCoupledCurvyREDTimestampTag::GetInstanceTypeId (void) const
+DualQCoupledCurvyRedTimestampTag::GetInstanceTypeId (void) const
 {
   return GetTypeId ();
 }
 
 uint32_t
-DualQCoupledCurvyREDTimestampTag::GetSerializedSize (void) const
+DualQCoupledCurvyRedTimestampTag::GetSerializedSize (void) const
 {
-  return 8; 
+  return 8;
 }
 
 void
-DualQCoupledCurvyREDTimestampTag::Serialize (TagBuffer i) const
+DualQCoupledCurvyRedTimestampTag::Serialize (TagBuffer i) const
 {
   i.WriteU64 (m_creationTime);
 }
 
 void
-DualQCoupledCurvyREDTimestampTag::Deserialize (TagBuffer i)
+DualQCoupledCurvyRedTimestampTag::Deserialize (TagBuffer i)
 {
   m_creationTime = i.ReadU64 ();
 }
 
 void
-DualQCoupledCurvyREDTimestampTag::Print (std::ostream &os) const
+DualQCoupledCurvyRedTimestampTag::Print (std::ostream &os) const
 {
   os << "CreationTime=" << m_creationTime;
 }
 
 Time
-DualQCoupledCurvyREDTimestampTag::GetTxTime (void) const
+DualQCoupledCurvyRedTimestampTag::GetTxTime (void) const
 {
   return TimeStep (m_creationTime);
 }
 
-NS_OBJECT_ENSURE_REGISTERED (DualQCoupledCurvyREDQueueDisc);
+NS_OBJECT_ENSURE_REGISTERED (DualQCoupledCurvyRedQueueDisc);
 
-TypeId CurvyREDQueueDisc::GetTypeId (void)
+TypeId DualQCoupledCurvyRedQueueDisc::GetTypeId (void)
 {
-  static TypeId tid = TypeId ("ns3::DualQCoupledCurvyREDQueueDisc")
+  static TypeId tid = TypeId ("ns3::DualQCoupledCurvyRedQueueDisc")
     .SetParent<QueueDisc> ()
     .SetGroupName ("TrafficControl")
-    .AddConstructor<DualQCoupledCurvyREDQueueDisc> ()
+    .AddConstructor<DualQCoupledCurvyRedQueueDisc> ()
     .AddAttribute ("Mode",
                    "Determines unit for QueueLimit",
                    EnumValue (QUEUE_DISC_MODE_PACKETS),
-                   MakeEnumAccessor (&CurvyREDQueueDisc::SetMode),
+                   MakeEnumAccessor (&DualQCoupledCurvyRedQueueDisc::SetMode),
                    MakeEnumChecker (QUEUE_DISC_MODE_BYTES, "QUEUE_DISC_MODE_BYTES",
                                     QUEUE_DISC_MODE_PACKETS, "QUEUE_DISC_MODE_PACKETS"))
     .AddAttribute ("MeanPktSize",
                    "Average of packet size",
                    UintegerValue (1000),
-                   MakeUintegerAccessor (&DualQCoupledCurvyREDQueueDisc::m_meanPktSize),
+                   MakeUintegerAccessor (&DualQCoupledCurvyRedQueueDisc::m_meanPktSize),
                    MakeUintegerChecker<uint32_t> ())
     .AddAttribute ("K0",
                    "Constant to adjust the value of K",
                    UintegerValue (1),
-                   MakeUintegerAccesor (&DualQCoupledCurvyREDQueueDisc::m_k0),
+                   MakeUintegerAccessor (&DualQCoupledCurvyRedQueueDisc::m_k0),
                    MakeUintegerChecker<uint32_t> ())
     .AddAttribute ("S_C",
                    "Scaling factor for Classic Queuing time",
-                   UintegerValue (-1),
-                   MakeUintegerAccessor (&DualQCoupledCurvyREDQueueDisc::m_classicQScalingFact),
-                   MakeUintegerChecker<uint32_t> ()) 
+                   DoubleValue (-1),
+                   MakeDoubleAccessor (&DualQCoupledCurvyRedQueueDisc::m_classicQScalingFact),
+                   MakeDoubleChecker<double> ())
     .AddAttribute ("U",
                    "Curviness Parameter",
                    UintegerValue (1),
-                   MakeUintegerAccessor (&DualQCoupledCurvyREDQueueDisc::m_cUrviness),
+                   MakeUintegerAccessor (&DualQCoupledCurvyRedQueueDisc::m_cUrviness),
                    MakeUintegerChecker<uint32_t> ())
     .AddAttribute ("f_C",
                    "Used in the EWMA equation to calculate alpha",
                    UintegerValue (5),
-                   MakeUintegerAccessor (&DualQCoupledCurvyREDQueueDisc::m_calcAlpha),
+                   MakeUintegerAccessor (&DualQCoupledCurvyRedQueueDisc::m_calcAlpha),
                    MakeUintegerChecker<uint32_t> ())
     .AddAttribute ("QueueLimit",
                    "Queue limit in bytes/packets",
                    UintegerValue (25),
-                   MakeUintegerAccessor (&DualQCoupledCurvyREDQueueDisc::SetQueueLimit),
+                   MakeUintegerAccessor (&DualQCoupledCurvyRedQueueDisc::SetQueueLimit),
                    MakeUintegerChecker<uint32_t> ())
-    ;
+  ;
 
   return tid;
 }
 
-DualQCoupledCurvyREDQueueDisc::DualQCoupledCurvyREDQueueDisc ()
+DualQCoupledCurvyRedQueueDisc::DualQCoupledCurvyRedQueueDisc ()
   : QueueDisc ()
 {
   NS_LOG_FUNCTION (this);
   m_uv = CreateObject<UniformRandomVariable> ();
-  m_rtrsEvent = Simulator::Schedule (m_sUpdate, &DualQCoupledCurvyREDQueueDisc::CalculateP, this);
+  //m_rtrsEvent = Simulator::Schedule (m_sUpdate, &DualQCoupledCurvyRedQueueDisc::CalculateP, this);
 }
-DualQCoupledCurvyREDQueueDisc::~DualQCoupledCurvyREDQueueDisc ()
+DualQCoupledCurvyRedQueueDisc::~DualQCoupledCurvyRedQueueDisc ()
 {
   NS_LOG_FUNCTION (this);
 }
 
 void
-DualQCoupledCurvyREDQueueDisc::DoDispose (void)
+DualQCoupledCurvyRedQueueDisc::DoDispose (void)
 {
   NS_LOG_FUNCTION (this);
   m_uv = 0;
-  Simulator::Remove (m_rtrsEvent);
+  //Simulator::Remove (m_rtrsEvent);
   QueueDisc::DoDispose ();
 }
 
 void
-DualQCoupledCurvyREDQueueDisc::SetMode (QueueDiscMode mode)
+DualQCoupledCurvyRedQueueDisc::SetMode (QueueDiscMode mode)
 {
   NS_LOG_FUNCTION (this << mode);
   m_mode = mode;
 }
 
-DualQCoupledCurvyREDQueueDisc::QueueDiscMode
-DualQCoupledCurvyREDQueueDisc::GetMode (void)
+DualQCoupledCurvyRedQueueDisc::QueueDiscMode
+DualQCoupledCurvyRedQueueDisc::GetMode (void)
 {
   NS_LOG_FUNCTION (this);
   return m_mode;
 }
 
 void
-DualQCoupledCurvyREDQueueDisc::SetQueueLimit (uint32_t lim)
+DualQCoupledCurvyRedQueueDisc::SetQueueLimit (uint32_t lim)
 {
   NS_LOG_FUNCTION (this << lim);
   m_queueLimit = lim;
 }
 
 uint32_t
-DualQCoupledCurvyREDQueueDisc::GetQueueSize (void)
+DualQCoupledCurvyRedQueueDisc::GetQueueSize (void)
 {
   NS_LOG_FUNCTION (this);
   if (GetMode () == QUEUE_DISC_MODE_BYTES)
@@ -226,40 +226,26 @@ DualQCoupledCurvyREDQueueDisc::GetQueueSize (void)
     }
   else
     {
-      NS_ABORT_MSG ("Unknown Dual Queue Curvy RED mode.");
+      NS_ABORT_MSG ("Unknown Dual Queue Curvy Red mode.");
     }
 }
 
 uint32_t
-DualQCoupledCurvyREDQueueDisc::Getl4sQueueSize (void)        //to calculate the current size of l4s queue in bytes
+DualQCoupledCurvyRedQueueDisc::Getl4sQueueSize (void)        //to calculate the current size of l4s queue in bytes
 {
   NS_LOG_FUNCTION (this);
-  return (GetInternalQueue (1)->GetNBytes ()) 
+  return (GetInternalQueue (1)->GetNBytes ());
 }
 
-DualQCoupledCurvyREDQueueDisc::Stats
-DualQCoupledCurvyREDQueueDisc::GetStats ()
+DualQCoupledCurvyRedQueueDisc::Stats
+DualQCoupledCurvyRedQueueDisc::GetStats ()
 {
   NS_LOG_FUNCTION (this);
   return m_stats;
 }
-/*
-Time
-DualQCoupledCurvyREDQueueDisc::GetQueueDelay (void)
-{
-  NS_LOG_FUNCTION (this);
-  return m_qDelay;
-}
-*/
-double
-DualQCoupledCurvyREDQueueDisc::GetDropProb (void)
-{
-  NS_LOG_FUNCTION (this);
-  return m_dropProb;
-}
 
 int64_t
-DualQCoupledCurvyREDQueueDisc::AssignStreams (int64_t stream)
+DualQCoupledCurvyRedQueueDisc::AssignStreams (int64_t stream)
 {
   NS_LOG_FUNCTION (this << stream);
   m_uv->SetStream (stream);
@@ -267,14 +253,14 @@ DualQCoupledCurvyREDQueueDisc::AssignStreams (int64_t stream)
 }
 
 bool
-DualQCoupledCurvyREDQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
+DualQCoupledCurvyRedQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
 {
   NS_LOG_FUNCTION (this << item);
   uint8_t queueNumber;
 
   // attach arrival time to packet
   Ptr<Packet> p = item->GetPacket ();
-  DualQCoupledCurvyREDTimestampTag tag;
+  DualQCoupledCurvyRedTimestampTag tag;
   p->AddPacketTag (tag);
 
   uint32_t nQueued = GetQueueSize ();
@@ -286,7 +272,7 @@ DualQCoupledCurvyREDQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
       m_stats.forcedDrop++;
       return false;
     }
-    else
+  else
   if (item->IsL4S ())
     {
       queueNumber = 1;
@@ -294,11 +280,11 @@ DualQCoupledCurvyREDQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
   else
     {
       queueNumber = 0;
-     /* if (classicQueueTime == Seconds (0))
-        {
-          classicQueueTime = Simulator::Now ();
-        }
-     */
+      /* if (classicQueueTime == Seconds (0))
+         {
+           classicQueueTime = Simulator::Now ();
+         }
+      */
     }
 
   bool retval = GetInternalQueue (queueNumber)->Enqueue (item);
@@ -306,108 +292,90 @@ DualQCoupledCurvyREDQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
   return retval;
 }
 
-void DualQCoupledCurvyREDQueueDisc::InitializeParams (void)
+void DualQCoupledCurvyRedQueueDisc::InitializeParams (void)
 {
-  m_k = pow(2,m_k0);
-  m_l4sQScalingFact = classicQScalingFact + m_k0;
-  m_minL4SLength = 5 * m_meanPktSize;
-  m_dropProb = 0.0;
+  //m_k = pow (2,m_k0);
+  m_l4sQScalingFact = m_classicQScalingFact + m_k0;
+  m_l4sMarkingThreshold = 5 * m_meanPktSize;
+  //m_dropProb = 0.0;
   m_stats.forcedDrop = 0;
   m_stats.unforcedClassicDrop = 0;
   m_stats.unforcedClassicMark = 0;
   m_stats.unforcedL4SMark = 0;
   m_avgQueuingTime = Time (Seconds (0));
 }
-double DualQCoupledCurvyREDQueueDisc : MaxRand( int U )
+
+double
+DualQCoupledCurvyRedQueueDisc::MaxRand (int u)
 {
-   
   NS_LOG_FUNCTION (this);
   double maxr = 0;
-    while(u-- > 0)
+  while (u-- > 0)
     {
-       maxr = max(maxr, m_uv->GetValue());
+      maxr = max (maxr, m_uv->GetValue ());
     }
-   return maxr;
+  return maxr;
 }
 
 Ptr<QueueDiscItem>
-DualQCoupledCurvyREDQueueDisc::DoDequeue ()
+DualQCoupledCurvyRedQueueDisc::DoDequeue ()
 {
   NS_LOG_FUNCTION (this);
-  Ptr<const QueueDiscItem> item1;
-  Ptr<const QueueDiscItem> item2;
-  Time classicQueueTime;              
-  Time l4sQueueTime;
-  DualQCoupledCurvyREDTimestampTag tag1;
-  DualQCoupledCurvyREDTimestampTag tag2;
-  avgQueueTime = Simulator::Now () - tag.GetTxTime ();
-  while (GetQueueSize () > 0)
+
+  if (GetInternalQueue (1)->Peek () != 0)
     {
-      if ((item1 = GetInternalQueue (0)->Peek ()) != 0)                
+      Ptr<const QueueDiscItem> item1 = GetInternalQueue (0)->Peek ();
+      Time classicQueueTime;
+      if (item1 != 0)
         {
-          item1->GetPacket ()->PeekPacketTag (tag1);
-          m_classicQueueTime = tag1.GetTxTime ();                   //arrival time of the packet at the head of classic queue            
+          DualQCoupledCurvyRedTimestampTag tag;
+          item1->GetPacket ()->PeekPacketTag (tag);
+          classicQueueTime = tag.GetTxTime ();                             //arrival time of the packet at the head of classic queue
         }
       else
         {
-          m_classicQueueTime = Time (Seconds (0));
+          classicQueueTime = Time (Seconds (0));
         }
+      Ptr<QueueDiscItem> item = GetInternalQueue (1)->Dequeue ();
+      m_l4sDropProb = (Simulator::Now ().GetSeconds () - classicQueueTime.GetSeconds ()) * 1.0 / pow (2, m_l4sQScalingFact);
+      if (m_l4sDropProb > MaxRand (m_cUrviness) || Getl4sQueueSize () > m_l4sMarkingThreshold)
+        {
+          item->Mark ();
+          m_stats.unforcedL4SMark++;
+        }
+      return item;
+    }
 
-      if ((item2 = GetInternalQueue (1)->Peek ()) != 0)     
-        {
-          item2->GetPacket ()->PeekPacketTag (tag2);
-          l4sQueueTime = tag2.GetTxTime ();
-        }
-      else
-        {
-          l4sQueueTime = Time (Seconds (0));
-        }
-      
-      if ( GetInternalQueue (1)->Dequeue () )        //if there is a packet in l4s queue to drop    
-        {
-          Ptr<QueueDiscItem> item = GetInternalQueue (1)->Dequeue ();
-          DualQCoupledCurvyREDTimestampTag tag;
-          item->GetPacket ()->PeekPacketTag (tag);
-          bool minL4SQueueSizeFlag = false;
-          m_l4sDropProb = (Simulator :: Now() - m_classicQueueTime.GetSeconds()) >> l4sQScalingFact;
-            
-          if(m_l4sDropProb > MaxRand (m_cUrviness) || Getl4sQueueSize() > m_minL4SLength)
-           {
-             item->Mark();
-             m_stats.unforcedL4SMark++;
-           }
-             return item;
-        }
+  while (GetInternalQueue (0)->Peek ())                 //if there is a packet in classic queue to drop
+    {
+      Ptr<QueueDiscItem> item = GetInternalQueue (0)->Dequeue ();
+      DualQCoupledCurvyRedTimestampTag tag;
+      item->GetPacket ()->PeekPacketTag (tag);
+      m_classicQueueDelay = Simulator::Now () - tag.GetTxTime ();             //instantaneous queuing time of the current classic packet
+      m_avgQueuingTime += (m_classicQueueDelay - m_avgQueuingTime) * 1.0 / pow (2, m_calcAlpha);          // classic Queue EWMA
+      m_sqrtClassicDropProb = m_avgQueuingTime.GetSeconds () * 1.0 / pow (2, m_classicQScalingFact);
 
-        while(GetInternalQueue (0)->Dequeue () )            //if there is a packet in classic queue to drop
+      if (m_sqrtClassicDropProb > MaxRand (2 * m_cUrviness))
         {
-        Ptr<QueueDiscItem> item = GetInternalQueue (0)->Dequeue ();
-        DualQCoupledCurvyREDTimestampTag tag;
-        item->GetPacket ()->PeekPacketTag (tag);
-        m_classicQueueDelay = Simulator::Now () - tag.GetTxTime ();           //instantaneous queuing time of the current classic packet
-        m_avgQueuingTime += (m_classicQueueDelay.GetSeconds() - m_avgQueuingTime.GetSeconds()) >> m_calcAlpha;          // classic Queue EWMA
-        m_sqrtClassicDropProb = m_avgQueuingTime.GetSeconds() >> m_classicQScalingFact;
-      
-        if((m_sqrtClassicDropProb > MaxRand (2 * m_cUrviness))
-        {
-           if(!item -> Mark())
-           {
-              Drop(item);
+          if (!item->Mark ())
+            {
+
+              Drop (item);
               m_stats.unforcedClassicDrop++;
-           }
-           else
-           { 
+            }
+          else
+            {
               m_stats.unforcedClassicMark++;
               return item;
-           }
-              return 0; 
-        }
+            }
         }
     }
+
+  return 0;
 }
 
 Ptr<const QueueDiscItem>
-DualQCoupledCurvyREDQueueDisc::DoPeek () const
+DualQCoupledCurvyRedQueueDisc::DoPeek () const
 {
   NS_LOG_FUNCTION (this);
   Ptr<const QueueDiscItem> item;
@@ -428,21 +396,20 @@ DualQCoupledCurvyREDQueueDisc::DoPeek () const
 }
 
 bool
-DualQCoupledCurvyREDQueueDisc::CheckConfig (void)
+DualQCoupledCurvyRedQueueDisc::CheckConfig (void)
 {
   NS_LOG_FUNCTION (this);
   if (GetNQueueDiscClasses () > 0)
     {
-      NS_LOG_ERROR ("DualQCoupledCurvyREDQueueDisc cannot have classes");
+      NS_LOG_ERROR ("DualQCoupledPiSquareQueueDisc cannot have classes");
       return false;
     }
 
   if (GetNPacketFilters () > 0)
     {
-      NS_LOG_ERROR ("DualQCoupledCurvyREDQueueDisc cannot have packet filters");
+      NS_LOG_ERROR ("DualQCoupledPiSquareQueueDisc cannot have packet filters");
       return false;
     }
-
 
   if (GetNInternalQueues () == 0)
     {
@@ -465,21 +432,21 @@ DualQCoupledCurvyREDQueueDisc::CheckConfig (void)
 
   if (GetNInternalQueues () != 2)
     {
-      NS_LOG_ERROR ("DualQCoupledCurvyREDQueueDisc needs 2 internal queues");
+      NS_LOG_ERROR ("DualQCoupledPiSquareQueueDisc needs 2 internal queue");
       return false;
     }
 
   if ((GetInternalQueue (0)->GetMode () == QueueBase::QUEUE_MODE_PACKETS && m_mode == QUEUE_DISC_MODE_BYTES)
-        || (GetInternalQueue (0)->GetMode () == QueueBase::QUEUE_MODE_BYTES && m_mode == QUEUE_DISC_MODE_PACKETS))
+      || (GetInternalQueue (0)->GetMode () == QueueBase::QUEUE_MODE_BYTES && m_mode == QUEUE_DISC_MODE_PACKETS))
     {
-      NS_LOG_ERROR ("The mode provided for Classic traffic queue does not match the mode set on the DualQCoupledCurvyQueueDisc");
+      NS_LOG_ERROR ("The mode provided for Classic traffic queue does not match the mode set on the DualQCoupledPiSquareQueueDisc");
       return false;
     }
 
   if ((GetInternalQueue (1)->GetMode () == QueueBase::QUEUE_MODE_PACKETS && m_mode == QUEUE_DISC_MODE_BYTES)
       || (GetInternalQueue (1)->GetMode () == QueueBase::QUEUE_MODE_BYTES && m_mode == QUEUE_DISC_MODE_PACKETS))
     {
-      NS_LOG_ERROR ("The mode provided for L4S traffic queue does not match the mode set on the DualQCoupledCurvyREDQueueDisc");
+      NS_LOG_ERROR ("The mode provided for L4S traffic queue does not match the mode set on the DualQCoupledPiSquareQueueDisc");
       return false;
     }
 

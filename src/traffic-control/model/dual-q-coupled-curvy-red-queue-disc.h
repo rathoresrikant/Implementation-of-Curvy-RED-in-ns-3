@@ -43,10 +43,10 @@ class UniformRandomVariable;
 /**
  * \ingroup traffic-control
  *
- * \brief Implements Curvy RED queue discipline with
+ * \brief Implements Curvy Red queue discipline with
  *        DualQ Structure and Coupled AQM functionality
  */
-class DualQCoupledCurvyREDQueueDisc : public QueueDisc
+class DualQCoupledCurvyRedQueueDisc : public QueueDisc
 {
 public:
   /**
@@ -56,14 +56,14 @@ public:
   static TypeId GetTypeId (void);
 
   /**
-   * \brief DualQCoupledCurvyREDQueueDisc Constructor
+   * \brief DualQCoupledCurvyRedQueueDisc Constructor
    */
-  DualQCoupledCurvyREDQueueDisc ();
+  DualQCoupledCurvyRedQueueDisc ();
 
   /**
-   * \brief DualQCoupledCurvyREDQueueDisc Destructor
+   * \brief DualQCoupledCurvyRedQueueDisc Destructor
    */
-  virtual ~DualQCoupledCurvyREDQueueDisc ();
+  virtual ~DualQCoupledCurvyRedQueueDisc ();
 
   /**
    * \brief Stats
@@ -125,6 +125,11 @@ public:
   Time GetQueueDelay (void);
 
   /**
+   * \brief find maximum of U random numbers
+   */
+  double MaxRand( int U );
+
+  /**
    * \brief Get the drop probability
    */
   double GetDropProb (void);
@@ -163,12 +168,8 @@ private:
    */
   virtual void InitializeParams (void);
 
-  /**
-   * \brief Periodically calculate the drop probability
-   */
-  void CalculateP ();
 
-  Stats m_stats;                                //!< DualQ Coupled Curvy RED statistics
+  Stats m_stats;                                //!< DualQ Coupled Curvy Red statistics
 
   // ** Variables supplied by user
   QueueDiscMode m_mode;                         //!< Mode (bytes or packets)
@@ -181,11 +182,11 @@ private:
   uint32_t m_classicQScalingFact;               //!< scaling factor for Classic queuing time
   uint32_t m_calcAlpha;                         //!< parameter used to calculate alpha
   int32_t  m_l4SQScalingFact;                   //! <scaling factor for L4S queuing time
-  uint32_t m_cUrviness;                         //!< cUrviness parameter for Curvy RED
-  // ** Variables maintained by DualQ Coupled Curvy RED
+  uint32_t m_cUrviness;                         //!< cUrviness parameter for Curvy Red
+  // ** Variables maintained by DualQ Coupled Curvy Red
   Time m_classicQueueTime;                      //!< Arrival time of a packet of Classic Traffic
   Time m_l4sQueueTime;                          //!< Arrival time of a packet of L4S Traffic
-  uint32_t m_minL4SLength;                      //!< Mininum threshold (in bytes) for marking L4S traffic
+  uint32_t m_l4sMarkingThreshold;               //!< Mininum threshold (in bytes) for marking L4S traffic
   double m_sqrtClassicDropProb                  //!< Variable used in calculation of drop probability of Classic traffic
   double m_l4sDropProb;                         //!< Variable used in calculation of drop probability of L4S traffic
   Time m_avgQueuingTime;                        //!< Averaged Queuing time
