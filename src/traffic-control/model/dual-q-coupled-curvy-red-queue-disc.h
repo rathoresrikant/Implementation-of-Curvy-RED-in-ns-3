@@ -168,32 +168,20 @@ private:
    */
   virtual void InitializeParams (void);
 
-  /**
-   * \brief Periodically calculate the drop probability
-   */
-  void CalculateP ();
-
   Stats m_stats;                                //!< DualQ Coupled Curvy RED statistics
 
   // ** Variables supplied by user
   QueueDiscMode m_mode;                         //!< Mode (bytes or packets)
   Time m_classicQueueDelayRef;                  //!< Queue delay target for Classic traffic
-  uint32_t m_meanPktSize;                       //!< Average packet size in bytes
-  uint32_t m_l4sMarkingThreshold;               //!< L4S marking threshold (in time)
-  //uint32_t m_k;                               //!< Coupling factor
+  uint32_t m_l4SQSizeThreshold;                 //!< L4S marking threshold (in bytes)
   uint32_t m_k0;                                //!< constant to adjust the value of m_k
   uint32_t m_queueLimit;                        //!< Queue limit in bytes / packets
   double m_classicQScalingFact;                 //!< scaling factor for Classic queuing time
   uint32_t m_calcAlpha;                         //!< parameter used to calculate alpha
   double  m_l4sQScalingFact;                    //! <scaling factor for L4S queuing time
-  uint32_t m_curviness;                         //!< curviness parameter for Curvy RED
+  uint32_t m_curviness;                         //!< curviness parameter for Curvy RED 
   // ** Variables maintained by DualQ Coupled Curvy RED
-  uint32_t m_minL4SLength;                      //!< Mininum threshold (in bytes) for marking L4S traffic
-  double m_sqrtClassicDropProb;                 //!< Variable used in calculation of drop probability of Classic traffic
-  double m_l4sDropProb;                         //!< Variable used in calculation of drop probability of L4S traffic
   Time m_avgQueuingTime;                        //!< Averaged Queuing time
-  //Time m_qDelay;                              //!< value of queue delay
-  Time m_classicQueueDelay;                     //!< Current value of queue delay of classic packet
   Ptr<UniformRandomVariable> m_uv;              //!< Rng stream
 };
 
