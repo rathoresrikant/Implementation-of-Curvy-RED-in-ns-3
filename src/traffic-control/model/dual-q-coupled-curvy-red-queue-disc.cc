@@ -151,9 +151,9 @@ TypeId DualQCoupledCurvyRedQueueDisc::GetTypeId (void)
                    MakeDoubleAccessor (&DualQCoupledCurvyRedQueueDisc::m_classicQScalingFact),
                    MakeDoubleChecker<double> ())
     .AddAttribute ("U",
-                   "Curviness Parameter",
-                   UintegerValue (1),
-                   MakeUintegerAccessor (&DualQCoupledCurvyRedQueueDisc::m_cUrviness),
+                   "curviness Parameter",
+                   UintegerValue (2),
+                   MakeUintegerAccessor (&DualQCoupledCurvyRedQueueDisc::m_curviness),
                    MakeUintegerChecker<uint32_t> ())
     .AddAttribute ("f_C",
                    "Used in the EWMA equation to calculate alpha",
@@ -252,6 +252,17 @@ DualQCoupledCurvyRedQueueDisc::AssignStreams (int64_t stream)
   return 1;
 }
 
+void DualQCoupledCurvyRedQueueDisc::InitializeParams (void)
+{
+  m_l4sQScalingFact = m_classicQScalingFact + m_k0;
+  m_l4sMarkingThreshold = 5 * 1500;                        // 5 times of MTU in bytes
+  m_stats.forcedDrop = 0;
+  m_stats.unforcedClassicDrop = 0;
+  m_stats.unforcedClassicMark = 0;
+  m_stats.unforcedL4SMark = 0;
+  m_avgQueuingTime = Time (Seconds (0));
+}
+
 bool
 DualQCoupledCurvyRedQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
 {
@@ -280,29 +291,11 @@ DualQCoupledCurvyRedQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
   else
     {
       queueNumber = 0;
-      /* if (classicQueueTime == Seconds (0))
-         {
-           classicQueueTime = Simulator::Now ();
-         }
-      */
     }
 
   bool retval = GetInternalQueue (queueNumber)->Enqueue (item);
   NS_LOG_LOGIC ("Number packets in queue-number " << queueNumber << ": " << GetInternalQueue (queueNumber)->GetNPackets ());
   return retval;
-}
-
-void DualQCoupledCurvyRedQueueDisc::InitializeParams (void)
-{
-  //m_k = pow (2,m_k0);
-  m_l4sQScalingFact = m_classicQScalingFact + m_k0;
-  m_l4sMarkingThreshold = 5 * m_meanPktSize;
-  //m_dropProb = 0.0;
-  m_stats.forcedDrop = 0;
-  m_stats.unforcedClassicDrop = 0;
-  m_stats.unforcedClassicMark = 0;
-  m_stats.unforcedL4SMark = 0;
-  m_avgQueuingTime = Time (Seconds (0));
 }
 
 double
@@ -337,8 +330,13 @@ DualQCoupledCurvyRedQueueDisc::DoDequeue ()
           classicQueueTime = Time (Seconds (0));
         }
       Ptr<QueueDiscItem> item = GetInternalQueue (1)->Dequeue ();
-      m_l4sDropProb = (Simulator::Now ().GetSeconds () - classicQueueTime.GetSeconds ()) * 1.0 / pow (2, m_l4sQScalingFact);
-      if (m_l4sDropProb > MaxRand (m_cUrviness) || Getl4sQueueSize () > m_l4sMarkingThreshold)
+      m_l4sDropProb = (Simulator::Now ().GetSeconds () - classicQueueTime.GetSeconds ()) / pow (2, m_l4sQScalingFact);
+      if (Getl4sQueueSize () > m_l4sMarkingThreshold)
+        {
+          item->Mark ();
+          m_stats.unforcedL4SMark++;
+        }
+      else if (m_l4sDropProb > MaxRand (m_curviness))
         {
           item->Mark ();
           m_stats.unforcedL4SMark++;
@@ -352,25 +350,20 @@ DualQCoupledCurvyRedQueueDisc::DoDequeue ()
       DualQCoupledCurvyRedTimestampTag tag;
       item->GetPacket ()->PeekPacketTag (tag);
       m_classicQueueDelay = Simulator::Now () - tag.GetTxTime ();             //instantaneous queuing time of the current classic packet
-      m_avgQueuingTime += (m_classicQueueDelay - m_avgQueuingTime) * 1.0 / pow (2, m_calcAlpha);          // classic Queue EWMA
-      m_sqrtClassicDropProb = m_avgQueuingTime.GetSeconds () * 1.0 / pow (2, m_classicQScalingFact);
+      double alpha = pow (2, - m_calcAlpha);
+      m_avgQueuingTime = alpha * m_classicQueueDelay + (1 - alpha) * m_avgQueuingTime;          // classic Queue EWMA
+      m_sqrtClassicDropProb = m_avgQueuingTime.GetSeconds () / pow (2, m_classicQScalingFact);
 
-      if (m_sqrtClassicDropProb > MaxRand (2 * m_cUrviness))
+      if (m_sqrtClassicDropProb > MaxRand (2 * m_curviness))
         {
-          if (!item->Mark ())
-            {
-
               Drop (item);
               m_stats.unforcedClassicDrop++;
-            }
-          else
-            {
-              m_stats.unforcedClassicMark++;
+        }
+      else
+        {
               return item;
-            }
         }
     }
-
   return 0;
 }
 
@@ -401,13 +394,13 @@ DualQCoupledCurvyRedQueueDisc::CheckConfig (void)
   NS_LOG_FUNCTION (this);
   if (GetNQueueDiscClasses () > 0)
     {
-      NS_LOG_ERROR ("DualQCoupledPiSquareQueueDisc cannot have classes");
+      NS_LOG_ERROR ("DualQCoupledCurvyRedQueueDisc cannot have classes");
       return false;
     }
 
   if (GetNPacketFilters () > 0)
     {
-      NS_LOG_ERROR ("DualQCoupledPiSquareQueueDisc cannot have packet filters");
+      NS_LOG_ERROR ("DualQCoupledCurvyRedQueueDisc cannot have packet filters");
       return false;
     }
 
@@ -432,21 +425,21 @@ DualQCoupledCurvyRedQueueDisc::CheckConfig (void)
 
   if (GetNInternalQueues () != 2)
     {
-      NS_LOG_ERROR ("DualQCoupledPiSquareQueueDisc needs 2 internal queue");
+      NS_LOG_ERROR ("DualQCoupledCurvyRedQueueDisc needs 2 internal queue");
       return false;
     }
 
   if ((GetInternalQueue (0)->GetMode () == QueueBase::QUEUE_MODE_PACKETS && m_mode == QUEUE_DISC_MODE_BYTES)
       || (GetInternalQueue (0)->GetMode () == QueueBase::QUEUE_MODE_BYTES && m_mode == QUEUE_DISC_MODE_PACKETS))
     {
-      NS_LOG_ERROR ("The mode provided for Classic traffic queue does not match the mode set on the DualQCoupledPiSquareQueueDisc");
+      NS_LOG_ERROR ("The mode provided for Classic traffic queue does not match the mode set on the DualQCoupledCurvyRedQueueDisc");
       return false;
     }
 
   if ((GetInternalQueue (1)->GetMode () == QueueBase::QUEUE_MODE_PACKETS && m_mode == QUEUE_DISC_MODE_BYTES)
       || (GetInternalQueue (1)->GetMode () == QueueBase::QUEUE_MODE_BYTES && m_mode == QUEUE_DISC_MODE_PACKETS))
     {
-      NS_LOG_ERROR ("The mode provided for L4S traffic queue does not match the mode set on the DualQCoupledPiSquareQueueDisc");
+      NS_LOG_ERROR ("The mode provided for L4S traffic queue does not match the mode set on the DualQCoupledCurvyRedQueueDisc");
       return false;
     }
 

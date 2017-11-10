@@ -183,10 +183,10 @@ private:
   //uint32_t m_k;                               //!< Coupling factor
   uint32_t m_k0;                                //!< constant to adjust the value of m_k
   uint32_t m_queueLimit;                        //!< Queue limit in bytes / packets
-  double m_classicQScalingFact;               //!< scaling factor for Classic queuing time
+  double m_classicQScalingFact;                 //!< scaling factor for Classic queuing time
   uint32_t m_calcAlpha;                         //!< parameter used to calculate alpha
-  double  m_l4sQScalingFact;                   //! <scaling factor for L4S queuing time
-  uint32_t m_cUrviness;                         //!< cUrviness parameter for Curvy RED
+  double  m_l4sQScalingFact;                    //! <scaling factor for L4S queuing time
+  uint32_t m_curviness;                         //!< curviness parameter for Curvy RED
   // ** Variables maintained by DualQ Coupled Curvy RED
   uint32_t m_minL4SLength;                      //!< Mininum threshold (in bytes) for marking L4S traffic
   double m_sqrtClassicDropProb;                 //!< Variable used in calculation of drop probability of Classic traffic
