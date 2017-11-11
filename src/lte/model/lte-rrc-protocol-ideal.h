@@ -47,7 +47,6 @@ class LteUeRrc;
  */
 class LteUeRrcProtocolIdeal : public Object
 {
-  /// allow MemberLteUeRrcSapUser<LteUeRrcProtocolIdeal> class friend access
   friend class MemberLteUeRrcSapUser<LteUeRrcProtocolIdeal>;
 
 public:
@@ -150,7 +149,6 @@ private:
  */
 class LteEnbRrcProtocolIdeal : public Object
 {
-  /// allow MemberLteEnbRrcSapUser<LteEnbRrcProtocolIdeal> class friend access
   friend class MemberLteEnbRrcSapUser<LteEnbRrcProtocolIdeal>;
 
 public:
@@ -220,10 +218,9 @@ private:
   /**
    * Send system information function
    *
-   * \param cellId cell ID
    * \param msg LteRrcSap::SystemInformation
    */
-  void DoSendSystemInformation (uint16_t cellId, LteRrcSap::SystemInformation msg);
+  void DoSendSystemInformation (LteRrcSap::SystemInformation msg);
   /**
    * Send system information function
    *

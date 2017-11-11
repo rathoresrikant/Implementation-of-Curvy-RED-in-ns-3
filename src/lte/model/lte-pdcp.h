@@ -36,9 +36,7 @@ namespace ns3 {
  */
 class LtePdcp : public Object // SimpleRefCount<LtePdcp>
 {
-  /// allow LtePdcpSpecificLteRlcSapUser class friend access
   friend class LtePdcpSpecificLteRlcSapUser;
-  /// allow LtePdcpSpecificLtePdcpSapProvider<LtePdcp> class friend access
   friend class LtePdcpSpecificLtePdcpSapProvider<LtePdcp>;
 public:
   LtePdcp ();

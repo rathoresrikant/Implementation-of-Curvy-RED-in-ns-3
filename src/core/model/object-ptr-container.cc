@@ -23,7 +23,7 @@
 /**
  * \file
  * \ingroup attribute_ObjectPtrContainer
- * ns3::ObjectPtrContainerValue attribute value implementations.
+ * ObjectPtrContainer attribute value implementation.
  */
 
 namespace ns3 {

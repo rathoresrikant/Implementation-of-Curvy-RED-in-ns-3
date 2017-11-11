@@ -182,7 +182,7 @@ as shown below:
 
 .. sourcecode:: cpp
 
-  Config::SetDefault ("ns3::RedQueueDisc::NLRED", BooleanValue (true));
+Config::SetDefault ("ns3::RedQueueDisc::NLRED", BooleanValue (true));
 
 Examples
 ========
@@ -204,3 +204,106 @@ Validation
 
 The RED model has been validated and the report is currently stored
 at: https://github.com/downloads/talau/ns-3-tcp-red/report-red-ns3.pdf 
+
+Validation of ECN operation
+===========================
+RED Tests
+=========
+
+Test 1 (without ECN)
+RED stats from Node 2 queue
+   142 drops due prob mark
+   0 marks due prob mark
+   224 drops due hard mark
+   0 drops due hard mark
+   0 drops due queue full
+
+
+Test 2 (same as Test 1 with ECN)
+RED stats from Node 2 queue 
+   65 drops due prob mark
+   71 marks due prob mark
+   293 drops due hard mark
+   0 drops due hard mark
+   0 drops due queue full
+
+When ECN is enabled, there are marks instead of drops due to probability.
+However, in test 2, 65 packet gets dropped despite ECN being enabled because they
+are non-ECT packets. This can be verified by connecting to drop trace sources
+and observing the IP header of dropped packets.
+
+ARED Tests
+==========
+
+Test 1 (without ECN)
+ARED stats from Node 2 queue
+   3 drops due to prob mark
+   0 marks due to prob mark
+   0 drops due to hard mark
+   0 marks due to hard mark
+   251 drops due to queue full
+  
+Test 3 (same as Test 1 with ECN)
+ARED stats from Node 2 queue
+   1 drops due to prob mark
+   2 marks due to prob mark
+   0 drops due to hard mark
+   0 marks due to hard mark
+   220 drops due to queue full
+
+When ECN is enabled, there are marks instead of drops due to probability.
+However, in test 3, 1 packet gets dropped despite ECN being enabled because it
+is a non-ECT packet. This can be verified by connecting to drop trace sources
+and observing the IP header of dropped packets.
+
+Test 2 (without ECN)
+ARED stats from Node 2 queue
+   29 drops due to prob mark
+   0 marks due to prob mark
+   0 drops due to hard mark
+   0 marks due to hard mark
+   133 drops due to queue full
+
+Test 4 (same as Test 2 with ECN)
+ARED stats from Node 2 queue
+   2 drops due to prob mark
+   25 marks due to prob mark
+   0 drops due to hard mark
+   0 marks due to hard mark
+   139 drops due to queue full
+
+When ECN is enabled, there are marks instead of drops due to probability.
+However, in test 4, 2 packet get dropped despite ECN being enabled because they
+are non-ECT packets. This can be verified by connecting to drop trace sources
+and observing the IP header of dropped packets.
+
+Test 10 (without ECN)
+ARED stats from Node 2 queue
+   121 drops due to prob mark
+   0 marks due to prob mark
+   129 drops due to hard mark
+   0 marks due to hard mark
+   0 drops due to queue full
+
+
+Test 11 (same as Test 10 with ECN)
+ARED stats from Node 2 queue
+   0 drops due to prob mark
+   71 marks due to prob mark
+   200 drops due to hard mark
+   0 marks due to hard mark
+   0 drops due to queue full
+
+When ECN is enabled, there are marks instead of drops due to probability. There 
+are drops due to hard mark rather than marks because UseHardDrop parameter is 
+turned on. If the UseHardDrop parameter is turned off, following stats can be 
+seen from node 2 for Test 11.
+
+   0 drops due to prob mark
+   20 marks due to prob mark
+   0 drops due to hard mark
+   660 marks due to hard mark
+   0 drops due to queue full
+
+
+

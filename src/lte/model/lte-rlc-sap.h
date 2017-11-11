@@ -51,7 +51,6 @@ public:
    * Send a PDCP PDU to the RLC for transmission
    * This method is to be called
    * when upper PDCP entity has a PDCP PDU ready to send
-   * \param params the TransmitPdcpPduParameters
    */
   virtual void TransmitPdcpPdu (TransmitPdcpPduParameters params) = 0;
 };
@@ -62,7 +61,7 @@ public:
  * See 3GPP 36.322 Radio Link Control (RLC) protocol specification
  *
  * This is the RLC SAP User
- * (i.e. the part of the SAP that contains the PDCP methods called by the RLC)
+ * (i.e. the part of the SAP that contains the PDCP methos called by the RLC)
  */
 class LteRlcSapUser
 {
@@ -90,10 +89,7 @@ public:
    */
   LteRlcSpecificLteRlcSapProvider (C* rlc);
 
-  /**
-   * Interface implemented from LteRlcSapProvider
-   * \param params the TransmitPdcpPduParameters
-   */
+  // Interface implemented from LteRlcSapProvider
   virtual void TransmitPdcpPdu (TransmitPdcpPduParameters params);
 
 private:

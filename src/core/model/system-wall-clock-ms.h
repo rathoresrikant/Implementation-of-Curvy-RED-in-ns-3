@@ -26,7 +26,7 @@
 /**
  * \file
  * \ingroup system
- * ns3::SystemWallClockMs declaration.
+ * System-independent wall clock class ns3::SystemWallClockMs declaration.
  */
 
 namespace ns3 {

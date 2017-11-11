@@ -47,7 +47,6 @@ namespace ns3 {
  */
 class EpcSgwPgwApplication : public Application
 {
-  /// allow MemberEpcS11SapSgw<EpcSgwPgwApplication> class friend access
   friend class MemberEpcS11SapSgw<EpcSgwPgwApplication>;
 
 public:

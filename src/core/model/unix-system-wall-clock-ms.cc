@@ -27,7 +27,8 @@
 /**
  * \file
  * \ingroup system
- * ns3::SystemWallClockMs and ns3::SystemWallClockMsPrivate implementation.
+ * Wall clock class ns3::SystemWallClockMs implementation
+ * for Unix-like systems.
  */
 
 namespace ns3 {

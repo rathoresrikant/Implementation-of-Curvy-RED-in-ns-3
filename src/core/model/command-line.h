@@ -29,7 +29,7 @@
 /**
  * \file
  * \ingroup commandline
- * ns3::CommandLine declaration.
+ * CommandLine class declaration.
  */
 
 namespace ns3 {
@@ -395,10 +395,7 @@ private:
    */  
   static bool HandleAttribute (const std::string name, const std::string value);
 
-  /**
-   * Handler for \c \-\-PrintGlobals:  print all global variables and values
-   * \param [in,out] os The output stream to print on.
-   */
+  /** Handler for \c \-\-PrintGlobals:  print all global variables and values */
   void PrintGlobals (std::ostream &os) const;
   /**
    * Handler for \c \-\-PrintAttributes:  print the attributes for a given type.

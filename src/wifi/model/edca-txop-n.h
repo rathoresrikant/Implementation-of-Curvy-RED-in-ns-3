@@ -68,7 +68,7 @@ enum TypeOfStation
 class EdcaTxopN : public DcaTxop
 {
 public:
-  /// Allow test cases to access private members
+  // Allow test cases to access private members
   friend class ::AmpduAggregationTest;
 
   std::map<Mac48Address, bool> m_aMpduEnabled; //!< list containing flags whether A-MPDU is enabled for a given destination address
@@ -94,7 +94,7 @@ public:
    *
    * \param remoteManager WifiRemoteStationManager.
    */
-  void SetWifiRemoteStationManager (const Ptr<WifiRemoteStationManager> remoteManager);
+  void SetWifiRemoteStationManager (Ptr<WifiRemoteStationManager> remoteManager);
   /**
    * Set type of station with the given type.
    *
@@ -132,6 +132,24 @@ public:
    */
   bool GetBaAgreementExists (Mac48Address address, uint8_t tid) const;
   /**
+   * \param address recipient address of peer station involved in block ack mechanism.
+   * \param tid traffic ID.
+   *
+   * \return the number of packets buffered for a specified agreement.
+   *
+   * Returns number of packets buffered for a specified agreement.
+   */
+  uint32_t GetNOutstandingPacketsInBa (Mac48Address address, uint8_t tid) const;
+  /**
+   * \param recipient address of peer station involved in block ack mechanism.
+   * \param tid traffic ID.
+   *
+   * \return the number of packets for a specific agreement that need retransmission.
+   *
+   * Returns number of packets for a specific agreement that need retransmission.
+   */
+  uint32_t GetNRetryNeededPackets (Mac48Address recipient, uint8_t tid) const;
+  /**
    * \param recipient address of peer station involved in block ack mechanism.
    * \param tid Ttraffic ID of transmitted packet.
    *
@@ -141,6 +159,13 @@ public:
   void CompleteAmpduTransfer (Mac48Address recipient, uint8_t tid);
 
   /* dcf notifications forwarded here */
+  /**
+   * Check if the EDCAF requires access.
+   *
+   * \return true if the EDCAF requires access,
+   *         false otherwise.
+   */
+  bool NeedsAccess (void) const;
   /**
    * Notify the EDCAF that access has been granted.
    */
@@ -175,7 +200,6 @@ public:
   void GotBlockAck (const CtrlBAckResponseHeader *blockAck, Mac48Address recipient, double rxSnr, WifiMode txMode, double dataSnr);
   /**
    * Event handler when a Block ACK timeout has occurred.
-   * \param nMpdus number of MPDUs sent in the A-MPDU transmission that results in a Block ACK timeout.
    */
   void MissedBlockAck (uint8_t nMpdus);
   /**
@@ -252,13 +276,13 @@ public:
    *
    * \param aggr pointer to the MSDU aggregator.
    */
-  void SetMsduAggregator (const Ptr<MsduAggregator> aggr);
+  void SetMsduAggregator (Ptr<MsduAggregator> aggr);
   /**
    * Set the aggregator used to construct A-MPDU subframes.
    *
    * \param aggr pointer to the MPDU aggregator.
    */
-  void SetMpduAggregator (const Ptr<MpduAggregator> aggr);
+  void SetMpduAggregator (Ptr<MpduAggregator> aggr);
 
   /**
    * \param packet packet to send.
@@ -400,7 +424,6 @@ public:
 
 
 private:
-  /// allow AggregationCapableTransmissionListener class access
   friend class AggregationCapableTransmissionListener;
 
   /**
@@ -520,8 +543,8 @@ private:
   Ptr<MsduAggregator> m_msduAggregator;             //!< A-MSDU aggregator
   Ptr<MpduAggregator> m_mpduAggregator;             //!< A-MPDU aggregator
   TypeOfStation m_typeOfStation;                    //!< the type of station
-  Ptr<QosBlockedDestinations> m_qosBlockedDestinations; //!< QOS blocked destinations
-  Ptr<BlockAckManager> m_baManager;                     //!< the Block ACK manager
+  QosBlockedDestinations *m_qosBlockedDestinations; //!< QOS blocked destinations
+  BlockAckManager *m_baManager;                     //!< the Block ACK manager
   uint8_t m_blockAckThreshold;                      //!< the Block ACK threshold
   BlockAckType m_blockAckType;                      //!< the Block ACK type
   Time m_currentPacketTimestamp;                    //!< the current packet timestamp

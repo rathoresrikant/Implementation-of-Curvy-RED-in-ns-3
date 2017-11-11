@@ -92,17 +92,10 @@ private:
    */
   friend bool operator== (const PeerLinkOpenStart & a, const PeerLinkOpenStart & b);
 
-  /**
-   * assignment operator
-   * \param peer the peer link open start
-   * \returns the assigned value
-   */
-  PeerLinkOpenStart& operator= (const PeerLinkOpenStart & peer);
-  /**
-   * constructor
-   * \param peer the peer link open start
-   */
-  PeerLinkOpenStart (const PeerLinkOpenStart & peer);
+  /// assignment operator
+  PeerLinkOpenStart& operator= (const PeerLinkOpenStart &);
+  /// type conversion opertor
+  PeerLinkOpenStart (const PeerLinkOpenStart &);
 
 };
 
@@ -161,13 +154,8 @@ private:
    */
   friend bool operator== (const PeerLinkCloseStart & a, const PeerLinkCloseStart & b);
 
-  /**
-   * assignment operator
-   *
-   * \param peer the value to assign
-   * \returns the assigned value
-   */
-  PeerLinkCloseStart& operator= (const PeerLinkCloseStart & peer);
+  /// assignment operator
+  PeerLinkCloseStart& operator= (const PeerLinkCloseStart &);
   /// type conversion operator
   PeerLinkCloseStart (const PeerLinkCloseStart &);
 
@@ -235,17 +223,10 @@ private:
    */
   friend bool operator== (const PeerLinkConfirmStart & a, const PeerLinkConfirmStart & b);
 
-  /**
-   * assignment operator
-   * \param peer the peer link confirm start
-   * \returns the assigned value
-   */
-  PeerLinkConfirmStart& operator= (const PeerLinkConfirmStart & peer);
-  /**
-   * constructor
-   * \param peer the peer link confirm start
-   */
-  PeerLinkConfirmStart (const PeerLinkConfirmStart & peer);
+  /// assignment operator
+  PeerLinkConfirmStart& operator= (const PeerLinkConfirmStart &);
+  /// type conversion operator
+  PeerLinkConfirmStart (const PeerLinkConfirmStart &);
 
 };
 bool operator== (const PeerLinkConfirmStart & a, const PeerLinkConfirmStart & b);

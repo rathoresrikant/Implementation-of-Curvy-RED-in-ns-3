@@ -33,7 +33,7 @@
 /**
  * \file
  * \ingroup testing
- * \brief ns3::TestCase, ns3::TestSuite, ns3::TestRunner implementations,
+ * Implementation of the testing classes and functions
  */
 
 namespace ns3 {
@@ -133,7 +133,6 @@ struct TestCase::Result
 /**
  * \ingroup testingimpl
  * Container for all tests.
- * \todo Move TestRunnerImpl to separate file.
  */
 class TestRunnerImpl : public Singleton<TestRunnerImpl>
 {

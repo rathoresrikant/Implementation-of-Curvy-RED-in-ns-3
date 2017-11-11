@@ -27,7 +27,7 @@
 /**
  * \file
  * \ingroup core
- * log2() macro definition; to deal with \bugid{1467}.
+ * Custom version of log2() to deal with \bugid{1467}.
  */
 
 #include <cmath>

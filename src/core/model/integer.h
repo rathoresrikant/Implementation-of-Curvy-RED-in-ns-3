@@ -28,7 +28,7 @@
 /**
  * \file
  * \ingroup attribute_Integer
- * ns3::IntegerValue attribute value declarations and template implementations.
+ * Integer attribute value declarations and template implementations.
  */
 
 namespace ns3 {

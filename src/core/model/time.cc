@@ -30,8 +30,8 @@
 /**
  * \file
  * \ingroup time
- * ns3::Time, ns3::TimeWithUnit 
- * and ns3::TimeValue attribute value implementations.
+ * Implementation of classes ns3::Time and ns3::TimeWithUnit,
+ * and the TimeValue implementation classes.
  */
 
 namespace ns3 {

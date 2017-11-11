@@ -110,7 +110,7 @@ public:
    * has the highest priority, the second DcfState added, has the second
    * highest priority, etc.
    */
-  void Add (Ptr<DcfState> dcf);
+  void Add (DcfState *dcf);
 
   /**
    * \param state a DcfState
@@ -120,7 +120,7 @@ public:
    * timer and, invoking DcfState::DoNotifyAccessGranted when the access
    * is granted if it ever gets granted.
    */
-  void RequestAccess (Ptr<DcfState> state);
+  void RequestAccess (DcfState *state);
 
   /**
    * \param duration expected duration of reception
@@ -202,9 +202,6 @@ public:
    */
   void NotifyCtsTimeoutResetNow ();
 
-protected:
-  // Inherited from ns3::Object
-  void DoDispose (void);
 
 private:
   /**
@@ -283,7 +280,7 @@ private:
    *
    * \return the time when the backoff procedure started
    */
-  Time GetBackoffStartFor (Ptr<DcfState> state);
+  Time GetBackoffStartFor (DcfState *state);
   /**
    * Return the time when the backoff procedure
    * ended (or will ended) for the given DcfState.
@@ -292,7 +289,7 @@ private:
    *
    * \return the time when the backoff procedure ended (or will ended)
    */
-  Time GetBackoffEndFor (Ptr<DcfState> state);
+  Time GetBackoffEndFor (DcfState *state);
 
   void DoRestartAccessTimeoutIfNeeded (void);
 
@@ -320,12 +317,12 @@ private:
    * \return true if the device is within AIFS,
    *         false otherwise
    */
-  bool IsWithinAifs (Ptr<DcfState> state) const;
+  bool IsWithinAifs (DcfState* state) const;
 
   /**
    * typedef for a vector of DcfStates
    */
-  typedef std::vector<Ptr<DcfState> > States;
+  typedef std::vector<DcfState *> States;
 
   States m_states;              //!< the DCF states
   Time m_lastAckTimeoutEnd;     //!< the last ACK timeout end time

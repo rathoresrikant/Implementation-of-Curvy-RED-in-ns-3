@@ -197,7 +197,7 @@ WifiNetDevice::FlowControlConfig (void)
 }
 
 void
-WifiNetDevice::SetMac (const Ptr<WifiMac> mac)
+WifiNetDevice::SetMac (Ptr<WifiMac> mac)
 {
   m_mac = mac;
   CompleteConfig ();
@@ -205,14 +205,14 @@ WifiNetDevice::SetMac (const Ptr<WifiMac> mac)
 }
 
 void
-WifiNetDevice::SetPhy (const Ptr<WifiPhy> phy)
+WifiNetDevice::SetPhy (Ptr<WifiPhy> phy)
 {
   m_phy = phy;
   CompleteConfig ();
 }
 
 void
-WifiNetDevice::SetRemoteStationManager (const Ptr<WifiRemoteStationManager> manager)
+WifiNetDevice::SetRemoteStationManager (Ptr<WifiRemoteStationManager> manager)
 {
   m_stationManager = manager;
   CompleteConfig ();
@@ -366,7 +366,7 @@ WifiNetDevice::GetNode (void) const
 }
 
 void
-WifiNetDevice::SetNode (const Ptr<Node> node)
+WifiNetDevice::SetNode (Ptr<Node> node)
 {
   m_node = node;
   CompleteConfig ();

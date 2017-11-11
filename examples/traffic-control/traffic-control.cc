@@ -78,12 +78,6 @@ DevicePacketsInQueueTrace (uint32_t oldValue, uint32_t newValue)
   std::cout << "DevicePacketsInQueue " << oldValue << " to " << newValue << std::endl;
 }
 
-void
-SojournTimeTrace (Time oldValue, Time newValue)
-{
-  std::cout << "Sojourn time " << newValue.ToDouble (Time::MS) << "ms" << std::endl;
-}
-
 int
 main (int argc, char *argv[])
 {
@@ -119,13 +113,16 @@ main (int argc, char *argv[])
   stack.Install (nodes);
 
   TrafficControlHelper tch;
-  tch.SetRootQueueDisc ("ns3::RedQueueDisc");
+  uint16_t handle = tch.SetRootQueueDisc ("ns3::RedQueueDisc");
+  // Add the internal queue used by Red
+  tch.AddInternalQueues (handle, 1, "ns3::DropTailQueue", "MaxPackets", UintegerValue (10000));
   QueueDiscContainer qdiscs = tch.Install (devices);
 
   Ptr<QueueDisc> q = qdiscs.Get (1);
   q->TraceConnectWithoutContext ("PacketsInQueue", MakeCallback (&TcPacketsInQueueTrace));
-  Config::ConnectWithoutContext ("/NodeList/1/$ns3::TrafficControlLayer/RootQueueDiscList/0/SojournTime",
-                                 MakeCallback (&SojournTimeTrace));
+  // Alternatively:
+  // Config::ConnectWithoutContext ("/NodeList/1/$ns3::TrafficControlLayer/RootQueueDiscList/0/PacketsInQueue",
+  //                                MakeCallback (&TcPacketsInQueueTrace));
 
   Ptr<NetDevice> nd = devices.Get (1);
   Ptr<PointToPointNetDevice> ptpnd = DynamicCast<PointToPointNetDevice> (nd);
@@ -173,11 +170,11 @@ main (int argc, char *argv[])
   Ptr<Ipv4FlowClassifier> classifier = DynamicCast<Ipv4FlowClassifier> (flowmon.GetClassifier ());
   std::map<FlowId, FlowMonitor::FlowStats> stats = monitor->GetFlowStats ();
   std::cout << std::endl << "*** Flow monitor statistics ***" << std::endl;
-  std::cout << "  Tx Packets/Bytes:   " << stats[1].txPackets
-            << " / " << stats[1].txBytes << std::endl;
+  std::cout << "  Tx Packets:   " << stats[1].txPackets << std::endl;
+  std::cout << "  Tx Bytes:   " << stats[1].txBytes << std::endl;
   std::cout << "  Offered Load: " << stats[1].txBytes * 8.0 / (stats[1].timeLastTxPacket.GetSeconds () - stats[1].timeFirstTxPacket.GetSeconds ()) / 1000000 << " Mbps" << std::endl;
-  std::cout << "  Rx Packets/Bytes:   " << stats[1].rxPackets
-            << " / " << stats[1].rxBytes << std::endl;
+  std::cout << "  Rx Packets:   " << stats[1].rxPackets << std::endl;
+  std::cout << "  Rx Bytes:   " << stats[1].rxBytes << std::endl;
   uint32_t packetsDroppedByQueueDisc = 0;
   uint64_t bytesDroppedByQueueDisc = 0;
   if (stats[1].packetsDropped.size () > Ipv4FlowProbe::DROP_QUEUE_DISC)
@@ -185,8 +182,8 @@ main (int argc, char *argv[])
       packetsDroppedByQueueDisc = stats[1].packetsDropped[Ipv4FlowProbe::DROP_QUEUE_DISC];
       bytesDroppedByQueueDisc = stats[1].bytesDropped[Ipv4FlowProbe::DROP_QUEUE_DISC];
     }
-  std::cout << "  Packets/Bytes Dropped by Queue Disc:   " << packetsDroppedByQueueDisc
-            << " / " << bytesDroppedByQueueDisc << std::endl;
+  std::cout << "  Packets Dropped by Queue Disc:   " << packetsDroppedByQueueDisc << std::endl;
+  std::cout << "  Bytes Dropped by Queue Disc:   " << bytesDroppedByQueueDisc << std::endl;
   uint32_t packetsDroppedByNetDevice = 0;
   uint64_t bytesDroppedByNetDevice = 0;
   if (stats[1].packetsDropped.size () > Ipv4FlowProbe::DROP_QUEUE)
@@ -194,8 +191,8 @@ main (int argc, char *argv[])
       packetsDroppedByNetDevice = stats[1].packetsDropped[Ipv4FlowProbe::DROP_QUEUE];
       bytesDroppedByNetDevice = stats[1].bytesDropped[Ipv4FlowProbe::DROP_QUEUE];
     }
-  std::cout << "  Packets/Bytes Dropped by NetDevice:   " << packetsDroppedByNetDevice
-            << " / " << bytesDroppedByNetDevice << std::endl;
+  std::cout << "  Packets Dropped by NetDevice:   " << packetsDroppedByNetDevice << std::endl;
+  std::cout << "  Bytes Dropped by NetDevice:   " << bytesDroppedByNetDevice << std::endl;
   std::cout << "  Throughput: " << stats[1].rxBytes * 8.0 / (stats[1].timeLastRxPacket.GetSeconds () - stats[1].timeFirstRxPacket.GetSeconds ()) / 1000000 << " Mbps" << std::endl;
   std::cout << "  Mean delay:   " << stats[1].delaySum.GetSeconds () / stats[1].rxPackets << std::endl;
   std::cout << "  Mean jitter:   " << stats[1].jitterSum.GetSeconds () / (stats[1].rxPackets - 1) << std::endl;
@@ -215,6 +212,10 @@ main (int argc, char *argv[])
   std::cout << "  Rx Bytes: " << totalPacketsThr << std::endl;
   std::cout << "  Average Goodput: " << thr << " Mbit/s" << std::endl;
   std::cout << std::endl << "*** TC Layer statistics ***" << std::endl;
-  std::cout << q->GetStats () << std::endl;
+  std::cout << "  Packets dropped by the TC layer: " << q->GetTotalDroppedPackets () << std::endl;
+  std::cout << "  Bytes dropped by the TC layer: " << q->GetTotalDroppedBytes () << std::endl;
+  std::cout << "  Packets dropped by the netdevice: " << queue->GetTotalDroppedPackets () << std::endl;
+  std::cout << "  Packets requeued by the TC layer: " << q->GetTotalRequeuedPackets () << std::endl;
+
   return 0;
 }

@@ -569,6 +569,14 @@ protected:
    */
   void SetInitialCwnd (SocketWho who, uint32_t initialCwnd);
 
+  
+  /**
+   * \brief Forcefully set the ecn mode on
+   *
+   * \param who socket to force
+   */
+  void SetEcn (SocketWho who);
+
   /**
    * \brief Forcefully set the initial ssth
    *

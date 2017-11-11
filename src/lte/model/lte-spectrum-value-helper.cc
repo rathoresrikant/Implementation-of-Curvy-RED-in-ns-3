@@ -114,62 +114,38 @@ LteSpectrumValueHelper::GetCarrierFrequency (uint32_t earfcn)
     }
 }
 
-uint16_t
-LteSpectrumValueHelper::GetDownlinkCarrierBand (uint32_t nDl)
-{
-  NS_LOG_FUNCTION (nDl);
-  for (uint16_t i = 0; i < NUM_EUTRA_BANDS; ++i)
-    {
-      if (g_eutraChannelNumbers[i].rangeNdl1 <= nDl &&
-          g_eutraChannelNumbers[i].rangeNdl2 >= nDl)
-        {
-          NS_LOG_LOGIC ("entry " << i << " fDlLow=" << g_eutraChannelNumbers[i].fDlLow);
-          return i;
-        }
-    }
-  NS_LOG_ERROR ("invalid EARFCN " << nDl);
-  return NUM_EUTRA_BANDS;
-}
-
-uint16_t
-LteSpectrumValueHelper::GetUplinkCarrierBand (uint32_t nUl)
-{
-  NS_LOG_FUNCTION (nUl);
-  for (uint16_t i = 0; i < NUM_EUTRA_BANDS; ++i)
-    {
-      if (g_eutraChannelNumbers[i].rangeNul1 <= nUl &&
-          g_eutraChannelNumbers[i].rangeNul2 >= nUl)
-        {
-          NS_LOG_LOGIC ("entry " << i << " fUlLow=" << g_eutraChannelNumbers[i].fUlLow);
-          return i;
-        }
-    }
-  NS_LOG_ERROR ("invalid EARFCN " << nUl);
-  return NUM_EUTRA_BANDS;
-}
-
-double
+double 
 LteSpectrumValueHelper::GetDownlinkCarrierFrequency (uint32_t nDl)
 {
   NS_LOG_FUNCTION (nDl);
-  uint16_t i = GetDownlinkCarrierBand (nDl);
-  if (i == NUM_EUTRA_BANDS)
+  for (uint16_t i = 0; i < NUM_EUTRA_BANDS; ++i)
     {
-      return 0.0;
+      if ((g_eutraChannelNumbers[i].rangeNdl1 <= nDl)
+          && (g_eutraChannelNumbers[i].rangeNdl2 >= nDl))
+        {
+          NS_LOG_LOGIC ("entry " << i << " fDlLow=" << g_eutraChannelNumbers[i].fDlLow);
+          return 1.0e6 * (g_eutraChannelNumbers[i].fDlLow + 0.1 * (nDl - g_eutraChannelNumbers[i].nOffsDl));
+        }
     }
-  return 1.0e6 * (g_eutraChannelNumbers[i].fDlLow + 0.1 * (nDl - g_eutraChannelNumbers[i].nOffsDl));
+  NS_LOG_ERROR ("invalid EARFCN " << nDl);
+  return 0.0;
 }
 
-double
+double 
 LteSpectrumValueHelper::GetUplinkCarrierFrequency (uint32_t nUl)
 {
   NS_LOG_FUNCTION (nUl);
-  uint16_t i = GetUplinkCarrierBand (nUl);
-  if (i == NUM_EUTRA_BANDS)
+  for (uint16_t i = 0; i < NUM_EUTRA_BANDS; ++i)
     {
-      return 0.0;
+      if ((g_eutraChannelNumbers[i].rangeNul1 <= nUl)
+          && (g_eutraChannelNumbers[i].rangeNul2 >= nUl))
+        {
+          NS_LOG_LOGIC ("entry " << i << " fUlLow=" << g_eutraChannelNumbers[i].fUlLow);
+          return 1.0e6 * (g_eutraChannelNumbers[i].fUlLow + 0.1 * (nUl - g_eutraChannelNumbers[i].nOffsUl));
+        }
     }
-  return 1.0e6 * (g_eutraChannelNumbers[i].fUlLow + 0.1 * (nUl - g_eutraChannelNumbers[i].nOffsUl));
+  NS_LOG_ERROR ("invalid EARFCN " << nUl);
+  return 0.0;
 }
 
 double 

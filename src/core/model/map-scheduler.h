@@ -29,7 +29,7 @@
 /**
  * \file
  * \ingroup scheduler
- * ns3::MapScheduler declaration.
+ * Declaration of ns3::MapScheduler class.
  */
 
 namespace ns3 {

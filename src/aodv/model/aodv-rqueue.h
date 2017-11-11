@@ -47,15 +47,7 @@ public:
   typedef Ipv4RoutingProtocol::UnicastForwardCallback UnicastForwardCallback;
   /// IPv4 routing error callback typedef
   typedef Ipv4RoutingProtocol::ErrorCallback ErrorCallback;
-  /**
-   * constructor
-   *
-   * \param pa the packet to add to the queue
-   * \param h the Ipv4Header
-   * \param ucb the UnicastForwardCallback function
-   * \param ecb the ErrorCallback function
-   * \param exp the expiration time
-   */
+  /// c-tor
   QueueEntry (Ptr<const Packet> pa = 0, Ipv4Header const & h = Ipv4Header (),
               UnicastForwardCallback ucb = UnicastForwardCallback (),
               ErrorCallback ecb = ErrorCallback (), Time exp = Simulator::Now ())
@@ -180,46 +172,21 @@ private:
 class RequestQueue
 {
 public:
-  /**
-   * constructor
-   *
-   * \param maxLen the maximum length
-   * \param routeToQueueTimeout the route to queue timeout
-   */
+  /// Default c-tor
   RequestQueue (uint32_t maxLen, Time routeToQueueTimeout)
     : m_maxLen (maxLen),
       m_queueTimeout (routeToQueueTimeout)
   {
   }
-  /**
-   * Push entry in queue, if there is no entry with the same packet and destination address in queue.
-   * \param entry the queue entry
-   * \returns true if the entry is queued
-   */
+  /// Push entry in queue, if there is no entry with the same packet and destination address in queue.
   bool Enqueue (QueueEntry & entry);
-  /**
-   * Return first found (the earliest) entry for given destination
-   * 
-   * \param dst the destination IP address
-   * \param entry the queue entry
-   * \returns true if the entry is dequeued
-   */
+  /// Return first found (the earliest) entry for given destination
   bool Dequeue (Ipv4Address dst, QueueEntry & entry);
-  /**
-   * Remove all packets with destination IP address dst
-   * \param dst the destination IP address
-   */
+  /// Remove all packets with destination IP address dst
   void DropPacketWithDst (Ipv4Address dst);
-  /**
-   * Finds whether a packet with destination dst exists in the queue
-   * 
-   * \param dst the destination IP address
-   * \returns true if an entry with the IP address is found
-   */
+  /// Finds whether a packet with destination dst exists in the queue
   bool Find (Ipv4Address dst);
-  /**
-   * \returns the number of entries
-   */
+  /// Number of entries
   uint32_t GetSize ();
 
   // Fields
@@ -261,11 +228,7 @@ private:
   std::vector<QueueEntry> m_queue;
   /// Remove all expired entries
   void Purge ();
-  /**
-   * Notify that packet is dropped from queue by timeout
-   * \param en the queue entry to drop
-   * \param reason the reason to drop the entry
-   */
+  /// Notify that packet is dropped from queue by timeout
   void Drop (QueueEntry en, std::string reason);
   /// The maximum number of packets that we allow a routing protocol to buffer.
   uint32_t m_maxLen;

@@ -190,8 +190,8 @@ private:
   bool m_cleared;
 
 protected:
-  virtual void DoDispose (void);
-  virtual void DoInitialize (void);
+  virtual void DoDispose ();
+
 };  // class UanNetDevice
 
 } // namespace ns3

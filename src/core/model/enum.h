@@ -27,7 +27,7 @@
 /**
  * \file
  * \ingroup attribute_Enum
- * ns3::EnumValue attribute value declarations.
+ * Enum attribute value declarations.
  */
 
 namespace ns3 {

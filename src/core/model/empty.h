@@ -23,7 +23,7 @@
 /**
  * \file
  * \ingroup callback
- * ns3::empty declaration, used by callbacks.
+ * Definition of class ns3::empty, used by callbacks.
  */
 
 namespace ns3 {

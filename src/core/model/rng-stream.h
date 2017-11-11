@@ -25,14 +25,14 @@
 /**
  * \file
  * \ingroup rngimpl
- * ns3::RngStream declaration.
+ * Declaration of class RngStream.
  */
 
 namespace ns3 {
 
 /**
  * \ingroup randomvariable
- * \defgroup rngimpl RNG Implementation
+ * \defgroup rngimpl RNG Implementation.
  */
   
 /**

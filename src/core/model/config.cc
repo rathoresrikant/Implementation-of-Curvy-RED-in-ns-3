@@ -31,7 +31,7 @@
 /**
  * \file
  * \ingroup config
- * ns3::Config implementations.
+ * Imlementation of the various ns3::Config functions and classes.
  */
 
 namespace ns3 {
@@ -146,11 +146,10 @@ MatchContainer::DisconnectWithoutContext (std::string name, const CallbackBase &
     }
 }
 
+} // namespace Config
 
-/**
- * \ingroup config-impl
- * Helper to test if an array entry matches a config path specification.
- */
+
+/** Helper to test if an array entry matches a config path specification. */
 class ArrayMatcher
 {
 public:
@@ -178,8 +177,7 @@ private:
   bool StringToUint32 (std::string str, uint32_t *value) const;
   /** The Config path element. */
   std::string m_element;
-
-};  // class ArrayMatcher
+};
 
 
 ArrayMatcher::ArrayMatcher (std::string element)
@@ -262,7 +260,6 @@ ArrayMatcher::StringToUint32 (std::string str, uint32_t *value) const
 }
 
 /**
- * \ingroup config-impl
  * Abstract class to parse Config paths into object references.
  */
 class Resolver
@@ -328,8 +325,7 @@ private:
   std::vector<std::string> m_workStack;
   /** The Config path. */
   std::string m_path;
-
-};  // class Resolver
+};
 
 Resolver::Resolver (std::string path)
   : m_path (path)
@@ -576,10 +572,7 @@ Resolver::DoArrayResolve (std::string path, const ObjectPtrContainerValue &conta
     }
 }
 
-/**
- * \ingroup config-impl
- * Config system implementation class.
- */
+/** Config system implementation class. */
 class ConfigImpl : public Singleton<ConfigImpl>
 {
 public:
@@ -594,7 +587,7 @@ public:
   /** \copydoc Config::Disconnect() */
   void Disconnect (std::string path, const CallbackBase &cb);
   /** \copydoc Config::LookupMatches() */
-  MatchContainer LookupMatches (std::string path);
+  Config::MatchContainer LookupMatches (std::string path);
 
   /** \copydoc Config::RegisterRootNamespaceObject() */
   void RegisterRootNamespaceObject (Ptr<Object> obj);
@@ -621,8 +614,7 @@ private:
 
   /** The list of Config path roots. */
   Roots m_roots;
-
-};  // class ConfigImpl
+};
 
 void 
 ConfigImpl::ParsePath (std::string path, std::string *root, std::string *leaf) const
@@ -643,7 +635,7 @@ ConfigImpl::Set (std::string path, const AttributeValue &value)
 
   std::string root, leaf;
   ParsePath (path, &root, &leaf);
-  MatchContainer container = LookupMatches (root);
+  Config::MatchContainer container = LookupMatches (root);
   container.Set (leaf, value);
 }
 void 
@@ -652,7 +644,7 @@ ConfigImpl::ConnectWithoutContext (std::string path, const CallbackBase &cb)
   NS_LOG_FUNCTION (this << path << &cb);
   std::string root, leaf;
   ParsePath (path, &root, &leaf);
-  MatchContainer container = LookupMatches (root);
+  Config::MatchContainer container = LookupMatches (root);
   container.ConnectWithoutContext (leaf, cb);
 }
 void 
@@ -661,7 +653,7 @@ ConfigImpl::DisconnectWithoutContext (std::string path, const CallbackBase &cb)
   NS_LOG_FUNCTION (this << path << &cb);
   std::string root, leaf;
   ParsePath (path, &root, &leaf);
-  MatchContainer container = LookupMatches (root);
+  Config::MatchContainer container = LookupMatches (root);
   container.DisconnectWithoutContext (leaf, cb);
 }
 void 
@@ -671,7 +663,7 @@ ConfigImpl::Connect (std::string path, const CallbackBase &cb)
 
   std::string root, leaf;
   ParsePath (path, &root, &leaf);
-  MatchContainer container = LookupMatches (root);
+  Config::MatchContainer container = LookupMatches (root);
   container.Connect (leaf, cb);
 }
 void 
@@ -681,11 +673,11 @@ ConfigImpl::Disconnect (std::string path, const CallbackBase &cb)
 
   std::string root, leaf;
   ParsePath (path, &root, &leaf);
-  MatchContainer container = LookupMatches (root);
+  Config::MatchContainer container = LookupMatches (root);
   container.Disconnect (leaf, cb);
 }
 
-MatchContainer 
+Config::MatchContainer 
 ConfigImpl::LookupMatches (std::string path)
 {
   NS_LOG_FUNCTION (this << path);
@@ -695,8 +687,7 @@ ConfigImpl::LookupMatches (std::string path)
     LookupMatchesResolver (std::string path)
       : Resolver (path)
     {}
-    virtual void DoOne (Ptr<Object> object, std::string path)
-    {
+    virtual void DoOne (Ptr<Object> object, std::string path) {
       m_objects.push_back (object);
       m_contexts.push_back (path);
     }
@@ -715,7 +706,7 @@ ConfigImpl::LookupMatches (std::string path)
   //
   resolver.Resolve (0);
 
-  return MatchContainer (resolver.m_objects, resolver.m_contexts, path);
+  return Config::MatchContainer (resolver.m_objects, resolver.m_contexts, path);
 }
 
 void 
@@ -753,6 +744,7 @@ ConfigImpl::GetRootNamespaceObject (uint32_t i) const
   return m_roots[i];
 }
 
+namespace Config {
 
 void Reset (void)
 {
@@ -851,7 +843,7 @@ Disconnect (std::string path, const CallbackBase &cb)
   NS_LOG_FUNCTION (path << &cb);
   ConfigImpl::Get ()->Disconnect (path, cb);
 }
-MatchContainer LookupMatches (std::string path)
+Config::MatchContainer LookupMatches (std::string path)
 {
   NS_LOG_FUNCTION (path);
   return ConfigImpl::Get ()->LookupMatches (path);

@@ -26,8 +26,7 @@
 /**
  * \file
  * \ingroup fatalimpl
- * ns3::FatalImpl::RegisterStream(), ns3::FatalImpl::UnregisterStream(),
- * and ns3::FatalImpl::FlushStreams() declarations.
+ * \brief Declaration of RegisterStream(), UnregisterStream(), and FlushStreams().
  */
 
 /**

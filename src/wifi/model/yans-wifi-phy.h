@@ -61,7 +61,7 @@ public:
    *
    * \param channel the YansWifiChannel this YansWifiPhy is to be connected to
    */
-  void SetChannel (const Ptr<YansWifiChannel> channel);
+  void SetChannel (Ptr<YansWifiChannel> channel);
 
   /**
    * \param packet the packet to send

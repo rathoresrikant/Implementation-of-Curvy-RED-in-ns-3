@@ -57,10 +57,7 @@ public:
   void NotifyTxSuccess (uint32_t retryCounter);
   /// Updates average frame error rate when final data or RTS has failed.
   void NotifyTxFailed ();
-  /**
-   * Return frame error rate (probability that frame is corrupted due to transmission error).
-   * \returns the frame error rate
-   */
+  /// Return frame error rate (probability that frame is corrupted due to transmission error).
   double GetFrameErrorRate () const;
 private:
   /**
@@ -111,14 +108,14 @@ public:
    *
    * \param phy the PHY of this device
    */
-  virtual void SetupPhy (const Ptr<WifiPhy> phy);
+  virtual void SetupPhy (Ptr<WifiPhy> phy);
   /**
    * Set up MAC associated with this device since it is the object that
    * knows the full set of timing parameters (e.g. IFS).
    *
    * \param mac the MAC of this device
    */
-  virtual void SetupMac (const Ptr<WifiMac> mac);
+  virtual void SetupMac (Ptr<WifiMac> mac);
 
   /**
    * Return the maximum STA short retry count (SSRC).

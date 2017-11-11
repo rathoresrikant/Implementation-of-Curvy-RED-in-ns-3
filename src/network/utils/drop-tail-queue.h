@@ -58,8 +58,6 @@ private:
   using Queue<Item>::DoDequeue;
   using Queue<Item>::DoRemove;
   using Queue<Item>::DoPeek;
-
-  NS_LOG_TEMPLATE_DECLARE;     //!< redefinition of the log component
 };
 
 
@@ -81,23 +79,22 @@ DropTailQueue<Item>::GetTypeId (void)
 
 template <typename Item>
 DropTailQueue<Item>::DropTailQueue () :
-  Queue<Item> (),
-  NS_LOG_TEMPLATE_DEFINE ("DropTailQueue")
+  Queue<Item> ()
 {
-  NS_LOG_FUNCTION (this);
+  QUEUE_LOG (LOG_LOGIC, "DropTailQueue(" << this << ")");
 }
 
 template <typename Item>
 DropTailQueue<Item>::~DropTailQueue ()
 {
-  NS_LOG_FUNCTION (this);
+  QUEUE_LOG (LOG_LOGIC, "~DropTailQueue(" << this << ")");
 }
 
 template <typename Item>
 bool
 DropTailQueue<Item>::Enqueue (Ptr<Item> item)
 {
-  NS_LOG_FUNCTION (this << item);
+  QUEUE_LOG (LOG_LOGIC, "DropTailQueue:Enqueue(" << this << ", " << item << ")");
 
   return DoEnqueue (Tail (), item);
 }
@@ -106,11 +103,11 @@ template <typename Item>
 Ptr<Item>
 DropTailQueue<Item>::Dequeue (void)
 {
-  NS_LOG_FUNCTION (this);
+  QUEUE_LOG (LOG_LOGIC, "DropTailQueue:Dequeue(" << this << ")");
 
   Ptr<Item> item = DoDequeue (Head ());
 
-  NS_LOG_LOGIC ("Popped " << item);
+  QUEUE_LOG (LOG_LOGIC, "Popped " << item);
 
   return item;
 }
@@ -119,11 +116,11 @@ template <typename Item>
 Ptr<Item>
 DropTailQueue<Item>::Remove (void)
 {
-  NS_LOG_FUNCTION (this);
+  QUEUE_LOG (LOG_LOGIC, "DropTailQueue:Remove(" << this << ")");
 
   Ptr<Item> item = DoRemove (Head ());
 
-  NS_LOG_LOGIC ("Removed " << item);
+  QUEUE_LOG (LOG_LOGIC, "Removed " << item);
 
   return item;
 }
@@ -132,7 +129,7 @@ template <typename Item>
 Ptr<const Item>
 DropTailQueue<Item>::Peek (void) const
 {
-  NS_LOG_FUNCTION (this);
+  QUEUE_LOG (LOG_LOGIC, "DropTailQueue:Peek(" << this << ")");
 
   return DoPeek (Head ());
 }

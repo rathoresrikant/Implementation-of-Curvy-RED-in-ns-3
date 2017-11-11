@@ -58,6 +58,12 @@ public:
      */
     Ptr<const Packet> GetPacket (void) const;
     /**
+     * Return the duration of the signal.
+     *
+     * \return the duration of the signal
+     */
+    Time GetDuration (void) const;
+    /**
      * Return the start time of the signal.
      *
      * \return the start time of the signal
@@ -120,7 +126,7 @@ private:
    *
    * \param rate Error rate model
    */
-  void SetErrorRateModel (const Ptr<ErrorRateModel> rate);
+  void SetErrorRateModel (Ptr<ErrorRateModel> rate);
 
   /**
    * Return the noise figure.
@@ -321,13 +327,8 @@ private:
   double m_firstPower; ///< first power
   bool m_rxing; ///< flag whether it is in receiving state
 
-  /**
-   * Returns a const iterator to the first nichange, which is later than moment
-   *
-   * \param moment time to check from
-   * \returns an iterator to the list of NiChanges
-   */
-  NiChanges::const_iterator GetPosition (Time moment);
+  /// Returns an iterator to the first nichange, which is later than moment
+  NiChanges::iterator GetPosition (Time moment);
   /**
    * Add NiChange to the list at the appropriate position.
    *

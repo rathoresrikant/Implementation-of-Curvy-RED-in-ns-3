@@ -25,7 +25,7 @@
 /**
  * \file
  * \ingroup attribute_Uinteger
- * ns3::UintegerValue attribute value implementations.
+ * Uinteger attribute value implementations.
  */
 
 namespace ns3 {

@@ -30,7 +30,7 @@ namespace ns3 {
 class DcfState;
 class DcfManager;
 class MacTxMiddle;
-class UniformRandomVariable;
+class RandomStream;
 class CtrlBAckResponseHeader;
 
 /**
@@ -58,9 +58,7 @@ class CtrlBAckResponseHeader;
 class DcaTxop : public Object
 {
 public:
-  /// allow DcfListener class access
   friend class DcfListener;
-  /// allow MacLowTransmissionListener class access
   friend class MacLowTransmissionListener;
 
   DcaTxop ();
@@ -100,25 +98,25 @@ public:
    *
    * \param low MacLow.
    */
-  void SetLow (const Ptr<MacLow> low);
+  void SetLow (Ptr<MacLow> low);
   /**
    * Set DcfManager this DcaTxop is associated to.
    *
    * \param manager DcfManager.
    */
-  void SetManager (const Ptr<DcfManager> manager);
+  void SetManager (DcfManager *manager);
   /**
    * Set WifiRemoteStationsManager this DcaTxop is associated to.
    *
    * \param remoteManager WifiRemoteStationManager.
    */
-  virtual void SetWifiRemoteStationManager (const Ptr<WifiRemoteStationManager> remoteManager);
+  virtual void SetWifiRemoteStationManager (Ptr<WifiRemoteStationManager> remoteManager);
   /**
    * Set MacTxMiddle this DcaTxop is associated to.
    *
    * \param txMiddle MacTxMiddle.
    */
-  void SetTxMiddle (const Ptr<MacTxMiddle> txMiddle);
+  void SetTxMiddle (MacTxMiddle *txMiddle);
 
   /**
    * \param callback the callback to invoke when a
@@ -249,7 +247,6 @@ public:
   virtual void GotBlockAck (const CtrlBAckResponseHeader *blockAck, Mac48Address recipient, double rxSnr, WifiMode txMode, double dataSnr);
   /**
    * Event handler when a Block ACK timeout has occurred.
-   * \param nMpdus the number of MPDUs sent in the A-MPDU transmission that results in a Block ACK timeout.
    */
   virtual void MissedBlockAck (uint8_t nMpdus);
 
@@ -293,13 +290,20 @@ public:
 
 
 protected:
-  ///< DcfState associated class
   friend class DcfState;
 
   virtual void DoDispose (void);
   virtual void DoInitialize (void);
 
   /* dcf notifications forwarded here */
+  /**
+   * Check if the DCF requires access.
+   *
+   * \return true if the DCF requires access,
+   *         false otherwise
+   */
+  virtual bool NeedsAccess (void) const;
+
   /**
    * Notify the DCF that access has been granted.
    */
@@ -397,16 +401,16 @@ protected:
    */
   void TxDroppedPacket (Ptr<const WifiMacQueueItem> item);
 
-  Ptr<DcfState> m_dcf; //!< the DCF state
-  Ptr<DcfManager> m_manager; //!< the DCF manager
+  DcfState *m_dcf; //!< the DCF state
+  DcfManager *m_manager; //!< the DCF manager
   TxOk m_txOkCallback; //!< the transmit OK callback
   TxFailed m_txFailedCallback; //!< the transmit failed callback
   TxDropped m_txDroppedCallback; //!< the packet dropped callback
   Ptr<WifiMacQueue> m_queue; //!< the wifi MAC queue
-  Ptr<MacTxMiddle> m_txMiddle; //!< the MacTxMiddle
+  MacTxMiddle *m_txMiddle; //!< the MacTxMiddle
   Ptr <MacLow> m_low; //!< the MacLow
   Ptr<WifiRemoteStationManager> m_stationManager; //!< the wifi remote station manager
-  Ptr<UniformRandomVariable> m_rng; //!<  the random stream
+  RandomStream *m_rng; //!<  the random stream
 
   Ptr<const Packet> m_currentPacket; //!< the current packet
   WifiMacHeader m_currentHdr; //!< the current header

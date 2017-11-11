@@ -58,7 +58,7 @@ public:
   static TypeId GetTypeId (void);
   static const uint32_t AODV_PORT;
 
-  /// constructor
+  /// c-tor
   RoutingProtocol ();
   virtual ~RoutingProtocol ();
   virtual void DoDispose ();
@@ -250,29 +250,13 @@ private:
 private:
   /// Start protocol operation
   void Start ();
-  /**
-   * Queue packet and send route request
-   *
-   * \param p the packet to route
-   * \param header the IP header
-   * \param ucb the UnicastForwardCallback function
-   * \param ecb the ErrorCallback function
-   */ 
+  /// Queue packet and send route request
   void DeferredRouteOutput (Ptr<const Packet> p, const Ipv4Header & header, UnicastForwardCallback ucb, ErrorCallback ecb);
-  /**
-   * If route exists and is valid, forward packet.
-   *
-   * \param p the packet to route
-   * \param header the IP header
-   * \param ucb the UnicastForwardCallback function
-   * \param ecb the ErrorCallback function
-   * \returns true if forwarded
-   */ 
+  /// If route exists and valid, forward packet.
   bool Forwarding (Ptr<const Packet> p, const Ipv4Header & header, UnicastForwardCallback ucb, ErrorCallback ecb);
   /**
    * Repeated attempts by a source node at route discovery for a single destination
    * use the expanding ring search technique.
-   * \param dst the destination IP address
    */
   void ScheduleRreqRetry (Ipv4Address dst);
   /**
@@ -288,40 +272,15 @@ private:
    * \param sender is supposed to be IP address of my neighbor.
    */
   void UpdateRouteToNeighbor (Ipv4Address sender, Ipv4Address receiver);
-  /**
-   * Test whether the provided address is assigned to an interface on this node
-   * \param src the source IP address
-   * \returns true if the IP address is the node's IP address
-   */
+  /// Check that packet is send from own interface
   bool IsMyOwnAddress (Ipv4Address src);
-  /**
-   * Find unicast socket with local interface address iface
-   *
-   * \param iface the interface
-   * \returns the socket associated with the interface
-   */
+  /// Find unicast socket with local interface address iface
   Ptr<Socket> FindSocketWithInterfaceAddress (Ipv4InterfaceAddress iface) const;
-  /**
-   * Find subnet directed broadcast socket with local interface address iface
-   *
-   * \param iface the interface
-   * \returns the socket associated with the interface
-   */
+  /// Find subnet directed broadcast socket with local interface address iface
   Ptr<Socket> FindSubnetBroadcastSocketWithInterfaceAddress (Ipv4InterfaceAddress iface) const;
-  /**
-   * Process hello message
-   * 
-   * \param rrepHeader RREP message header
-   * \param receiverIfaceAddr receiver interface IP address
-   */
+  /// Process hello message
   void ProcessHello (RrepHeader const & rrepHeader, Ipv4Address receiverIfaceAddr);
-  /**
-   * Create loopback route for given header
-   *
-   * \param header the IP header
-   * \param oif the output interface net device
-   * \returns the route
-   */
+  /// Create loopback route for given header
   Ptr<Ipv4Route> LoopbackRoute (const Ipv4Header & header, Ptr<NetDevice> oif) const;
 
   ///\name Receive control packets
@@ -391,18 +350,10 @@ private:
   void RerrRateLimitTimerExpire ();
   /// Map IP address + RREQ timer.
   std::map<Ipv4Address, Timer> m_addressReqTimer;
-  /**
-   * Handle route discovery process
-   * \param dst the destination IP address
-   */
+  /// Handle route discovery process
   void RouteRequestTimerExpire (Ipv4Address dst);
-  /**
-   * Mark link to neighbor node as unidirectional for blacklistTimeout
-   *
-   * \param neighbor the IP address of the neightbor node
-   * \param blacklistTimeout the black list timeout time
-   */
-  void AckTimerExpire (Ipv4Address neighbor, Time blacklistTimeout);
+  /// Mark link to neighbor node as unidirectional for blacklistTimeout
+  void AckTimerExpire (Ipv4Address neighbor,  Time blacklistTimeout);
 
   /// Provides uniform random variables.
   Ptr<UniformRandomVariable> m_uniformRandomVariable;

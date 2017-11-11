@@ -28,14 +28,14 @@
 /**
  * \file
  * \ingroup attribute_ObjectMap
- * ns3::ObjectMap attribute value declarations and template implementations.
+ * ObjectMap attribute value declarations and template implementations.
  */
 
 namespace ns3 {
 
 /**
  * \ingroup attribute_ObjectMap
- * ObjectMapValue is an alias for ObjectPtrContainerValue
+ * ObjectVectorMap is an alias for ObjectPtrContainerValue
  */
 typedef ObjectPtrContainerValue ObjectMapValue;
 

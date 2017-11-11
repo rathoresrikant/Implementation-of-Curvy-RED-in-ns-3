@@ -59,19 +59,8 @@ enum RouteFlags
 class RoutingTableEntry
 {
 public:
-  /**
-   * constructor
-   *
-   * \param dev the device
-   * \param dst the destination IP address
-   * \param vSeqNo verify sequence number flag
-   * \param seqNo the sequence number
-   * \param iface the interface
-   * \param hops the number of hops
-   * \param nextHop the IP address of the next hop
-   * \param lifetime the lifetime of the entry
-   */
-  RoutingTableEntry (Ptr<NetDevice> dev = 0,Ipv4Address dst = Ipv4Address (), bool vSeqNo = false, uint32_t seqNo = 0,
+  /// c-to
+  RoutingTableEntry (Ptr<NetDevice> dev = 0,Ipv4Address dst = Ipv4Address (), bool vSeqNo = false, uint32_t m_seqNo = 0,
                      Ipv4InterfaceAddress iface = Ipv4InterfaceAddress (), uint16_t  hops = 0,
                      Ipv4Address nextHop = Ipv4Address (), Time lifetime = Simulator::Now ());
 
@@ -111,16 +100,13 @@ public:
   void GetPrecursors (std::vector<Ipv4Address> & prec) const;
   //\}
 
-  /**
-   * Mark entry as "down" (i.e. disable it)
-   * \param badLinkLifetime duration to keep entry marked as invalid
-   */
+  /// Mark entry as "down" (i.e. disable it)
   void Invalidate (Time badLinkLifetime);
 
   // Fields
   /**
    * Get destination address function
-   * \returns the IPv4 destination address
+   * \returns the IPv4 destiantion address
    */
   Ipv4Address GetDestination () const
   {
@@ -358,11 +344,11 @@ private:
   */
   Time m_lifeTime;
   /** Ip route, include
-   *   - destination address
-   *   - source address
-   *   - next hop address (gateway)
-   *   - output device
-   */
+  *   - destination address
+  *   - source address
+  *   - next hop address (gateway)
+  *   - output device
+  */
   Ptr<Ipv4Route> m_ipv4Route;
   /// Output interface address
   Ipv4InterfaceAddress m_iface;
@@ -388,12 +374,9 @@ private:
 class RoutingTable
 {
 public:
-  /**
-   * constructor
-   * \param t the routing table entry lifetime
-   */
+  /// c-tor
   RoutingTable (Time t);
-  ///\name Handle lifetime of invalid route
+  ///\name Handle life time of invalid route
   //\{
   Time GetBadLinkLifetime () const
   {
@@ -423,32 +406,13 @@ public:
    * \return true on success
    */
   bool LookupRoute (Ipv4Address dst, RoutingTableEntry & rt);
-  /**
-   * Lookup route in VALID state
-   * \param dst destination address
-   * \param rt entry with destination address dst, if exists
-   * \return true on success
-   */
+  /// Lookup route in VALID state
   bool LookupValidRoute (Ipv4Address dst, RoutingTableEntry & rt);
-  /**
-   * Update routing table
-   * \param rt entry with destination address dst, if exists
-   * \return true on success
-   */
+  /// Update routing table
   bool Update (RoutingTableEntry & rt);
-  /**
-   * Set routing table entry flags
-   * \param dst destination address
-   * \param state the routing flags
-   * \return true on success
-   */
+  /// Set routing table entry flags
   bool SetEntryState (Ipv4Address dst, RouteFlags state);
-  /**
-   * Lookup routing entries with next hop Address dst and not empty list of precursors.
-   *
-   * \param nextHop the next hop IP address
-   * \param unreachable
-   */
+  /// Lookup routing entries with next hop Address dst and not empty list of precursors.
   void GetListOfDestinationWithNextHop (Ipv4Address nextHop, std::map<Ipv4Address, uint32_t> & unreachable);
   /**
    *   Update routing entries with this destination as follows:
@@ -459,10 +423,7 @@ public:
    *  \param unreachable routes to invalidate
    */
   void InvalidateRoutesWithDst (std::map<Ipv4Address, uint32_t> const & unreachable);
-  /**
-   * Delete all route from interface with address iface
-   * \param iface the interface IP address
-   */
+  /// Delete all route from interface with address iface
   void DeleteAllRoutesFromInterface (Ipv4InterfaceAddress iface);
   /// Delete all entries from routing table
   void Clear ()
@@ -477,10 +438,7 @@ public:
    * \return true on success
    */
   bool MarkLinkAsUnidirectional (Ipv4Address neighbor, Time blacklistTimeout);
-  /**
-   * Print routing table
-   * \param stream the output stream
-   */
+  /// Print routing table
   void Print (Ptr<OutputStreamWrapper> stream) const;
 
 private:
@@ -488,10 +446,7 @@ private:
   std::map<Ipv4Address, RoutingTableEntry> m_ipv4AddressEntry;
   /// Deletion time for invalid routes
   Time m_badLinkLifetime;
-  /**
-   * const version of Purge, for use by Print() method
-   * \param table the routing table entry to purge
-   */
+  /// const version of Purge, for use by Print() method
   void Purge (std::map<Ipv4Address, RoutingTableEntry> &table) const;
 };
 

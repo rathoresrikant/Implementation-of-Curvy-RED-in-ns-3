@@ -201,11 +201,11 @@ public:
    */
   virtual void SetWifiPhy (Ptr<WifiPhy> phy) = 0;
   /**
-   * \return currently attached WifiPhy device
+   * return current attached WifiPhy device
    */
   virtual Ptr<WifiPhy> GetWifiPhy (void) const = 0;
   /**
-   * remove currently attached WifiPhy device from this MAC.
+   * remove current attached WifiPhy device from this MAC.
    */
   virtual void ResetWifiPhy (void) = 0;
   /**

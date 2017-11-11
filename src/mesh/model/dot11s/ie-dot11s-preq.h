@@ -119,17 +119,11 @@ public:
     Mac48Address dest_address,
     uint32_t dest_seq_number
     );
-  /**
-   * Delete a destination address unit by destination
-   * \param dest_address the destination address
-   */
+  /// Delete a destination address unit by destination
   void DelDestinationAddressElement (Mac48Address dest_address);
   /// Clear PREQ: remove all destinations
   void ClearDestinationAddressElements ();
-  /**
-   * Get all destinations, which are stored in PREQ:
-   * \returns the list of destination addresses
-   */
+  /// Get all destinations, which are stored in PREQ:
   std::vector<Ptr<DestinationAddressUnit> > GetDestinationList ();
   /// Set flag indicating that PREQ is unicast
   void SetUnicastPreq ();
@@ -142,7 +136,7 @@ public:
   /**
    * Set number of hops from originator to mesh STA transmitting this 
    * element
-   * \param hopcount the hop count
+   * \param hopcount
    */
   void SetHopcount (uint8_t hopcount);
   /**
@@ -243,8 +237,6 @@ public:
   /**
    * \brief Checks that preq's originator address equals to originator, and
    * this preq is not proactive
-   * \param originator the originator address
-   * \returns true if it may add
    */
   bool MayAddAddress (Mac48Address originator);
   /**

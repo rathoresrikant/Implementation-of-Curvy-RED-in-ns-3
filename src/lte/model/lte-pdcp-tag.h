@@ -50,7 +50,6 @@ public:
   PdcpTag ();
   /**
    * Create an PDCP tag with the given senderTimestamp
-   * \param senderTimestamp the time stamp
    */
   PdcpTag (Time senderTimestamp);
 

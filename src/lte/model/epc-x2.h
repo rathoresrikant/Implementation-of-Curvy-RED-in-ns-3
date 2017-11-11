@@ -98,7 +98,6 @@ public:
  */
 class EpcX2 : public Object
 {
-  /// allow EpcX2SpecificEpcX2SapProvider<EpcX2> class friend access
   friend class EpcX2SpecificEpcX2SapProvider<EpcX2>;
 
 public:

@@ -23,7 +23,6 @@
 
 #include <map>
 #include "ns3/packet.h"
-#include "ns3/simple-ref-count.h"
 
 namespace ns3 {
 
@@ -35,7 +34,7 @@ class OriginatorRxStatus;
  *
  * This class handles duplicate detection and recomposition of fragments.
  */
-class MacRxMiddle : public SimpleRefCount<MacRxMiddle>
+class MacRxMiddle
 {
 public:
   /**
@@ -63,7 +62,6 @@ public:
 
 
 private:
-  /// allow MacRxMiddleTest associated class access
   friend class MacRxMiddleTest;
   /**
    * Look up for OriginatorRxStatus associated with the sender address

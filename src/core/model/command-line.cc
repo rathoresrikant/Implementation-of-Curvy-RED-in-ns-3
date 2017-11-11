@@ -38,7 +38,7 @@
 /**
  * \file
  * \ingroup commandline
- * ns3::CommandLine implementation.
+ * CommandLine class implementation.
  */
 
 namespace ns3 {

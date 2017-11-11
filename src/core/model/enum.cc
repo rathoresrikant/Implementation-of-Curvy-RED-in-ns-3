@@ -25,7 +25,7 @@
 /**
  * \file
  * \ingroup attribute_Enum
- * ns3::EnumValue attribute value implementation.
+ * Enum attribute value implementations.
  */
 
 namespace ns3 {

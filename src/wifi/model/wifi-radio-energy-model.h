@@ -225,7 +225,14 @@ public:
    *
    * Implements DeviceEnergyModel::SetEnergySource.
    */
-  void SetEnergySource (const Ptr<EnergySource> source);
+  void SetEnergySource (Ptr<EnergySource> source);
+
+  /**
+   * \returns Total energy consumption of the wifi device.
+   *
+   * Implements DeviceEnergyModel::GetTotalEnergyConsumption.
+   */
+  double GetTotalEnergyConsumption (void) const;
 
   // Setter & getters for state power consumption.
   /**
@@ -323,7 +330,7 @@ public:
   /**
    * \param model the model used to compute the wifi tx current.
    */
-  void SetTxCurrentModel (const Ptr<WifiTxCurrentModel> model);
+  void SetTxCurrentModel (Ptr<WifiTxCurrentModel> model);
 
   /**
    * \brief Calls the CalcTxCurrent method of the tx current model to

@@ -365,17 +365,7 @@ IidManager::Hasher (const std::string name)
   return hasher.clear ().GetHash32 (name);
 }
 
-/**
- * \ingroup object
- * \internal
- * IidManager shorthand for use in NS_LOG
- */
 #define IID "IidManager"
-/**
- * \ingroup object
- * \internal
- * IidManager shorthand for use in NS_LOG
- */
 #define IIDL IID << ": "
 
 uint16_t

@@ -41,7 +41,8 @@ class DcaTxop;
 class EdcaTxopN;
 class DcfManager;
 class WifiMacQueueItem;
-class WifiMacQueue;
+template <typename Item> class WifiQueue;
+typedef WifiQueue<WifiMacQueueItem> WifiMacQueue;
 
 /**
  * \brief control how a packet is transmitted.
@@ -212,7 +213,6 @@ public:
 private:
   friend std::ostream &operator << (std::ostream &os, const MacLowTransmissionParameters &params);
   uint32_t m_nextSize; //!< the next size
-  /// wait ack enumerated type
   enum
   {
     ACK_NONE,
@@ -244,9 +244,8 @@ std::ostream &operator << (std::ostream &os, const MacLowTransmissionParameters 
 class MacLow : public Object
 {
 public:
-  /// Allow test cases to access private members
+  // Allow test cases to access private members
   friend class ::TwoLevelAggregationTest;
-  /// Allow test cases to access private members
   friend class ::AmpduAggregationTest;
   /**
    * typedef for a callback for MacLowRx
@@ -267,7 +266,7 @@ public:
    *
    * \param phy WifiPhy associated with this MacLow
    */
-  void SetPhy (const Ptr<WifiPhy> phy);
+  void SetPhy (Ptr<WifiPhy> phy);
   /**
    * \return current attached PHY device
    */
@@ -281,7 +280,7 @@ public:
    *
    * \param manager WifiRemoteStationManager associated with this MacLow
    */
-  void SetWifiRemoteStationManager (const Ptr<WifiRemoteStationManager> manager);
+  void SetWifiRemoteStationManager (Ptr<WifiRemoteStationManager> manager);
   /**
    * Set MAC address of this MacLow.
    *
@@ -620,42 +619,41 @@ private:
    *
    * \return the total ACK size
    */
-  static uint32_t GetAckSize (void);
+  uint32_t GetAckSize (void) const;
   /**
    * Return the total Block ACK size (including FCS trailer).
    *
    * \param type the Block ACK type
    * \return the total Block ACK size
    */
-  static uint32_t GetBlockAckSize (BlockAckType type);
+  uint32_t GetBlockAckSize (BlockAckType type) const;
   /**
    * Return the total RTS size (including FCS trailer).
    *
    * \return the total RTS size
    */
-  static uint32_t GetRtsSize (void);
+  uint32_t GetRtsSize (void) const;
   /**
    * Return the total CTS size (including FCS trailer).
    *
    * \return the total CTS size
    */
-  static uint32_t GetCtsSize (void);
+  uint32_t GetCtsSize (void) const;
   /**
    * Return the total size of the packet after WifiMacHeader and FCS trailer
    * have been added.
    *
    * \param packet the packet to be encapsulated with WifiMacHeader and FCS trailer
    * \param hdr the WifiMacHeader
-   * \param isAmpdu whether packet is part of an A-MPDU
    * \return the total packet size
    */
-  static uint32_t GetSize (Ptr<const Packet> packet, const WifiMacHeader *hdr, bool isAmpdu);
+  uint32_t GetSize (Ptr<const Packet> packet, const WifiMacHeader *hdr) const;
   /**
    * Add FCS trailer to a packet.
    *
    * \param packet
    */
-  static void AddWifiMacTrailer (Ptr<Packet> packet);
+  void AddWifiMacTrailer (Ptr<Packet> packet) const;
   /**
    * Forward the packet down to WifiPhy for transmission. This is called for the entire A-MPDu when MPDU aggregation is used.
    *
@@ -715,6 +713,16 @@ private:
    * \return TXVECTOR for the Block ACK
    */
   WifiTxVector GetBlockAckTxVector (Mac48Address to, WifiMode dataTxMode) const;
+  /**
+   * Return a TXVECTOR for the CTS-to-self frame.
+   * The function consults WifiRemoteStationManager, which controls the rate
+   * to different destinations.
+   *
+   * \param packet the packet that requires CTS-to-self
+   * \param hdr the Wifi header of the packet
+   * \return TXVECTOR for the CTS-to-self operation
+   */
+  WifiTxVector GetCtsToSelfTxVector (Ptr<const Packet> packet, const WifiMacHeader *hdr) const;
   /**
    * Return a TXVECTOR for the CTS frame given the destination and the mode of the RTS
    * used by the sender.
@@ -968,7 +976,7 @@ private:
    *
    * This method checks if the MPDU's sequence number is inside the scoreboard boundaries or not
    */
-  static bool IsInWindow (uint16_t seq, uint16_t winstart, uint16_t winsize);
+  bool IsInWindow (uint16_t seq, uint16_t winstart, uint16_t winsize) const;
   /**
    * \param packet the packet
    * \param hdr the header
@@ -1041,7 +1049,7 @@ private:
    *
    * \param phy the WifiPhy this MacLow is connected to
    */
-  void SetupPhyMacLowListener (const Ptr<WifiPhy> phy);
+  void SetupPhyMacLowListener (Ptr<WifiPhy> phy);
   /**
    * Remove current WifiPhy listener for this MacLow.
    *
@@ -1086,12 +1094,12 @@ private:
   /**
    * A struct for packet, Wifi header, and timestamp.
    */
-  struct Item
+  typedef struct
   {
     Ptr<const Packet> packet; //!< the packet
     WifiMacHeader hdr; //!< the header
     Time timestamp; //!< the timestamp
-  }; //!< item structure
+  } Item; //!< item structure
 
   /**
    * typedef for an iterator for a list of DcfManager.

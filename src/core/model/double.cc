@@ -25,7 +25,7 @@
 /**
  * \file
  * \ingroup attribute_Double
- * ns3::DoubleValue attribute value implementation.
+ * Double attribute value implementations.
  */
 
 namespace ns3 {

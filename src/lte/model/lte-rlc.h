@@ -49,9 +49,7 @@ namespace ns3 {
  */
 class LteRlc : public Object // SimpleRefCount<LteRlc>
 {
-  /// allow LteRlcSpecificLteMacSapUser class friend access
   friend class LteRlcSpecificLteMacSapUser;
-  /// allow LteRlcSpecificLteRlcSapProvider<LteRlc> class friend access
   friend class LteRlcSpecificLteRlcSapProvider<LteRlc>;
 public:
   LteRlc ();

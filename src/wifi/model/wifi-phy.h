@@ -588,14 +588,14 @@ public:
    *
    * Channel center frequency = Channel starting frequency + 5 MHz * (nch - 1)
    *
-   * where Starting channel frequency is standard-dependent,
+   * where Starting channel frequency is standard-dependent, see SetStandard()
    * as defined in (Section 18.3.8.4.2 "Channel numbering"; IEEE Std 802.11-2012).
    * This method may fail to take action if the Phy model determines that
    * the channel number cannot be switched for some reason (e.g. sleep state)
    *
    * \param id the channel number
    */
-  virtual void SetChannelNumber (uint8_t id);
+  void SetChannelNumber (uint8_t id);
   /**
    * Return current channel number.
    *
@@ -612,7 +612,7 @@ public:
    *
    * \param standard the Wi-Fi standard
    */
-  virtual void ConfigureStandard (WifiPhyStandard standard);
+  void ConfigureStandard (WifiPhyStandard standard);
 
   /**
    * Get the configured Wi-Fi standard
@@ -1266,7 +1266,7 @@ public:
    * \param txVector the TXVECTOR that holds rx parameters
    * \param aMpdu the type of the packet (0 is not A-MPDU, 1 is a MPDU that is part of an A-MPDU and 2 is the last MPDU in an A-MPDU)
    *        and the A-MPDU reference number (must be a different value for each A-MPDU but the same for each subframe within one A-MPDU)
-   * \param signalNoise signal power and noise power in dBm (noise power includes the noise figure)
+   * \param signalNoise signal power and noise power in dBm
    */
   void NotifyMonitorSniffRx (Ptr<const Packet> packet,
                              uint16_t channelFreqMhz,
@@ -1456,7 +1456,7 @@ public:
    *
    * \param device the device this PHY is associated with
    */
-  void SetDevice (const Ptr<NetDevice> device);
+  void SetDevice (Ptr<NetDevice> device);
   /**
    * Return the device this PHY is associated with
    *
@@ -1473,7 +1473,7 @@ public:
    *
    * \param mobility the mobility model this PHY is associated with
    */
-  void SetMobility (const Ptr<MobilityModel> mobility);
+  void SetMobility (Ptr<MobilityModel> mobility);
   /**
    * Return the mobility model this PHY is associated with.
    * This method will return either the mobility model that has been
@@ -1488,7 +1488,7 @@ public:
   /**
    * \param freq the operating center frequency (MHz) on this node.
    */
-  virtual void SetFrequency (uint16_t freq);
+  void SetFrequency (uint16_t freq);
   /**
    * \return the operating center frequency (MHz)
    */
@@ -1521,12 +1521,12 @@ public:
    * \param frequency the frequency to check
    * \return whether frequency is in the 2.4 GHz band
    */
-  static bool Is2_4Ghz (double frequency);
+  bool Is2_4Ghz (double frequency) const;
   /**
    * \param frequency the frequency to check
    * \return whether frequency is in the 5 GHz band
    */
-  static bool Is5Ghz (double frequency);
+  bool Is5Ghz (double frequency) const;
   /**
    * Enable or disable support for HT/VHT short guard interval.
    *
@@ -1600,7 +1600,7 @@ public:
    *
    * \param rate the error rate model
    */
-  void SetErrorRateModel (const Ptr<ErrorRateModel> rate);
+  void SetErrorRateModel (Ptr<ErrorRateModel> rate);
   /**
    * Return the error rate model this PHY is using.
    *
@@ -1613,7 +1613,7 @@ public:
    *
    * \param rate the frame capture model
    */
-  void SetFrameCaptureModel (const Ptr<FrameCaptureModel> rate);
+  void SetFrameCaptureModel (Ptr<FrameCaptureModel> rate);
   /**
    * Return the frame capture model this PHY is using.
    *
@@ -1628,7 +1628,7 @@ public:
   /**
    * \param channelwidth channel width
    */
-  virtual void SetChannelWidth (uint8_t channelwidth);
+  void SetChannelWidth (uint8_t channelwidth);
   /**
    * \param channelwidth channel width (in MHz) to support
    */
@@ -1694,6 +1694,7 @@ protected:
 
   EventId m_endRxEvent;                //!< the end reeive event
   EventId m_endPlcpRxEvent;            //!< the end PLCP receive event
+
 
 private:
   /**

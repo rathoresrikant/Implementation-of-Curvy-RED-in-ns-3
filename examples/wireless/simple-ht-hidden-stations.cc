@@ -106,7 +106,7 @@ int main (int argc, char *argv[])
 
   mac.SetType ("ns3::ApWifiMac",
                "Ssid", SsidValue (ssid),
-               "EnableBeaconJitter", BooleanValue (false),
+               "BeaconGeneration", BooleanValue (true),
                "BE_MaxAmpduSize", UintegerValue (maxAmpduSize));
 
   NetDeviceContainer apDevice;

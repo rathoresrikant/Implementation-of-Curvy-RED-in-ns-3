@@ -34,78 +34,33 @@
 
 #include <sstream>
 
-/**
- * \file
- * \ingroup core-tests
- * \ingroup config
- * \ingroup config-tests
- * Config test suite
- */
+using namespace ns3;
 
-/**
- * \ingroup core-tests
- * \defgroup config-tests Config test suite
- */
-
-namespace ns3 {
-
-  namespace tests {
-    
-
-/**
- * \ingroup config-tests
- * An object with some attributes that we can play with using config.
- */
+// ===========================================================================
+// An object with some attributes that we can play with using config.
+// ===========================================================================
 class ConfigTestObject : public Object
 {
 public:
-  /**
-   * \brief Get the type ID.
-   * \return the object TypeId
-   */
   static TypeId GetTypeId (void);
 
-  /**
-   * Add node A function
-   * \param a test object a
-   */
   void AddNodeA (Ptr<ConfigTestObject> a);
-  /** 
-   * Add node B function
-   * \param b test object b
-   */
   void AddNodeB (Ptr<ConfigTestObject> b);
 
-  /**
-   * Set node A function
-   * \param a test object a
-   */
   void SetNodeA (Ptr<ConfigTestObject> a);
-  /**
-   * Set node b function
-   * \param b test object b
-   */
   void SetNodeB (Ptr<ConfigTestObject> b);
 
-  /**
-   * Get node A function
-   * \returns the value of node a
-   */
   int8_t GetA (void) const;
-  /**
-   * Get node b function
-   * \returns the value of node b
-   */
   int8_t GetB (void) const;
 
 private:
-  std::vector<Ptr<ConfigTestObject> > m_nodesA; //!< NodesA attribute target.
-  std::vector<Ptr<ConfigTestObject> > m_nodesB; //!< NodesB attribute target.
-  Ptr<ConfigTestObject> m_nodeA;  //!< NodeA attribute target.
-  Ptr<ConfigTestObject> m_nodeB;  //!< NodeB attribute target.
-  int8_t m_a;                     //!< A attribute target.
-  int8_t m_b;                     //!< B attribute target.
-  TracedValue<int16_t> m_trace;   //!< Source TraceSource target.
+  std::vector<Ptr<ConfigTestObject> > m_nodesA;
+  std::vector<Ptr<ConfigTestObject> > m_nodesB;
+  Ptr<ConfigTestObject> m_nodeA;
+  Ptr<ConfigTestObject> m_nodeB;
+  int8_t m_a;
+  int8_t m_b;
+  TracedValue<int16_t> m_trace;
 };
 
 TypeId
@@ -184,21 +139,14 @@ ConfigTestObject::GetB (void) const
   return m_b;
 }
 
-/**
- * \ingroup config-tests
- * Derived test objects.
- */
+// Other test objects
+//
+
 class DerivedConfigTestObject : public ConfigTestObject
 {
 public:
-  /**
-   * \brief Get the type ID.
-   * \return the object TypeId
-   */
   static TypeId GetTypeId (void);
-  /** Constructor. */
   DerivedConfigTestObject (void) {}
-  /** Destructor */
   virtual ~DerivedConfigTestObject (void) {}
 };
 
@@ -211,26 +159,15 @@ DerivedConfigTestObject::GetTypeId (void)
   return tid;
 }
 
-/**
- * \ingroup config-tests
- * Base config object.
- */
 class BaseConfigObject : public Object
 {
 public:
-  /**
-   * \brief Get the type ID.
-   * \return the object TypeId
-   */
   static TypeId GetTypeId (void);
-  /** Constructor. */
   BaseConfigObject (void) : m_x(15) {}
-  /** Destructor. */
   virtual ~BaseConfigObject (void) {}
 private:
-  int8_t m_x; //!< X attribute target.
-  /** Silence unused variable warning. */
-  void Increment (void) { m_x++; } 
+  int8_t m_x;
+  void Increment (void) { m_x++; } // silence unused variable warning
 };
 
 TypeId
@@ -246,21 +183,11 @@ BaseConfigObject::GetTypeId (void)
   return tid;
 }
 
-/**
- * \ingroup config-tests
- * Derived config object.
- */
 class DerivedConfigObject : public BaseConfigObject
 {
 public:
-  /**
-   * \brief Get the type ID.
-   * \return the object TypeId
-   */
   static TypeId GetTypeId (void);
-  /** Constructor. */
   DerivedConfigObject (void) {}
-  /** Destructor. */
   virtual ~DerivedConfigObject (void) {}
 };
 
@@ -274,16 +201,13 @@ DerivedConfigObject::GetTypeId (void)
 }
 
 
-/**
- * \ingroup config-tests
- * Test for the ability to register and use a root namespace.
- */
+// ===========================================================================
+// Test for the ability to register and use a root namespace
+// ===========================================================================
 class RootNamespaceConfigTestCase : public TestCase
 {
 public:
-  /** Constructor. */
   RootNamespaceConfigTestCase ();
-  /** Destructor. */
   virtual ~RootNamespaceConfigTestCase () {}
 
 private:
@@ -335,16 +259,13 @@ RootNamespaceConfigTestCase::DoRun (void)
   NS_TEST_ASSERT_MSG_EQ (iv.Get (), -1, "Object Attribute \"B\" not set correctly");
 }
 
-/**
- * \ingroup config-tests
- * Test for the ability to add an object under the root namespace.
- */
+// ===========================================================================
+// Test for the ability to add an object under the root namespace.
+// ===========================================================================
 class UnderRootNamespaceConfigTestCase : public TestCase
 {
 public:
-  /** Constructor. */
   UnderRootNamespaceConfigTestCase ();
-  /** Destructor. */
   virtual ~UnderRootNamespaceConfigTestCase () {}
 
 private:
@@ -447,16 +368,13 @@ UnderRootNamespaceConfigTestCase::DoRun (void)
   NS_TEST_ASSERT_MSG_EQ (iv.Get (), 4, "Object Attribute \"A\" not set correctly");
 }
 
-/**
- * \ingroup config-tests
- * Test for the ability to deal configure with vectors of objects.
- */
+// ===========================================================================
+// Test for the ability to deal configure with vectors of objects.
+// ===========================================================================
 class ObjectVectorConfigTestCase : public TestCase
 {
 public:
-  /** Constructor. */
   ObjectVectorConfigTestCase ();
-  /** Destructor. */
   virtual ~ObjectVectorConfigTestCase () {}
 
 private:
@@ -604,38 +522,23 @@ ObjectVectorConfigTestCase::DoRun (void)
   NS_TEST_ASSERT_MSG_EQ (iv.Get (), -16, "Object Attribute \"A\" not set as expected");
 }
 
-/**
- * \ingroup config-tests
- * Test for the ability to trace configure with vectors of objects.
- */
+// ===========================================================================
+// Test for the ability to trace configure with vectors of objects.
+// ===========================================================================
 class ObjectVectorTraceConfigTestCase : public TestCase
 {
 public:
-  /** Constructor. */
   ObjectVectorTraceConfigTestCase ();
-  /** Destructor. */
   virtual ~ObjectVectorTraceConfigTestCase () {}
 
-  /**
-   * Trace callback without context.
-   * \param oldValue The old value.
-   * \param newValue The new value.
-   */
   void Trace (int16_t oldValue, int16_t newValue) { m_newValue = newValue; }
-  /**
-   * Trace callback with context path.
-   * \param path The context path.
-   * \param old The old value.
-   * \param newValue The new value.
-   */
-  void TraceWithPath (std::string path, int16_t old, int16_t newValue)
-  { m_newValue = newValue; m_path = path; }
+  void TraceWithPath (std::string path, int16_t old, int16_t newValue) { m_newValue = newValue; m_path = path; }
 
 private:
   virtual void DoRun (void);
 
-  int16_t m_newValue; //!< Flag to detect tracing result.
-  std::string m_path; //!< The context path.
+  int16_t m_newValue;
+  std::string m_path;
 };
 
 ObjectVectorTraceConfigTestCase::ObjectVectorTraceConfigTestCase ()
@@ -766,20 +669,17 @@ ObjectVectorTraceConfigTestCase::DoRun (void)
   NS_TEST_ASSERT_MSG_EQ (m_path, "/NodeA/NodeB/NodesB/1/Source", "Trace 1 did not provide expected context");
 }
 
-/**
- * \ingroup config-tests
- * Test for the ability to search attributes of parent classes
- * when Resolver searches for attributes in a derived class object.
- * This test passes with the patch found in
- * https://www.nsnam.org/bugzilla/show_bug.cgi?id=1673
- * (also reported in https://www.nsnam.org/bugzilla/show_bug.cgi?id=1959)
- */
+// ===========================================================================
+// Test for the ability to search attributes of parent classes
+// when Resolver searches for attributes in a derived class object.
+// This test passes with the patch found in
+// https://www.nsnam.org/bugzilla/show_bug.cgi?id=1673
+// (also reported in https://www.nsnam.org/bugzilla/show_bug.cgi?id=1959)
+// ===========================================================================
 class SearchAttributesOfParentObjectsTestCase : public TestCase
 {
 public:
-  /** Constructor. */
   SearchAttributesOfParentObjectsTestCase ();
-  /** Destructor. */
   virtual ~SearchAttributesOfParentObjectsTestCase () {}
 
 private:
@@ -821,34 +721,22 @@ SearchAttributesOfParentObjectsTestCase::DoRun (void)
 
 }
 
-/**
- * \ingroup config-tests
- * The Test Suite that glues all of the Test Cases together.
- */
+// ===========================================================================
+// The Test Suite that glues all of the Test Cases together.
+// ===========================================================================
 class ConfigTestSuite : public TestSuite
 {
 public:
-  /** Constructor. */
   ConfigTestSuite ();
 };
 
 ConfigTestSuite::ConfigTestSuite ()
-  : TestSuite ("config")
+  : TestSuite ("config", UNIT)
 {
-  AddTestCase (new RootNamespaceConfigTestCase);
-  AddTestCase (new UnderRootNamespaceConfigTestCase);
-  AddTestCase (new ObjectVectorConfigTestCase);
-  AddTestCase (new SearchAttributesOfParentObjectsTestCase);
+  AddTestCase (new RootNamespaceConfigTestCase, TestCase::QUICK);
+  AddTestCase (new UnderRootNamespaceConfigTestCase, TestCase::QUICK);
+  AddTestCase (new ObjectVectorConfigTestCase, TestCase::QUICK);
+  AddTestCase (new SearchAttributesOfParentObjectsTestCase, TestCase::QUICK);
 }
 
-/**
- * \ingroup config-tests
- * ConfigTestSuite instance variable.
- */
-static ConfigTestSuite g_configTestSuite;
-
-
-  }  // namespace tests
-
-}  // namespace ns3
-    
+static ConfigTestSuite configTestSuite;

@@ -50,39 +50,10 @@ queue disc and within the device.
 The traffic control layer interacts with a queue disc in a simple manner: after requesting
 to enqueue a packet, the traffic control layer requests the qdisc to "run", i.e., to
 dequeue a set of packets, until a predefined number ("quota") of packets is dequeued
-or the netdevice stops the queue disc.  A netdevice shall
-stop the queue disc when its transmission queue does not have room for another
-packet. Also, a netdevice shall wake the queue disc when it detects that there
-is room for another packet in its transmission queue, but the transmission queue
-is stopped. Waking a queue disc is equivalent to make it run.
-
-Every queue disc collects statistics about the total number of packets/bytes
-received from the upper layers (in case of root queue disc) or from the parent
-queue disc (in case of child queue disc), enqueued, dequeued, requeued, dropped,
-dropped before enqueue, dropped after dequeue, stored in the queue disc and
-sent to the netdevice or to the parent queue disc. Note that packets that are
-dequeued may be requeued, i.e., retained by the traffic control infrastructure,
-if the netdevice is not ready to receive them. Requeued packets are not part
-of the queue disc. The following identities hold:
-
-* dropped = dropped before enqueue + dropped after dequeue
-* received = dropped before enqueue + enqueued
-* queued = enqueued - dequeued
-* sent = dequeued - dropped after dequeue (- 1 if there is a requeued packet)
-
-Separate counters are also kept for each possible reason to drop a packet.
-When a packet is dropped by an internal queue, e.g., because the queue is full,
-the reason is "Dropped by internal queue". When a packet is dropped by a child
-queue disc, the reason is "(Dropped by child queue disc) " followed by the
-reason why the child queue disc dropped the packet.
-
-The QueueDisc base class provides the SojournTime trace source, which provides
-the sojourn time of every packet dequeued from a queue disc, including packets
-that are dropped or requeued after being dequeued. The sojourn time is taken
-when the packet is dequeued from the queue disc, hence it does not account for
-the additional time the packet is retained within the queue disc in case it is
-requeued.
-
+or the netdevice stops the queue disc. A netdevice may stop the queue disc when its
+transmission queue(s) is/are (almost) full. Also, a netdevice may wake the
+queue disc when its transmission queue(s) is/are (almost) empty. Waking a queue disc
+is equivalent to make it run.
 
 Design
 ==========

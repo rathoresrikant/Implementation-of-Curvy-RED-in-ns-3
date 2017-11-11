@@ -39,7 +39,6 @@
 #include "ns3/string.h"
 #include "ns3/node-container.h"
 #include "ns3/simple-channel.h"
-#include "ns3/system-path.h"
 
 using namespace ns3;
 
@@ -61,7 +60,6 @@ namespace
   std::string commentStart;        ///< start of code comment
   std::string commentStop;         ///< end of code comment
   std::string copyDoc;             ///< copy (or refer) to docs elsewhere
-  std::string file;                ///< file 
   std::string flagSpanStart;       ///< start of Attribute flag value
   std::string flagSpanStop;        ///< end of Attribute flag value
   std::string functionStart;       ///< start of a method/function
@@ -73,19 +71,18 @@ namespace
   std::string listLineStop;        ///< end unordered list item
   std::string listStart;           ///< start unordered list
   std::string listStop;            ///< end unordered list
-  std::string note;                ///< start a note section
   std::string page;                ///< start a separate page
   std::string reference;           ///< reference tag
   std::string returns;             ///< the return value
   std::string sectionStart;        ///< start of a section or group
   std::string seeAlso;             ///< Reference to other docs
   std::string subSectionStart;     ///< start a new subsection
-  std::string templArgDeduced;     ///< template argument deduced from function
-  std::string templArgExplicit;    ///< template argument required
   std::string templateArgument;    ///< template argument
+  std::string templArgExplicit;    ///< template argument required
+  std::string templArgDeduced;     ///< template argument deduced from function
   std::string variable;            ///< variable or class member
 
-}  // unnamed namespace
+} // anonymous namespace
 
 
 /**
@@ -113,7 +110,6 @@ SetMarkup (bool outputText)
       commentStart                 = "===============================================================\n";
       commentStop                  = "";
       copyDoc                      = "  See: ";
-      file                         = "File: ";
       flagSpanStart                = "";
       flagSpanStop                 = "";
       functionStart                = "";
@@ -121,20 +117,19 @@ SetMarkup (bool outputText)
       headingStart                 = "";
       headingStop                  = "";
       indentHtmlOnly               = "";
-      listLineStart                = "    * ";
-      listLineStop                 = "";
+      page                         = "Page ";
       listStart                    = "";
       listStop                     = "";
-      note                         = "Note: ";
-      page                         = "Page ";
+      listLineStart                = "    * ";
+      listLineStop                 = "";
       reference                    = " ";
       returns                      = "  Returns: ";
       sectionStart                 = "Section ";
       seeAlso                      = "  See: ";
       subSectionStart              = "Subsection ";
+      templateArgument             = "Template Arg: ";
       templArgDeduced              = "[deduced]  ";
       templArgExplicit             = "[explicit] ";
-      templateArgument             = "Template Arg: ";
       variable                     = "Variable: ";
     }
   else
@@ -153,7 +148,6 @@ SetMarkup (bool outputText)
       commentStart                 = "/*!\n";
       commentStop                  = "*/\n";
       copyDoc                      = "\\copydoc ";
-      file                         = "\\file ";
       flagSpanStart                = "<span class=\"mlabel\">";
       flagSpanStop                 = "</span>";
       functionStart                = "\\fn ";
@@ -161,20 +155,19 @@ SetMarkup (bool outputText)
       headingStart                 = "<h3>";
       headingStop                  = "</h3>";
       indentHtmlOnly               = "  ";
-      listLineStart                = "<li>";
-      listLineStop                 = "</li>";
+      page                         = "\\page ";
       listStart                    = "<ul>";
       listStop                     = "</ul>";
-      note                         = "\\note ";
-      page                         = "\\page ";
+      listLineStart                = "<li>";
+      listLineStop                 = "</li>";
       reference                    = " \\ref ";
       returns                      = "\\returns ";
       sectionStart                 = "\\ingroup ";
       seeAlso                      = "\\see ";
       subSectionStart              = "\\addtogroup ";
+      templateArgument             = "\\tparam ";
       templArgDeduced              = "\\deduced ";
       templArgExplicit             = "\\explicit ";
-      templateArgument             = "\\tparam ";
       variable                     = "\\var ";
     }
 }  // SetMarkup ()
@@ -880,20 +873,11 @@ PrintAttributeImplementations (std::ostream & os)
 
   const AttributeDescriptor attributes [] =
     {
-      // Name             Type             see Base  header-file
       // Users of ATTRIBUTE_HELPER_HEADER
       //
       { "Address",        "Address",        true,  "address.h"          },
       { "Box",            "Box",            true,  "box.h"              },
       { "DataRate",       "DataRate",       true,  "data-rate.h"        },
-      { "DsssParameterSet",
-                          "DsssParameterSet",
-                                            true,  "dsss-parameter-set.h"},
-      { "EdcaParameterSet",
-                          "EdcaParameterSet",
-                                            true,  "edca-parameter-set.h"},
-      { "ErpInformation", "ErpInformation", true,  "erp-information.h"  },
-      { "HeCapabilities", "HeCapabilities", true,  "he-capabilities.h"  },
       { "HtCapabilities", "HtCapabilities", true,  "ht-capabilities.h"  },
       { "IeMeshId",       "IeMeshId",       true,  "ie-dot11s-id.h"     },
       { "Ipv4Address",    "Ipv4Address",    true,  "ipv4-address.h"     },
@@ -911,12 +895,9 @@ PrintAttributeImplementations (std::ostream & os)
       { "Ssid",           "Ssid",           true,  "ssid.h"             },
       { "TypeId",         "TypeId",         true,  "type-id.h"          },
       { "UanModesList",   "UanModesList",   true,  "uan-tx-mode.h"      },
-      // { "ValueClassTest", "ValueClassTest", false, "" /* outside ns3 */ },
+      { "ValueClassTest", "ValueClassTest", false, "" /* outside ns3 */ },
       { "Vector2D",       "Vector2D",       true,  "vector.h"           },
       { "Vector3D",       "Vector3D",       true,  "vector.h"           },
-      { "VhtCapabilities","VhtCapabilities",true,  "vht-capabilities.h" },
-      { "VhtOperation",   "VhtOperation",   true,  "vht-operation.h"    },
-      { "HtOperation",    "HtOperation",    true,  "ht-operation.h"  },
       { "Waypoint",       "Waypoint",       true,  "waypoint.h"         },
       { "WifiMode",       "WifiMode",       true,  "wifi-mode.h"        },
       
@@ -1445,22 +1426,8 @@ int main (int argc, char *argv[])
       std::cout << "/* -*- Mode:C++; c-file-style:\"gnu\"; "
 	           "indent-tabs-mode:nil; -*- */\n"
 		<< std::endl;
-      std::cout << "#include \"ns3/log.h\""
-                << std::endl;
     }
-
-  // Doxygen file header
-  std::cout << std::endl;
-  std::cout << commentStart
-            << file << "\n"
-            << sectionStart << "utils\n"
-            << "Doxygen docs generated from the TypeId database.\n"
-            << note << "This file is automatically generated by "
-            << codeWord << "print-introspected-doxygen.cc. Do not edit this file! "
-            << "Edit that file instead.\n"
-            << commentStop
-            << std::endl;
-  
+    
   // Get typical aggregation relationships.
   StaticInformation info = GetTypicalAggregations ();
   

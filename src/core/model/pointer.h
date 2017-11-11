@@ -26,7 +26,7 @@
 /**
  * \file
  * \ingroup attribute_Pointer
- * ns3::PointerValue attribute value declarations and template implementations.
+ * Pointer attribute value declarations and template implementations.
  */
 
 namespace ns3 {

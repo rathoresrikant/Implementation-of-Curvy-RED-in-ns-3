@@ -27,8 +27,6 @@
 
 /**
  * \file
- * \ingroup core-examples
- * \ingroup hash
  * Example usage of ns3::Hash.
  *
  * This example reads words from a list of files, creates a dictionary

@@ -120,7 +120,7 @@ RraaWifiManager::~RraaWifiManager ()
 }
 
 void
-RraaWifiManager::SetupPhy (const Ptr<WifiPhy> phy)
+RraaWifiManager::SetupPhy (Ptr<WifiPhy> phy)
 {
   NS_LOG_FUNCTION (this);
   uint32_t nModes = phy->GetNModes ();
@@ -140,7 +140,7 @@ RraaWifiManager::SetupPhy (const Ptr<WifiPhy> phy)
 }
 
 void
-RraaWifiManager::SetupMac (const Ptr<WifiMac> mac)
+RraaWifiManager::SetupMac (Ptr<WifiMac> mac)
 {
   NS_LOG_FUNCTION (this);
   m_sifs = mac->GetSifs ();

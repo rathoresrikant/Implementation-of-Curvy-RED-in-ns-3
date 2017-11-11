@@ -98,10 +98,7 @@ protected:
 private:
   /// type conversion operator
   LteNetDevice (const LteNetDevice &);
-  /**
-   * assignment operator
-   * \returns LteNetDevice
-   */
+  /// assignment operator
   LteNetDevice & operator= (const LteNetDevice &);
 
   Ptr<Node> m_node; ///< the node

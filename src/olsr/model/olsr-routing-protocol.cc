@@ -47,7 +47,6 @@
 #include "ns3/enum.h"
 #include "ns3/trace-source-accessor.h"
 #include "ns3/ipv4-header.h"
-#include "ns3/ipv4-packet-info-tag.h"
 
 /********** Useful macros **********/
 
@@ -241,19 +240,12 @@ void RoutingProtocol::DoDispose ()
   m_hnaRoutingTable = 0;
   m_routingTableAssociation = 0;
 
-  if (m_recvSocket)
-    {
-      m_recvSocket->Close ();
-      m_recvSocket = 0;
-    }
-
-  for (std::map< Ptr<Socket>, Ipv4InterfaceAddress >::iterator iter = m_sendSockets.begin ();
-       iter != m_sendSockets.end (); iter++)
+  for (std::map< Ptr<Socket>, Ipv4InterfaceAddress >::iterator iter = m_socketAddresses.begin ();
+       iter != m_socketAddresses.end (); iter++)
     {
       iter->first->Close ();
     }
-  m_sendSockets.clear ();
-  m_table.clear ();
+  m_socketAddresses.clear ();
 
   Ipv4RoutingProtocol::DoDispose ();
 }
@@ -348,35 +340,18 @@ void RoutingProtocol::DoInitialize ()
           continue;
         }
 
-      // Create a socket to listen on all the interfaces
-      if (m_recvSocket == 0)
-        {
-          m_recvSocket = Socket::CreateSocket (GetObject<Node> (),
-                                               UdpSocketFactory::GetTypeId ());
-          m_recvSocket->SetAllowBroadcast (true);
-          InetSocketAddress inetAddr (Ipv4Address::GetAny (), OLSR_PORT_NUMBER);
-          m_recvSocket->SetRecvCallback (MakeCallback (&RoutingProtocol::RecvOlsr,  this));
-          if (m_recvSocket->Bind (inetAddr))
-            {
-              NS_FATAL_ERROR ("Failed to bind() OLSR socket");
-            }
-          m_recvSocket->SetRecvPktInfo (true);
-          m_recvSocket->ShutdownSend ();
-        }
-
-      // Create a socket to send packets from this specific interfaces
+      // Create a socket to listen only on this interface
       Ptr<Socket> socket = Socket::CreateSocket (GetObject<Node> (),
                                                  UdpSocketFactory::GetTypeId ());
       socket->SetAllowBroadcast (true);
       InetSocketAddress inetAddr (m_ipv4->GetAddress (i, 0).GetLocal (), OLSR_PORT_NUMBER);
       socket->SetRecvCallback (MakeCallback (&RoutingProtocol::RecvOlsr,  this));
-      socket->BindToNetDevice (m_ipv4->GetNetDevice (i));
       if (socket->Bind (inetAddr))
         {
           NS_FATAL_ERROR ("Failed to bind() OLSR socket");
         }
-      socket->SetRecvPktInfo (true);
-      m_sendSockets[socket] = m_ipv4->GetAddress (i, 0);
+      socket->BindToNetDevice (m_ipv4->GetNetDevice (i));
+      m_socketAddresses[socket] = m_ipv4->GetAddress (i, 0);
 
       canRunOlsr = true;
     }
@@ -411,33 +386,9 @@ RoutingProtocol::RecvOlsr (Ptr<Socket> socket)
   Address sourceAddress;
   receivedPacket = socket->RecvFrom (sourceAddress);
 
-  Ipv4PacketInfoTag interfaceInfo;
-  if (!receivedPacket->RemovePacketTag (interfaceInfo))
-    {
-      NS_ABORT_MSG ("No incoming interface on OLSR message, aborting.");
-    }
-  uint32_t incomingIf = interfaceInfo.GetRecvIf ();
-  Ptr<Node> node = this->GetObject<Node> ();
-  Ptr<NetDevice> dev = node->GetDevice (incomingIf);
-  uint32_t recvInterfaceIndex = m_ipv4->GetInterfaceForDevice (dev);
-
-  if (m_interfaceExclusions.find (recvInterfaceIndex) != m_interfaceExclusions.end ())
-    {
-      return;
-    }
-
-
   InetSocketAddress inetSourceAddr = InetSocketAddress::ConvertFrom (sourceAddress);
   Ipv4Address senderIfaceAddr = inetSourceAddr.GetIpv4 ();
-
-  int32_t interfaceForAddress = m_ipv4->GetInterfaceForAddress (senderIfaceAddr);
-  if (interfaceForAddress != -1)
-    {
-      NS_LOG_LOGIC ("Ignoring a packet sent by myself.");
-      return;
-    }
-
-  Ipv4Address receiverIfaceAddr = m_ipv4->GetAddress (recvInterfaceIndex, 0).GetLocal ();
+  Ipv4Address receiverIfaceAddr = m_socketAddresses[socket].GetLocal ();
   NS_ASSERT (receiverIfaceAddr != Ipv4Address ());
   NS_LOG_DEBUG ("OLSR node " << m_mainAddress << " received a OLSR packet from "
                              << senderIfaceAddr << " to " << receiverIfaceAddr);
@@ -638,7 +589,7 @@ CoverTwoHopNeighbors (Ipv4Address neighborMainAddr, TwoHopNeighborSet & N2)
         }
     }
 }
-}  // unnamed namespace
+} // anonymous namespace
 
 void
 RoutingProtocol::MprComputation ()
@@ -1637,11 +1588,10 @@ RoutingProtocol::SendPacket (Ptr<Packet> packet,
 
   // Send it
   for (std::map<Ptr<Socket>, Ipv4InterfaceAddress>::const_iterator i =
-         m_sendSockets.begin (); i != m_sendSockets.end (); i++)
+         m_socketAddresses.begin (); i != m_socketAddresses.end (); i++)
     {
-      Ptr<Packet> pkt = packet->Copy ();
       Ipv4Address bcast = i->second.GetLocal ().GetSubnetDirectedBroadcast (i->second.GetMask ());
-      i->first->SendTo (pkt, 0, InetSocketAddress (bcast, OLSR_PORT_NUMBER));
+      i->first->SendTo (packet, 0, InetSocketAddress (bcast, OLSR_PORT_NUMBER));
     }
 }
 
@@ -3132,8 +3082,8 @@ RoutingProtocol::AssignStreams (int64_t stream)
 bool
 RoutingProtocol::IsMyOwnAddress (const Ipv4Address & a) const
 {
-  std::map<Ptr<Socket>, Ipv4InterfaceAddress>::const_iterator j;
-  for (j = m_sendSockets.begin (); j != m_sendSockets.end (); ++j)
+  for (std::map<Ptr<Socket>, Ipv4InterfaceAddress>::const_iterator j =
+         m_socketAddresses.begin (); j != m_socketAddresses.end (); ++j)
     {
       Ipv4InterfaceAddress iface = j->second;
       if (a == iface.GetLocal ())

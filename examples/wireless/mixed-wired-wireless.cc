@@ -296,6 +296,7 @@ main (int argc, char *argv[])
       // setup ap.
       macInfra.SetType ("ns3::ApWifiMac",
                         "Ssid", SsidValue (ssid),
+                        "BeaconGeneration", BooleanValue (true),
                         "BeaconInterval", TimeValue (Seconds (2.5)));
       NetDeviceContainer apDevices = wifiInfra.Install (wifiPhy, macInfra, backbone.Get (i));
       // Collect all of these new devices

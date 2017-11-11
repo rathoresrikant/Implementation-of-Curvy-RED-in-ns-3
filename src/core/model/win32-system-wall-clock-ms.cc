@@ -25,7 +25,8 @@
 /**
  * \file
  * \ingroup system
- * ns3::SystemWallClockMs and ns3::SystemWallClockMsPrivate implementation.
+ * Wall clock class ns3::SystemWallClockMs implementation
+ * for Windows-32 systems.
  */
 
 namespace ns3 {
@@ -86,7 +87,7 @@ SystemWallClockMsPrivate::End (void)
   // internally?  Works fine, lasts a long time.
   //
   // If millisecondsPerTick becomes fractional, and an elapsed time greater than 
-  // a millisecond is measured, the function will work as expected.  If an elapsed 
+  // a milliscond is measured, the function will work as expected.  If an elapsed 
   // time is measured that turns out to be less than a millisecond, we'll just 
   // return zero which would, I think, also will be expected.
   //

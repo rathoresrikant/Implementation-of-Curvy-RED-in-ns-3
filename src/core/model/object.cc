@@ -298,7 +298,7 @@ Object::AggregateObject (Ptr<Object> o)
     }
 
   // Finally, call NotifyNewAggregate on all the objects aggregates together.
-  // We purposely use the old aggregate buffers to iterate over the objects
+  // We purposedly use the old aggregate buffers to iterate over the objects
   // because this allows us to assume that they will not change from under 
   // our feet, even if our users call AggregateObject from within their
   // NotifyNewAggregate method.
@@ -374,18 +374,15 @@ bool
 Object::CheckLoose (void) const
 {
   NS_LOG_FUNCTION (this);
-  bool nonZeroRefCount = false;
+  uint32_t refcount = 0;
   uint32_t n = m_aggregates->n;
   for (uint32_t i = 0; i < n; i++)
     {
       Object *current = m_aggregates->buffer[i];
-      if (current->GetReferenceCount ())
-        {
-          nonZeroRefCount = true;
-          break;
-        }
+      /// \todo Shortcircuit this loop.
+      refcount += current->GetReferenceCount ();
     }
-  return nonZeroRefCount;
+  return (refcount > 0);
 }
 void
 Object::DoDelete (void)

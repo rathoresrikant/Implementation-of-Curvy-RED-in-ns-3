@@ -24,7 +24,7 @@
 /**
  * \file
  * \ingroup assert
- * NS_ASSERT() and NS_ASSERT_MSG() macro definitions
+ * Definition of assertion macros NS_ASSERT() and NS_ASSERT_MSG().
  */
 
 /**

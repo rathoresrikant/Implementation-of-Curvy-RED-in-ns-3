@@ -57,10 +57,7 @@ public:
   bool Configure (int argc, char **argv);
   /// Run simulation
   void Run ();
-  /**
-   * Report results
-   * \param os the output stream
-   */
+  /// Report results
   void Report (std::ostream & os);
 
 private:

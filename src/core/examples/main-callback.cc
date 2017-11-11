@@ -23,7 +23,6 @@
 
 /**
  * \file
- * \ingroup core-examples
  * \ingroup callback
  * Example program illustrating use of callback functions and methods.
  *
@@ -32,8 +31,6 @@
 
 using namespace ns3;
 
-namespace {
-  
 /**
  * Example Callback function.
  *
@@ -62,8 +59,6 @@ public:
     return -5;
   }
 };
-
-}  // unnamed namespace
 
 
 int main (int argc, char *argv[])

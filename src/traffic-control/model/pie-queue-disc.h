@@ -68,6 +68,15 @@ public:
   virtual ~PieQueueDisc ();
 
   /**
+   * \brief Stats
+   */
+  typedef struct
+  {
+    uint32_t unforcedDrop;      //!< Early probability drops: proactive
+    uint32_t forcedDrop;        //!< Drops due to queue limit: reactive
+  } Stats;
+
+  /**
    * \brief Burst types
    */
   enum BurstStateT
@@ -123,6 +132,13 @@ public:
   Time GetQueueDelay (void);
 
   /**
+   * \brief Get PIE statistics after running.
+   *
+   * \returns The drop statistics.
+   */
+  Stats GetStats ();
+
+  /**
    * Assign a fixed random variable stream number to the random variables
    * used by this model.  Return the number of streams (possibly zero) that
    * have been assigned.
@@ -131,10 +147,6 @@ public:
    * \return the number of stream indices assigned by this model
    */
   int64_t AssignStreams (int64_t stream);
-
-  // Reasons for dropping packets
-  static constexpr const char* UNFORCED_DROP = "Unforced drop";  //!< Early probability drops: proactive
-  static constexpr const char* FORCED_DROP = "Forced drop";      //!< Drops due to queue limit: reactive
 
 protected:
   /**
@@ -167,6 +179,8 @@ private:
    * is going, up or down
    */
   void CalculateP ();
+
+  Stats m_stats;                                //!< PIE statistics
 
   // ** Variables supplied by user
   QueueDiscMode m_mode;                         //!< Mode (bytes or packets)

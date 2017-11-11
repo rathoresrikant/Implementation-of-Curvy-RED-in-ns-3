@@ -168,7 +168,6 @@ public:
 
   /**
    * Create a phy helper in a default working state.
-   * \returns a default YansWifiPhyHelper
    */
   static YansWifiPhyHelper Default (void);
 

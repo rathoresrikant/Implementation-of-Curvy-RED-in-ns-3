@@ -181,7 +181,7 @@ public:
    */
   struct CompositeAvailCapacity
   {
-    uint16_t    cellCapacityClassValue; ///< cell capacity class value
+    uint16_t    cellCapacityClassValue; ///< cell cparacity class value
     uint16_t    capacityValue; ///< capacity value
   };
 
@@ -656,7 +656,7 @@ public:
   virtual void RecvLoadInformation (LoadInformationParams params);
 
   /**
-   * Receive resource status update function
+   * Receive resource status update functiion
    * \param params the receive resource status update
    */
   virtual void RecvResourceStatusUpdate (ResourceStatusUpdateParams params);

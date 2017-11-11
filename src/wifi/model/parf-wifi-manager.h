@@ -52,7 +52,7 @@ public:
   virtual ~ParfWifiManager ();
 
   // Inherited from WifiRemoteStationManager
-  void SetupPhy (const Ptr<WifiPhy> phy);
+  void SetupPhy (Ptr<WifiPhy> phy);
   void SetHtSupported (bool enable);
   void SetVhtSupported (bool enable);
   void SetHeSupported (bool enable);

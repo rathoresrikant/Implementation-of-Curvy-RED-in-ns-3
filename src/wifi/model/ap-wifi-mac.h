@@ -56,7 +56,7 @@ public:
   /**
    * \param stationManager the station manager attached to this MAC.
    */
-  void SetWifiRemoteStationManager (const Ptr<WifiRemoteStationManager> stationManager);
+  void SetWifiRemoteStationManager (Ptr<WifiRemoteStationManager> stationManager);
 
   /**
    * \param linkUp the callback to invoke when the link becomes up.
@@ -100,6 +100,10 @@ public:
    * \return the interval between two beacon transmissions.
    */
   Time GetBeaconInterval (void) const;
+  /**
+   * Start beacon transmission immediately.
+   */
+  void StartBeaconing (void);
   /**
    * Determine whether short slot time should be enabled or not in the BSS.
    * Typically, true is returned only when there is no non-erp stations associated

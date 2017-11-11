@@ -47,10 +47,7 @@ class RoutingProtocol;
 class Neighbors
 {
 public:
-  /**
-   * constructor
-   * \param delay the delay time for purging the list of neighbors
-   */
+  /// c-tor
   Neighbors (Time delay);
   /// Neighbor description
   struct Neighbor
@@ -79,23 +76,11 @@ public:
     {
     }
   };
-  /**
-   * Return expire time for neighbor node with address addr, if exists, else return 0.
-   * \param addr the IP address of the neighbor node
-   * \returns the expire time for the neighbor node
-   */
+  /// Return expire time for neighbor node with address addr, if exists, else return 0.
   Time GetExpireTime (Ipv4Address addr);
-  /**
-   * Check that node with address addr is neighbor
-   * \param addr the IP address to check
-   * \returns true if the node with IP address is a neighbor
-   */
+  /// Check that node with address addr  is neighbor
   bool IsNeighbor (Ipv4Address addr);
-  /**
-   * Update expire time for entry with address addr, if it exists, else add new entry
-   * \param addr the IP address to check
-   * \param expire the expire time for the address
-   */
+  /// Update expire time for entry with address addr, if it exists, else add new entry
   void Update (Ipv4Address addr, Time expire);
   /// Remove all expired entries
   void Purge ();
@@ -107,37 +92,22 @@ public:
     m_nb.clear ();
   }
 
-  /**
-   * Add ARP cache to be used to allow layer 2 notifications processing
-   * \param a pointer to the ARP cache to add
-   */
-  void AddArpCache (Ptr<ArpCache> a);
-  /**
-   * Don't use given ARP cache any more (interface is down)
-   * \param a pointer to the ARP cache to delete
-   */
-  void DelArpCache (Ptr<ArpCache> a);
-  /**
-   * Get callback to ProcessTxError
-   * \returns the callback function
-   */
+  /// Add ARP cache to be used to allow layer 2 notifications processing
+  void AddArpCache (Ptr<ArpCache>);
+  /// Don't use given ARP cache any more (interface is down)
+  void DelArpCache (Ptr<ArpCache>);
+  /// Get callback to ProcessTxError
   Callback<void, WifiMacHeader const &> GetTxErrorCallback () const
   {
     return m_txErrorCallback;
   }
 
-  /**
-   * Set link failure callback
-   * \param cb the callback function
-   */
+  /// Handle link failure callback
   void SetCallback (Callback<void, Ipv4Address> cb)
   {
     m_handleLinkFailure = cb;
   }
-  /**
-   * Get link failure callback
-   * \returns the link failure callback
-   */
+  /// Handle link failure callback
   Callback<void, Ipv4Address> GetCallback () const
   {
     return m_handleLinkFailure;
@@ -155,13 +125,8 @@ private:
   /// list of ARP cached to be used for layer 2 notifications processing
   std::vector<Ptr<ArpCache> > m_arp;
 
-  /**
-   * Find MAC address by IP using list of ARP caches
-   * 
-   * \param addr the IP address to lookup
-   * \returns the MAC address for the IP address
-   */
-  Mac48Address LookupMacAddress (Ipv4Address addr);
+  /// Find MAC address by IP using list of ARP caches
+  Mac48Address LookupMacAddress (Ipv4Address);
   /// Process layer 2 TX error notification
   void ProcessTxError (WifiMacHeader const &);
 };

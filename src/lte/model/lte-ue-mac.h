@@ -42,11 +42,8 @@ class UniformRandomVariable;
 
 class LteUeMac :   public Object
 {
-  /// allow UeMemberLteUeCmacSapProvider class friend access
   friend class UeMemberLteUeCmacSapProvider;
-  /// allow UeMemberLteMacSapProvider class friend access
   friend class UeMemberLteMacSapProvider;
-  /// allow UeMemberLteUePhySapUser class friend access
   friend class UeMemberLteUePhySapUser;
 
 public:

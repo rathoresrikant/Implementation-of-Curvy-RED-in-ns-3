@@ -239,10 +239,7 @@ void
 SingleModelSpectrumChannel::AddPropagationLossModel (Ptr<PropagationLossModel> loss)
 {
   NS_LOG_FUNCTION (this << loss);
-  if (m_propagationLoss)
-    {
-      loss->SetNext (m_propagationLoss);
-    }
+  NS_ASSERT (m_propagationLoss == 0);
   m_propagationLoss = loss;
 }
 
@@ -251,10 +248,7 @@ void
 SingleModelSpectrumChannel::AddSpectrumPropagationLossModel (Ptr<SpectrumPropagationLossModel> loss)
 {
   NS_LOG_FUNCTION (this << loss);
-  if (m_spectrumPropagationLoss)
-    {
-      loss->SetNext (m_spectrumPropagationLoss);
-    }
+  NS_ASSERT (m_spectrumPropagationLoss == 0);
   m_spectrumPropagationLoss = loss;
 }
 

@@ -266,4 +266,10 @@ QueueBase::GetMaxBytes (void) const
   return m_maxBytes;
 }
 
+void
+QueueBase::DoNsLog (const enum LogLevel level, std::string str) const
+{
+    NS_LOG (level, str);
+}
+
 } // namespace ns3

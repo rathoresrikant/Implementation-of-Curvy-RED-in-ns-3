@@ -17,8 +17,8 @@
  *
  * Authors: Mathieu Lacage <mathieu.lacage@sophia.inria.fr>
  */
-#ifndef SYSTEM_PATH_H
-#define SYSTEM_PATH_H
+#ifndef SYSTEM_PATH
+#define SYSTEM_PATH
 
 #include <string>
 #include <list>
@@ -26,7 +26,7 @@
 /**
  * \file
  * \ingroup systempath
- * ns3::SystemPath declarations.
+ * System-independent file and directory function declarations.
  */
 
 namespace ns3 {
@@ -128,4 +128,4 @@ namespace SystemPath {
 } // namespace ns3
 
 
-#endif /* SYSTEM_PATH_H */
+#endif /* SYSTEM_PATH */

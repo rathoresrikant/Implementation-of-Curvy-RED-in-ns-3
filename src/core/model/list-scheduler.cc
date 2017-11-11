@@ -28,7 +28,7 @@
 /**
  * \file
  * \ingroup scheduler
- * ns3::ListScheduler implementation.
+ * Implementation of ns3::ListScheduler class.
  */
 
 namespace ns3 {

@@ -20,7 +20,6 @@
  */
 
 #include "yans-error-rate-model.h"
-#include "wifi-utils.h"
 #include "wifi-phy.h"
 #include "ns3/log.h"
 
@@ -43,6 +42,12 @@ YansErrorRateModel::GetTypeId (void)
 
 YansErrorRateModel::YansErrorRateModel ()
 {
+}
+
+double
+YansErrorRateModel::Log2 (double val) const
+{
+  return std::log (val) / std::log (2.0);
 }
 
 double

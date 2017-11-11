@@ -51,14 +51,14 @@ public:
    * Connect SpectrumWifiPhy object
    * \param phy SpectrumWifiPhy object to be connected to this object
    */
-  void SetSpectrumWifiPhy (const Ptr<SpectrumWifiPhy> phy);
+  void SetSpectrumWifiPhy (Ptr<SpectrumWifiPhy> phy);
 
   // Inherited from SpectrumPhy
   Ptr<NetDevice> GetDevice () const;
-  void SetDevice (const Ptr<NetDevice> d);
-  void SetMobility (const Ptr<MobilityModel> m);
+  void SetDevice (Ptr<NetDevice> d);
+  void SetMobility (Ptr<MobilityModel> m);
   Ptr<MobilityModel> GetMobility ();
-  void SetChannel (const Ptr<SpectrumChannel> c);
+  void SetChannel (Ptr<SpectrumChannel> c);
   Ptr<const SpectrumModel> GetRxSpectrumModel () const;
   Ptr<AntennaModel> GetRxAntenna ();
   void StartRx (Ptr<SpectrumSignalParameters> params);

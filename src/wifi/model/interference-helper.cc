@@ -53,6 +53,12 @@ InterferenceHelper::Event::GetPacket (void) const
 }
 
 Time
+InterferenceHelper::Event::GetDuration (void) const
+{
+  return m_endTime - m_startTime;
+}
+
+Time
 InterferenceHelper::Event::GetStartTime (void) const
 {
   return m_startTime;
@@ -170,7 +176,7 @@ InterferenceHelper::GetNoiseFigure (void) const
 }
 
 void
-InterferenceHelper::SetErrorRateModel (const Ptr<ErrorRateModel> rate)
+InterferenceHelper::SetErrorRateModel (Ptr<ErrorRateModel> rate)
 {
   m_errorRateModel = rate;
 }
@@ -216,8 +222,8 @@ InterferenceHelper::AppendEvent (Ptr<InterferenceHelper::Event> event)
   Time now = Simulator::Now ();
   if (!m_rxing)
     {
-      NiChanges::const_iterator nowIterator = GetPosition (now);
-      for (NiChanges::const_iterator i = m_niChanges.begin (); i != nowIterator; i++)
+      NiChanges::iterator nowIterator = GetPosition (now);
+      for (NiChanges::iterator i = m_niChanges.begin (); i != nowIterator; i++)
         {
           m_firstPower += i->GetDelta ();
         }
@@ -316,7 +322,7 @@ InterferenceHelper::CalculatePlcpPayloadPer (Ptr<const InterferenceHelper::Event
   NS_LOG_FUNCTION (this);
   const WifiTxVector txVector = event->GetTxVector ();
   double psr = 1.0; /* Packet Success Rate */
-  NiChanges::const_iterator j = ni->begin ();
+  NiChanges::iterator j = ni->begin ();
   Time previous = (*j).GetTime ();
   WifiMode payloadMode = event->GetPayloadMode ();
   WifiPreamble preamble = txVector.GetPreambleType ();
@@ -369,7 +375,7 @@ InterferenceHelper::CalculatePlcpHeaderPer (Ptr<const InterferenceHelper::Event>
   NS_LOG_FUNCTION (this);
   const WifiTxVector txVector = event->GetTxVector ();
   double psr = 1.0; /* Packet Success Rate */
-  NiChanges::const_iterator j = ni->begin ();
+  NiChanges::iterator j = ni->begin ();
   Time previous = (*j).GetTime ();
   WifiPreamble preamble = txVector.GetPreambleType ();
   WifiMode mcsHeaderMode;
@@ -869,7 +875,7 @@ InterferenceHelper::EraseEvents (void)
   m_firstPower = 0.0;
 }
 
-InterferenceHelper::NiChanges::const_iterator
+InterferenceHelper::NiChanges::iterator
 InterferenceHelper::GetPosition (Time moment)
 {
   return std::upper_bound (m_niChanges.begin (), m_niChanges.end (), NiChange (moment, 0, NULL));

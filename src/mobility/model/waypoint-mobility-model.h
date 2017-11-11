@@ -134,7 +134,7 @@ private:
   /**
    * Update the underlying state corresponding to the stored waypoints
    */
-  virtual void Update (void) const;
+  void Update (void) const;
   /**
    * \brief The dispose method.
    * 
@@ -157,7 +157,6 @@ private:
    */
   virtual Vector DoGetVelocity (void) const;
 
-protected:
   /**
    * \brief This variable is set to true if there are no waypoints in the std::deque
    */

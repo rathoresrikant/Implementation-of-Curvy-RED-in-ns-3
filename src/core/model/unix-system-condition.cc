@@ -28,7 +28,7 @@
 /**
  * \file
  * \ingroup thread
- * ns3::SystemCondition and ns3::SystemConditionPrivate implementations.
+ * Thread conditional wait implementation for Unix-like systems.
  */
 
 namespace ns3 {
@@ -41,7 +41,7 @@ NS_LOG_COMPONENT_DEFINE ("SystemCondition");
  */
 class SystemConditionPrivate {
 public:
-  /** Conversion from ns to s. */
+  /// Conversion from ns to s.
   static const uint64_t NS_PER_SEC = (uint64_t)1000000000;
 
   /** Constructor. */

@@ -45,7 +45,6 @@ public:
 
   /**
    * Create a LtePhyTag with the given RNTI and LC id
-   * \param cellId the cell ID
    */
   LtePhyTag (uint16_t cellId);
 

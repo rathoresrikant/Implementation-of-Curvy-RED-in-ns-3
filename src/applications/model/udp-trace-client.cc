@@ -28,7 +28,6 @@
 #include "ns3/socket-factory.h"
 #include "ns3/packet.h"
 #include "ns3/uinteger.h"
-#include "ns3/boolean.h"
 #include "ns3/string.h"
 #include "seq-ts-header.h"
 #include "udp-trace-client.h"
@@ -85,11 +84,6 @@ UdpTraceClient::GetTypeId (void)
                    StringValue (""),
                    MakeStringAccessor (&UdpTraceClient::SetTraceFile),
                    MakeStringChecker ())
-    .AddAttribute ("TraceLoop",
-                   "Loops through the trace file, starting again once it is over.",
-                   BooleanValue (true),
-                   MakeBooleanAccessor (&UdpTraceClient::SetTraceLoop),
-                   MakeBooleanChecker ())
 
   ;
   return tid;
@@ -184,11 +178,7 @@ void
 UdpTraceClient::LoadTrace (std::string filename)
 {
   NS_LOG_FUNCTION (this << filename);
-  uint32_t time = 0;
-  uint32_t index = 0;
-  uint32_t oldIndex = 0;
-  uint32_t size = 0;
-  uint32_t prevTime = 0;
+  uint32_t time, index, size, prevTime = 0;
   char frameType;
   TraceEntry entry;
   std::ifstream ifTraceFile;
@@ -201,10 +191,6 @@ UdpTraceClient::LoadTrace (std::string filename)
   while (ifTraceFile.good ())
     {
       ifTraceFile >> index >> frameType >> time >> size;
-      if (index == oldIndex)
-        {
-          continue;
-        }
       if (frameType == 'B')
         {
           entry.timeToSend = 0;
@@ -217,10 +203,8 @@ UdpTraceClient::LoadTrace (std::string filename)
       entry.packetSize = size;
       entry.frameType = frameType;
       m_entries.push_back (entry);
-      oldIndex = index;
     }
   ifTraceFile.close ();
-  NS_ASSERT_MSG (prevTime != 0, "A trace file can not contain B frames only.");
   m_currentEntry = 0;
 }
 
@@ -357,8 +341,6 @@ UdpTraceClient::Send (void)
   NS_LOG_FUNCTION (this);
 
   NS_ASSERT (m_sendEvent.IsExpired ());
-
-  bool cycled = false;
   Ptr<Packet> p;
   struct TraceEntry *entry = &m_entries[m_currentEntry];
   do
@@ -372,25 +354,11 @@ UdpTraceClient::Send (void)
       SendPacket (sizetosend);
 
       m_currentEntry++;
-      if (m_currentEntry >= m_entries.size ())
-        {
-          m_currentEntry = 0;
-          cycled = true;
-        }
+      m_currentEntry %= m_entries.size ();
       entry = &m_entries[m_currentEntry];
     }
   while (entry->timeToSend == 0);
-
-  if (!cycled || m_traceLoop)
-    {
-      m_sendEvent = Simulator::Schedule (MilliSeconds (entry->timeToSend), &UdpTraceClient::Send, this);
-    }
-}
-
-void
-UdpTraceClient::SetTraceLoop (bool traceLoop)
-{
-  m_traceLoop = traceLoop;
+  m_sendEvent = Simulator::Schedule (MilliSeconds (entry->timeToSend), &UdpTraceClient::Send, this);
 }
 
 } // Namespace ns3

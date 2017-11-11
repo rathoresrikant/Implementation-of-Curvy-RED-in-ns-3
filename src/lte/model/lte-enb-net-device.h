@@ -107,12 +107,6 @@ public:
    */
   uint16_t GetCellId () const;
 
-  /**
-   * \param cellId cell ID
-   * \return true if cellId is served by this eNB
-   */
-  bool HasCellId (uint16_t cellId) const;
-
   /** 
    * \return the uplink bandwidth in RBs
    */

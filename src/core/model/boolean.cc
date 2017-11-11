@@ -24,7 +24,7 @@
 /**
  * \file
  * \ingroup attribute_Boolean
- * ns3::BooleanValue attribute value implementaation.
+ * Boolean attribute value implementaations.
  */
 
 namespace ns3 {

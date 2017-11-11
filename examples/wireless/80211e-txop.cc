@@ -100,7 +100,7 @@ int main (int argc, char *argv[])
   mac.SetType ("ns3::ApWifiMac",
                "QosSupported", BooleanValue (true),
                "Ssid", SsidValue (ssid),
-               "EnableBeaconJitter", BooleanValue (false));
+               "BeaconGeneration", BooleanValue (true));
   apDeviceA = wifi.Install (phy, mac, wifiApNodes.Get (0));
 
   //Network B
@@ -115,7 +115,7 @@ int main (int argc, char *argv[])
   mac.SetType ("ns3::ApWifiMac",
                "QosSupported", BooleanValue (true),
                "Ssid", SsidValue (ssid),
-               "EnableBeaconJitter", BooleanValue (false));
+               "BeaconGeneration", BooleanValue (true));
   apDeviceB = wifi.Install (phy, mac, wifiApNodes.Get (1));
 
   //Modify EDCA configuration (TXOP limit) for AC_BE
@@ -140,7 +140,7 @@ int main (int argc, char *argv[])
   mac.SetType ("ns3::ApWifiMac",
                "QosSupported", BooleanValue (true),
                "Ssid", SsidValue (ssid),
-               "EnableBeaconJitter", BooleanValue (false));
+               "BeaconGeneration", BooleanValue (true));
   apDeviceC = wifi.Install (phy, mac, wifiApNodes.Get (2));
 
   //Network D
@@ -155,7 +155,7 @@ int main (int argc, char *argv[])
   mac.SetType ("ns3::ApWifiMac",
                "QosSupported", BooleanValue (true),
                "Ssid", SsidValue (ssid),
-               "EnableBeaconJitter", BooleanValue (false));
+               "BeaconGeneration", BooleanValue (true));
   apDeviceD = wifi.Install (phy, mac, wifiApNodes.Get (3));
 
   //Modify EDCA configuration (TXOP limit) for AC_VO

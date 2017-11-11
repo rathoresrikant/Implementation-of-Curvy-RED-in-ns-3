@@ -107,14 +107,6 @@ private:
 };
 
 
-// The following explicit template instantiation declaration prevents modules
-// including this header file from implicitly instantiating Queue<WifiMacQueueItem>.
-// This would cause python examples using wifi to crash at runtime with the
-// following error message: "Trying to allocate twice the same uid:
-// ns3::Queue<WifiMacQueueItem>"
-extern template class Queue<WifiMacQueueItem>;
-
-
 /**
  * \ingroup wifi
  *
@@ -129,8 +121,32 @@ extern template class Queue<WifiMacQueueItem>;
  * to verify whether or not it should be dropped. If
  * dot11EDCATableMSDULifetime has elapsed, it is dropped.
  * Otherwise, it is returned to the caller.
+ *
+ * WifiMacQueue could have been declared as a subclass of Queue<WifiMacQueueItem>,
+ * but this would have caused python examples using wifi to crash at runtime
+ * with the following error message: "Trying to allocate twice the same uid:
+ * ns3::Queue<WifiMacQueueItem>". Such an error wasn't fully debugged but it
+ * may have been due to static initialization order issues.
+ *
+ * To avoid such an error, the template class WifiQueue<Item> is introduced
+ * as a subclass of Queue<Item>. WifiMacQueue is then declared as a
+ * specialization of WifiQueue<Item> with Item equal to WifiMacQueueItem.
+ * The methods of the WifiQueue class are left unimplemented for Item other
+ * than WifiMacQueueItem.
+ *
+ * Modules that need to forward declare WifiMacQueue have to include the
+ * following:
+ *
+ * \code
+ *   class WifiMacQueueItem;
+ *   template <typename Item> class WifiQueue;
+ *   typedef WifiQueue<WifiMacQueueItem> WifiMacQueue;
+ * \endcode
+ *
+ * in their header file.
  */
-class WifiMacQueue : public Queue<WifiMacQueueItem>
+template <typename Item>
+class WifiQueue : public Queue<Item>
 {
 public:
   /**
@@ -138,8 +154,8 @@ public:
    * \return the object TypeId
    */
   static TypeId GetTypeId (void);
-  WifiMacQueue ();
-  ~WifiMacQueue ();
+  WifiQueue ();
+  ~WifiQueue ();
 
   /// drop policy
   enum DropPolicy
@@ -167,20 +183,20 @@ public:
    * \param item the Wifi MAC queue item to be enqueued at the end
    * \return true if success, false if the packet has been dropped
    */
-  bool Enqueue (Ptr<WifiMacQueueItem> item);
+  bool Enqueue (Ptr<Item> item);
   /**
    * Enqueue the given Wifi MAC queue item at the <i>front</i> of the queue.
    *
    * \param item the Wifi MAC queue item to be enqueued at the front
    * \return true if success, false if the packet has been dropped
    */
-  bool PushFront (Ptr<WifiMacQueueItem> item);
+  bool PushFront (Ptr<Item> item);
   /**
    * Dequeue the packet in the front of the queue.
    *
    * \return the packet
    */
-  Ptr<WifiMacQueueItem> Dequeue (void);
+  Ptr<Item> Dequeue (void);
   /**
    * Search and return, if present in the queue, the first packet having the
    * address indicated by <i>type</i> equal to <i>addr</i>, and tid
@@ -194,7 +210,7 @@ public:
    *
    * \return the packet
    */
-  Ptr<WifiMacQueueItem> DequeueByTidAndAddress (uint8_t tid,
+  Ptr<Item> DequeueByTidAndAddress (uint8_t tid,
                                                 WifiMacHeader::AddressType type,
                                                 Mac48Address addr);
   /**
@@ -208,13 +224,13 @@ public:
    *
    * \return packet
    */
-  Ptr<WifiMacQueueItem> DequeueFirstAvailable (const Ptr<QosBlockedDestinations> blockedPackets);
+  Ptr<Item> DequeueFirstAvailable (const QosBlockedDestinations *blockedPackets);
   /**
    * Peek the packet in the front of the queue. The packet is not removed.
    *
    * \return the packet
    */
-  Ptr<const WifiMacQueueItem> Peek (void) const;
+  Ptr<const Item> Peek (void) const;
   /**
    * Search and return, if present in the queue, the first packet having the
    * address indicated by <i>type</i> equal to <i>addr</i>, and tid
@@ -228,7 +244,7 @@ public:
    *
    * \return packet
    */
-  Ptr<const WifiMacQueueItem> PeekByTidAndAddress (uint8_t tid,
+  Ptr<const Item> PeekByTidAndAddress (uint8_t tid,
                                                    WifiMacHeader::AddressType type,
                                                    Mac48Address addr);
   /**
@@ -238,13 +254,13 @@ public:
    *
    * \return packet
    */
-  Ptr<const WifiMacQueueItem> PeekFirstAvailable (const Ptr<QosBlockedDestinations> blockedPackets);
+  Ptr<const Item> PeekFirstAvailable (const QosBlockedDestinations *blockedPackets);
   /**
    * Remove the packet in the front of the queue.
    *
    * \return the packet
    */
-  Ptr<WifiMacQueueItem> Remove (void);
+  Ptr<Item> Remove (void);
   /**
    * If exists, removes <i>packet</i> from queue and returns true. Otherwise it
    * takes no effects and return false. Deletion of the packet is
@@ -268,27 +284,13 @@ public:
   uint32_t GetNPacketsByTidAndAddress (uint8_t tid,
                                        WifiMacHeader::AddressType type,
                                        Mac48Address addr);
-
   /**
-   * \return true if the queue is empty; false otherwise
+   * This method must be used (instead of the IsEmpty method of the base class)
+   * to check whether there are packets with unexpired time to live in the queue
    *
-   * Overrides the IsEmpty method provided by QueueBase
+   * \return true if there are packets with unexpired time to live
    */
-  bool IsEmpty (void);
-
-  /**
-   * \return The number of packets currently stored in the Queue
-   *
-   * Overrides the GetNPackets method provided by QueueBase
-   */
-  uint32_t GetNPackets (void);
-
-  /**
-   * \return The number of bytes currently occupied by the packets in the Queue
-   *
-   * Overrides the GetNBytes method provided by QueueBase
-   */
-  uint32_t GetNBytes (void);
+  bool HasPackets (void);
 
 private:
   /**
@@ -299,13 +301,14 @@ private:
    * \param it an iterator pointing to the item
    * \return true if the item is removed, false otherwise
    */
-  bool TtlExceeded (ConstIterator &it);
+  bool TtlExceeded (typename Queue<Item>::ConstIterator &it);
 
   Time m_maxDelay;                          //!< Time to live for packets in the queue
   DropPolicy m_dropPolicy;                  //!< Drop behavior of queue
-
-  NS_LOG_TEMPLATE_DECLARE;                  //!< redefinition of the log component
 };
+
+/// Declare WifiMacQueue as a specialization of template class WifiQueue
+typedef WifiQueue<WifiMacQueueItem> WifiMacQueue;
 
 } //namespace ns3
 

@@ -94,8 +94,7 @@ public:
   /// RlcConfig structure
   struct RlcConfig
   {
-    /// the direction choice
-    enum direction
+    enum
     {
       AM,
       UM_BI_DIRECTIONAL,
@@ -116,8 +115,7 @@ public:
   /// SoundingRsUlConfigCommon structure
   struct SoundingRsUlConfigCommon
   {
-    /// the config action
-    enum action
+    enum
     {
       SETUP, RESET
     } type; ///< action type
@@ -128,8 +126,7 @@ public:
   /// SoundingRsUlConfigDedicated structure
   struct SoundingRsUlConfigDedicated
   {
-    /// the config action
-    enum action
+    enum
     {
       SETUP, RESET
     } type; ///< action type
@@ -153,11 +150,11 @@ public:
   /// PdschConfigDedicated structure
   struct PdschConfigDedicated
   {
-    /**
+    /*
      * P_A values, TS 36.331 6.3.2 PDSCH-Config
      * ENUMERATED { dB-6, dB-4dot77, dB-3, dB-1dot77, dB0, dB1, dB2, dB3 }
      */
-    enum db
+    enum
     {
       dB_6,
       dB_4dot77,
@@ -386,8 +383,7 @@ public:
     /// Time during which specific criteria for the event needs to be met in order to trigger a measurement report.
     uint16_t timeToTrigger;
 
-    /// the report purpose
-    enum report
+    enum
     {
       REPORT_STRONGEST_CELLS,
       REPORT_CGI
@@ -464,13 +460,11 @@ public:
   /// MeasGapConfig structure
   struct MeasGapConfig
   {
-    /// the action type
-    enum action
+    enum
     {
       SETUP, RESET
     } type; ///< action type
-    /// the gap offest
-    enum gap
+    enum
     {
       GP0, GP1
     } gapOffsetChoice; ///< gap offset
@@ -497,14 +491,13 @@ public:
   /// SpeedStatePars structure
   struct SpeedStatePars
   {
-    /// the action type
-    enum action
+    enum
     {
       SETUP,
       RESET
     } type; ///< action type
     MobilityStateParameters mobilityStateParameters; ///< mobility state parameters
-    SpeedStateScaleFactors timeToTriggerSf; ///< time to trigger scale factors
+    SpeedStateScaleFactors timeToTriggerSf; ///< time to triffer scale factors
   };
 
   /// MeasConfig structure
@@ -522,8 +515,8 @@ public:
     MeasGapConfig measGapConfig; ///< measure gap config
     bool haveSmeasure; ///< have S measure?
     uint8_t sMeasure; ///< S measure
-    bool haveSpeedStatePars; ///< have speed state parameters?
-    SpeedStatePars speedStatePars; ///< speed state parameters
+    bool haveSpeedStatePars; ///< have speed state pars?
+    SpeedStatePars speedStatePars; ///< spped state pars
   };
 
   /// CarrierFreqEutra structure
@@ -787,7 +780,7 @@ public:
     bool haveUlConfiguration; ///< have UL configuration?
     bool haveAntennaInfoUlDedicated; ///< have antenna info UL dedicated?
     AntennaInfoDedicated antennaInfoUl; ///< antenna info UL
-    PuschConfigDedicatedSCell pushConfigDedicatedSCell; ///< PUSCH config dedicated SCell
+    PuschConfigDedicatedSCell pushConfigDedicatedSCell; ///< PUSCH configu dedicated SCell
     UlPowerControlDedicatedSCell  ulPowerControlDedicatedSCell; ///< UL power control dedicated SCell
     bool haveSoundingRsUlConfigDedicated; ///< have sounding RS UL config dedicated?
     SoundingRsUlConfigDedicated soundingRsUlConfigDedicated; ///< sounding RS UL config dedicated
@@ -813,7 +806,7 @@ public:
   {
     uint32_t sCellIndex; ///< SCell index
     CellIdentification cellIdentification; ///< cell identification
-    RadioResourceConfigCommonSCell radioResourceConfigCommonSCell; ///< radio resource config common SCell
+    RadioResourceConfigCommonSCell radioResourceConfigCommonSCell; ///< radio resurce config common SCell
     bool haveRadioResourceConfigDedicatedSCell; ///< have radio resource config dedicated SCell?
     RadioResourceConfigDedicatedSCell radioResourceConfigDedicateSCell; ///< radio resource config dedicated SCell
   };
@@ -1086,10 +1079,9 @@ public:
    * \brief Send a _SystemInformation_ message to all attached UEs
    *        during a system information acquisition procedure
    *        (Section 5.2.2 of TS 36.331).
-   * \param cellId cell ID
    * \param msg the message
    */
-  virtual void SendSystemInformation (uint16_t cellId, SystemInformation msg) = 0;
+  virtual void SendSystemInformation (SystemInformation msg) = 0;
 
   /**
    * \brief Send an _RRCConnectionSetup_ message to a UE
@@ -1476,7 +1468,7 @@ public:
 
   virtual void SetupUe (uint16_t rnti, SetupUeParameters params);
   virtual void RemoveUe (uint16_t rnti);
-  virtual void SendSystemInformation (uint16_t cellId, SystemInformation msg);
+  virtual void SendSystemInformation (SystemInformation msg);
   virtual void SendRrcConnectionSetup (uint16_t rnti, RrcConnectionSetup msg);
   virtual void SendRrcConnectionReconfiguration (uint16_t rnti, RrcConnectionReconfiguration msg);
   virtual void SendRrcConnectionReestablishment (uint16_t rnti, RrcConnectionReestablishment msg);
@@ -1520,9 +1512,9 @@ MemberLteEnbRrcSapUser<C>::RemoveUe (uint16_t rnti)
 
 template <class C>
 void
-MemberLteEnbRrcSapUser<C>::SendSystemInformation (uint16_t cellId, SystemInformation msg)
+MemberLteEnbRrcSapUser<C>::SendSystemInformation (SystemInformation msg)
 {
-  m_owner->DoSendSystemInformation (cellId, msg);
+  m_owner->DoSendSystemInformation (msg);
 }
 
 template <class C>

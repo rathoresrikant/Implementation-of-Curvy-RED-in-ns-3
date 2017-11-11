@@ -76,10 +76,7 @@ private:
   void CheckResults ();
   /// Go
   void DoRun ();
-  /**
-   * Receive data function
-   * \param socket the socket to receive from
-   */
+  /// receive data
   void HandleRead (Ptr<Socket> socket);
 
   /// Receiving socket

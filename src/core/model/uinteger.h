@@ -28,7 +28,7 @@
 /**
  * \file
  * \ingroup attribute_Uinteger
- * ns3::UintegerValue attribute value declarations and template implementations.
+ * Unsigned integer attribute value declarations and template implementations.
  */
 
 namespace ns3 {

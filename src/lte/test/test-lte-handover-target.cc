@@ -135,11 +135,11 @@ private:
   uint8_t m_gridSizeX; ///< X grid size
   uint8_t m_gridSizeY; ///< Y grid size
   uint16_t m_sourceCellId; ///< source cell ID
-  uint16_t m_targetCellId; ///< target cell ID
+  uint16_t m_targetCellId; ///< target celll ID
   std::string m_handoverAlgorithmType; ///< handover algorithm type
 
   Ptr<LteEnbNetDevice> m_sourceEnbDev; ///< source ENB device
-  bool m_hasHandoverOccurred; ///< has handover occurred?
+  bool m_hasHandoverOccurred; ///< has handover occured?
 
 }; // end of class LteHandoverTargetTestCase
 
@@ -191,11 +191,11 @@ LteHandoverTargetTestCase::HandoverStartCallback (std::string context, uint64_t 
 
   uint64_t timeNowMs = Simulator::Now ().GetMilliSeconds ();
   NS_TEST_ASSERT_MSG_GT (timeNowMs, 500,
-                         "Handover occurred but too early");
+                         "Handover occured but too early");
   NS_TEST_ASSERT_MSG_EQ (sourceCellId, m_sourceCellId,
-                         "Handover occurred but with wrong source cell");
+                         "Handover occured but with wrong source cell");
   NS_TEST_ASSERT_MSG_EQ (targetCellId, m_targetCellId,
-                         "Handover occurred but with wrong target cell");
+                         "Handover occured but with wrong target cell");
   m_hasHandoverOccurred = true;
 }
 

@@ -63,13 +63,13 @@ YansWifiChannel::~YansWifiChannel ()
 }
 
 void
-YansWifiChannel::SetPropagationLossModel (const Ptr<PropagationLossModel> loss)
+YansWifiChannel::SetPropagationLossModel (Ptr<PropagationLossModel> loss)
 {
   m_loss = loss;
 }
 
 void
-YansWifiChannel::SetPropagationDelayModel (const Ptr<PropagationDelayModel> delay)
+YansWifiChannel::SetPropagationDelayModel (Ptr<PropagationDelayModel> delay)
 {
   m_delay = delay;
 }

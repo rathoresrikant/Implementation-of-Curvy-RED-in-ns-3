@@ -65,11 +65,11 @@ public:
   /**
    * \param loss the new propagation loss model.
    */
-  void SetPropagationLossModel (const Ptr<PropagationLossModel> loss);
+  void SetPropagationLossModel (Ptr<PropagationLossModel> loss);
   /**
    * \param delay the new propagation delay model.
    */
-  void SetPropagationDelayModel (const Ptr<PropagationDelayModel> delay);
+  void SetPropagationDelayModel (Ptr<PropagationDelayModel> delay);
 
   /**
    * \param sender the phy object from which the packet is originating.

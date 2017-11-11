@@ -196,7 +196,7 @@ LteUeRrcProtocolIdeal::SetEnbRrcSapProvider ()
             }
           else
             {
-              if (enbDev->HasCellId (cellId))
+              if (enbDev->GetCellId () == cellId)
                 {
                   found = true;          
                   break;
@@ -329,9 +329,9 @@ LteEnbRrcProtocolIdeal::DoRemoveUe (uint16_t rnti)
 }
 
 void 
-LteEnbRrcProtocolIdeal::DoSendSystemInformation (uint16_t cellId, LteRrcSap::SystemInformation msg)
+LteEnbRrcProtocolIdeal::DoSendSystemInformation (LteRrcSap::SystemInformation msg)
 {
-  NS_LOG_FUNCTION (this << cellId);
+  NS_LOG_FUNCTION (this << m_cellId);
   // walk list of all nodes to get UEs with this cellId
   Ptr<LteUeRrc> ueRrc;
   for (NodeList::Iterator i = NodeList::Begin (); i != NodeList::End (); ++i)
@@ -345,7 +345,7 @@ LteEnbRrcProtocolIdeal::DoSendSystemInformation (uint16_t cellId, LteRrcSap::Sys
             {
               Ptr<LteUeRrc> ueRrc = ueDev->GetRrc ();              
               NS_LOG_LOGIC ("considering UE IMSI " << ueDev->GetImsi () << " that has cellId " << ueRrc->GetCellId ());
-              if (ueRrc->GetCellId () == cellId)
+              if (ueRrc->GetCellId () == m_cellId)
                 {       
                   NS_LOG_LOGIC ("sending SI to IMSI " << ueDev->GetImsi ());
                   ueRrc->GetLteUeRrcSapProvider ()->RecvSystemInformation (msg);

@@ -667,7 +667,7 @@ WifiPhy::GetShortPlcpPreambleSupported (void) const
 }
 
 void
-WifiPhy::SetDevice (const Ptr<NetDevice> device)
+WifiPhy::SetDevice (Ptr<NetDevice> device)
 {
   m_device = device;
 }
@@ -679,7 +679,7 @@ WifiPhy::GetDevice (void) const
 }
 
 void
-WifiPhy::SetMobility (const Ptr<MobilityModel> mobility)
+WifiPhy::SetMobility (Ptr<MobilityModel> mobility)
 {
   m_mobility = mobility;
 }
@@ -698,7 +698,7 @@ WifiPhy::GetMobility (void) const
 }
 
 void
-WifiPhy::SetErrorRateModel (const Ptr<ErrorRateModel> rate)
+WifiPhy::SetErrorRateModel (Ptr<ErrorRateModel> rate)
 {
   m_interference.SetErrorRateModel (rate);
   m_interference.SetNumberOfReceiveAntennas (GetNumberOfAntennas ());
@@ -711,7 +711,7 @@ WifiPhy::GetErrorRateModel (void) const
 }
 
 void
-WifiPhy::SetFrameCaptureModel (const Ptr<FrameCaptureModel> model)
+WifiPhy::SetFrameCaptureModel (Ptr<FrameCaptureModel> model)
 {
   m_frameCaptureModel = model;
 }
@@ -1273,7 +1273,7 @@ WifiPhy::GetFrequency (void) const
 }
 
 bool
-WifiPhy::Is2_4Ghz (double frequency)
+WifiPhy::Is2_4Ghz (double frequency) const
 {
   if (frequency >= 2400 && frequency <= 2500)
     {
@@ -1283,7 +1283,7 @@ WifiPhy::Is2_4Ghz (double frequency)
 }
 
 bool
-WifiPhy::Is5Ghz (double frequency)
+WifiPhy::Is5Ghz (double frequency) const
 {
   if (frequency >= 5000 && frequency <= 6000)
     {
@@ -2394,25 +2394,16 @@ WifiPhy::StartReceivePreambleAndHeader (Ptr<Packet> packet, double rxPowerW, Tim
       NS_FATAL_ERROR ("MCS value does not match NSS value: MCS = " << (uint16_t)txVector.GetMode ().GetMcsValue () << ", NSS = " << (uint16_t)txVector.GetNss ());
     }
 
+  if (txVector.GetNss () > GetMaxSupportedRxSpatialStreams ())
+    {
+      NS_FATAL_ERROR ("Reception ends in failure because of an unsupported number of spatial streams");
+    }
+
   Ptr<InterferenceHelper::Event> event;
   event = m_interference.Add (packet,
                               txVector,
                               rxDuration,
                               rxPowerW);
-
-  if (txVector.GetNss () > GetMaxSupportedRxSpatialStreams ())
-    {
-      NS_LOG_DEBUG ("drop packet because not enough RX antennas");
-      NotifyRxDrop (packet);
-      m_plcpSuccess = false;
-      if (endRx > Simulator::Now () + m_state->GetDelayUntilIdle ())
-        {
-          //that packet will be noise _after_ the transmission of the
-          //currently-transmitted packet.
-          MaybeCcaBusyDuration ();
-          return;
-        }
-    }
 
   MpduType mpdutype = tag.GetMpduType ();
   switch (m_state->GetState ())
@@ -2559,7 +2550,7 @@ WifiPhy::EndReceive (Ptr<Packet> packet, WifiPreamble preamble, MpduType mpdutyp
           NotifyRxEnd (packet);
           SignalNoiseDbm signalNoise;
           signalNoise.signal = RatioToDb (event->GetRxPowerW ()) + 30;
-          signalNoise.noise = RatioToDb (event->GetRxPowerW () / snrPer.snr) + 30;
+          signalNoise.noise = RatioToDb (event->GetRxPowerW () / snrPer.snr) - GetRxNoiseFigure () + 30;
           MpduInfo aMpdu;
           aMpdu.type = mpdutype;
           aMpdu.mpduRefNumber = m_rxMpduReferenceNumber;

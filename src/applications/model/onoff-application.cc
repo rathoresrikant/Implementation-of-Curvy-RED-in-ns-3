@@ -82,11 +82,9 @@ OnOffApplication::GetTypeId (void)
                    UintegerValue (0),
                    MakeUintegerAccessor (&OnOffApplication::m_maxBytes),
                    MakeUintegerChecker<uint64_t> ())
-    .AddAttribute ("Protocol", "The type of protocol to use. This should be "
-                   "a subclass of ns3::SocketFactory",
+    .AddAttribute ("Protocol", "The type of protocol to use.",
                    TypeIdValue (UdpSocketFactory::GetTypeId ()),
                    MakeTypeIdAccessor (&OnOffApplication::m_tid),
-                   // This should check for SocketFactory as a parent
                    MakeTypeIdChecker ())
     .AddTraceSource ("Tx", "A new packet is created and is sent",
                      MakeTraceSourceAccessor (&OnOffApplication::m_txTrace),

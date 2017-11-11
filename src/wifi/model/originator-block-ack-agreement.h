@@ -32,7 +32,6 @@ namespace ns3 {
  */
 class OriginatorBlockAckAgreement : public BlockAckAgreement
 {
-  /// allow BlockAckManager class access
   friend class BlockAckManager;
 
 

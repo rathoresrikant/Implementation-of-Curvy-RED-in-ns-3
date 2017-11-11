@@ -151,7 +151,7 @@ RrpaaWifiManager::AssignStreams (int64_t stream)
 }
 
 void
-RrpaaWifiManager::SetupPhy (const Ptr<WifiPhy> phy)
+RrpaaWifiManager::SetupPhy (Ptr<WifiPhy> phy)
 {
   NS_LOG_FUNCTION (this);
   m_minPower = phy->GetTxPowerStart ();
@@ -174,7 +174,7 @@ RrpaaWifiManager::SetupPhy (const Ptr<WifiPhy> phy)
 }
 
 void
-RrpaaWifiManager::SetupMac (const Ptr<WifiMac> mac)
+RrpaaWifiManager::SetupMac (Ptr<WifiMac> mac)
 {
   NS_LOG_FUNCTION (this);
   m_sifs = mac->GetSifs ();

@@ -31,13 +31,10 @@
  * ns3::GlobalValue declaration.
  */
 
+class GlobalValueTestCase;
+
 namespace ns3 {
 
-  /* Forward declaration */
-  namespace tests {
-    class GlobalValueTestCase;
-  }
-  
 /**
  * \ingroup Core
  *
@@ -184,8 +181,7 @@ public:
 
 
 private:
-  // Test case needs direct access to GetVector()
-  friend class tests::GlobalValueTestCase;
+  friend class ::GlobalValueTestCase;
 
   /**
    * Get the static vector of all GlobalValues.

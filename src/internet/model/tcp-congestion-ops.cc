@@ -64,7 +64,7 @@ TcpNewReno::GetTypeId (void)
   return tid;
 }
 
-TcpNewReno::TcpNewReno (void) : TcpCongestionOps ()
+TcpNewReno::TcpNewReno () : TcpCongestionOps ()
 {
   NS_LOG_FUNCTION (this);
 }
@@ -207,6 +207,14 @@ TcpNewReno::GetSsThresh (Ptr<const TcpSocketState> state,
   NS_LOG_FUNCTION (this << state << bytesInFlight);
 
   return std::max (2 * state->m_segmentSize, bytesInFlight / 2);
+}
+
+void
+TcpNewReno::ReduceCwnd (Ptr<TcpSocketState> state)
+{
+  NS_LOG_FUNCTION (this << state );
+
+  state->m_cWnd = std::max ((uint32_t)state->m_cWnd/2, state->m_segmentSize);
 }
 
 Ptr<TcpCongestionOps>

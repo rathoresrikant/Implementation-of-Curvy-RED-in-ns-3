@@ -128,7 +128,8 @@ TypeId FqCoDelQueueDisc::GetTypeId (void)
 }
 
 FqCoDelQueueDisc::FqCoDelQueueDisc ()
-  : m_quantum (0)
+  : m_quantum (0),
+    m_overlimitDroppedPackets (0)
 {
   NS_LOG_FUNCTION (this);
 }
@@ -161,7 +162,7 @@ FqCoDelQueueDisc::DoEnqueue (Ptr<QueueDiscItem> item)
   if (ret == PacketFilter::PF_NO_MATCH)
     {
       NS_LOG_ERROR ("No filter has been able to classify this packet, drop it.");
-      DropBeforeEnqueue (item, UNCLASSIFIED_DROP);
+      Drop (item);
       return false;
     }
 
@@ -386,10 +387,11 @@ FqCoDelQueueDisc::FqCoDelDrop (void)
 
   do
     {
-      item = qd->GetInternalQueue (0)->Dequeue ();
-      DropAfterDequeue (item, OVERLIMIT_DROP);
+      item = qd->GetInternalQueue (0)->Remove ();
       len += item->GetSize ();
     } while (++count < m_dropBatchSize && len < threshold);
+
+  m_overlimitDroppedPackets += count;
 
   return index;
 }

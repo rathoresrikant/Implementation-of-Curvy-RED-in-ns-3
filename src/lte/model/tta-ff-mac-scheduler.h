@@ -94,9 +94,7 @@ public:
   virtual void SetLteFfrSapProvider (LteFfrSapProvider* s);
   virtual LteFfrSapUser* GetLteFfrSapUser ();
 
-  /// allow MemberCschedSapProvider<TtaFfMacScheduler> class friend access
   friend class MemberCschedSapProvider<TtaFfMacScheduler>;
-  /// allow MemberSchedSapProvider<TtaFfMacScheduler> class friend access
   friend class MemberSchedSapProvider<TtaFfMacScheduler>;
 
   /**
@@ -349,7 +347,7 @@ private:
 
   uint16_t m_nextRntiUl; ///< RNTI of the next user to be served next scheduling in UL
 
-  uint32_t m_cqiTimersThreshold; ///< # of TTIs for which a CQI can be considered valid
+  uint32_t m_cqiTimersThreshold; ///< # of TTIs for which a CQI canbe considered valid
 
   std::map <uint16_t,uint8_t> m_uesTxMode; ///< txMode of the UEs
 

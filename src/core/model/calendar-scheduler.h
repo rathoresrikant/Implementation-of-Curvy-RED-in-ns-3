@@ -28,7 +28,7 @@
 /**
  * \file
  * \ingroup scheduler
- * ns3::CalendarScheduler class declaration.
+ * Declaration of ns3::CalendarScheduler class.
  */
 
 namespace ns3 {

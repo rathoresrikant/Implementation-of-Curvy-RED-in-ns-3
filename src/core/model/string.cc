@@ -22,7 +22,7 @@
 /**
  * \file
  * \ingroup attribute_String
- * ns3::StringValue attribute value implementation.
+ * String attribute value implementations.
  */
 
 namespace ns3 {

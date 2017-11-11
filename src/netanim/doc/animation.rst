@@ -88,20 +88,20 @@ Building NetAnim
 ================
 Prerequisites
 ~~~~~~~~~~~~~
-Qt5 (5.4 and over) is required to build NetAnim. This can be obtained using the following ways:
+Qt4 (4.8 and over) is required to build NetAnim. This can be obtained using the following ways:
 
-For Ubuntu Linux distributions:
+For Debian/Ubuntu Linux distributions:
 
 .. sourcecode:: bash
 
-  $ apt-get install qt5-default
+  $ apt-get install qt4-dev-tools
 
 For Red Hat/Fedora based distribution:
 
 .. sourcecode:: bash
 
-  $ yum install qt5
-  $ yum install qt5-devel
+  $ yum install qt4
+  $ yum install qt4-devel
 
 For Mac/OSX, see http://qt.nokia.com/downloads/
 
@@ -114,11 +114,11 @@ To build NetAnim use the following commands:
 
   $ cd netanim
   $ make clean
-  $ qmake NetAnim.pro
+  $ qmake NetAnim.pro  (For MAC Users: qmake -spec macx-g++ NetAnim.pro)
   $ make
 
 
-Note: qmake could be "qmake-qt5" in some systems
+Note: qmake could be "qmake-qt4" in some systems
 
 This should create an executable named "NetAnim" in the same directory:
 

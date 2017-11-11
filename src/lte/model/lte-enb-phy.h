@@ -46,9 +46,7 @@ class LteUePhy;
  */
 class LteEnbPhy : public LtePhy
 {
-  /// allow EnbMemberLteEnbPhySapProvider class friend access
   friend class EnbMemberLteEnbPhySapProvider;
-  /// allow MemberLteEnbCphySapProvider<LteEnbPhy> class friend access
   friend class MemberLteEnbCphySapProvider<LteEnbPhy>;
 
 public:
@@ -187,13 +185,11 @@ public:
 
   /**
    * \brief Create the PSD for TX
-   * \returns the PSD
    */
   virtual Ptr<SpectrumValue> CreateTxPowerSpectralDensity ();
 
   /**
    * \brief Create the PSD for TX with power allocation for each RB
-   * \return the PSD
    */
   virtual Ptr<SpectrumValue> CreateTxPowerSpectralDensityWithPowerAllocation ();
 
@@ -268,7 +264,6 @@ public:
 
   /**
    * \brief PhySpectrum received a new PHY-PDU
-   * \param p the packet received
    */
   void PhyPduReceived (Ptr<Packet> p);
 

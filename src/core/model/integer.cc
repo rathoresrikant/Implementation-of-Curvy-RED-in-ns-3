@@ -25,7 +25,7 @@
 /**
  * \file
  * \ingroup attribute_Integer
- * ns3::MakeIntegerChecker implementation.
+ * Integer attribute value implementations.
  */
 
 namespace ns3 {

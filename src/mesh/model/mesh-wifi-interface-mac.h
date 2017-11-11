@@ -54,10 +54,7 @@ class UniformRandomVariable;
 class MeshWifiInterfaceMac : public RegularWifiMac
 {
 public:
-  /**
-   * \brief Get the type ID.
-   * \return the object TypeId
-   */
+  /// Never forget to support typeid
   static TypeId GetTypeId ();
   /// C-tor
   MeshWifiInterfaceMac ();
@@ -115,11 +112,7 @@ public:
    *
    * Number of channels to use must be limited elsewhere.
    */
-
-  /**
-   * Current channel Id
-   * \returns the frequency channel
-   */
+  /// Current channel Id
   uint16_t GetFrequencyChannel () const;
   /**
    * Switch frequency channel.
@@ -128,12 +121,7 @@ public:
    */
   void SwitchFrequencyChannel (uint16_t new_id);
 
-  /**
-   * To be used by plugins sending management frames.
-   *
-   * \param frame the management frame
-   * \param hdr the wifi MAC header
-   */
+  /// To be used by plugins sending management frames.
   void SendManagementFrame (Ptr<Packet> frame, const WifiMacHeader& hdr);
   /**
    * Check supported rates.
@@ -153,23 +141,10 @@ public:
   void Report (std::ostream &) const;
   /// Reset statistics
   void ResetStats ();
-  /**
-   * Enable/disable beacons
-   *
-   * \param enable enable / disable flag
-   */
+  /// Enable/disable beacons
   void SetBeaconGeneration (bool enable);
-  /**
-   * Get phy standard in use
-   *
-   * \returns the wifi phy standard
-   */
+  /// Get phy standard in use
   WifiPhyStandard GetPhyStandard () const;
-  /**
-   * Finish configuration based on the WifiPhyStandard being provided
-   *
-   * \param standard the WifiPhyStandard being configured
-   */
   virtual void FinishConfigureStandard (enum WifiPhyStandard standard);
   /**
    * Assign a fixed random variable stream number to the random variables
@@ -181,30 +156,15 @@ public:
    */
   int64_t AssignStreams (int64_t stream);
 private:
-  /**
-   * Frame receive handler
-   *
-   * \param packet the received packet
-   * \param hdr the wifi MAC header
-   */
-  void Receive (Ptr<Packet> packet, WifiMacHeader const *hdr);
-  /**
-   * Send frame. Frame is supposed to be tagged by routing information.
-   *
-   * \param packet the packet to forward
-   * \param from the from address
-   * \param to the to address
-   */
-  void ForwardDown (Ptr<const Packet> packet, Mac48Address from, Mac48Address to);
+  /// Frame receive handler
+  void  Receive (Ptr<Packet> packet, WifiMacHeader const *hdr);
+  /// Send frame. Frame is supposed to be tagged by routing information.
+  void  ForwardDown (Ptr<const Packet> packet, Mac48Address from, Mac48Address to);
   /// Send beacon
   void SendBeacon ();
   /// Schedule next beacon
   void ScheduleNextBeacon ();
-  /**
-   * Get current beaconing status
-   *
-   * \returns true if beacon active
-   */
+  /// Get current beaconing status
   bool GetBeaconGeneration () const;
   /// Real d-tor
   virtual void DoDispose ();

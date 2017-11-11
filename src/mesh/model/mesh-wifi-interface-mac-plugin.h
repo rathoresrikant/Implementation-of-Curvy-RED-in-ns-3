@@ -43,11 +43,7 @@ class MeshWifiInterfaceMacPlugin : public SimpleRefCount<MeshWifiInterfaceMacPlu
 public:
   /// This is for subclasses
   virtual ~MeshWifiInterfaceMacPlugin (){};
-  /**
-   * Each plugin must be installed on an interface to work
-   *
-   * \param parent the parent object
-   */
+  /// Each plugin must be installed on interface to work 
   virtual void SetParent (Ptr<MeshWifiInterfaceMac> parent) = 0; 
   /** 
    * \brief Process received frame

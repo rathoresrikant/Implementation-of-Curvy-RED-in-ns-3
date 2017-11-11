@@ -128,11 +128,13 @@ def main(argv):
 
     # setup stas.
     wifiMac.SetType("ns3::StaWifiMac",
-                    "Ssid", ns.wifi.SsidValue(ssid))
+                    "Ssid", ns.wifi.SsidValue(ssid),
+                    "ActiveProbing", ns.core.BooleanValue(False))
     staDevs = wifi.Install(wifiPhy, wifiMac, stas)
     # setup ap.
     wifiMac.SetType("ns3::ApWifiMac",
                     "Ssid", ns.wifi.SsidValue(ssid),
+                    "BeaconGeneration", ns.core.BooleanValue(True),
                     "BeaconInterval", ns.core.TimeValue(ns.core.Seconds(2.5)))
     wifi.Install(wifiPhy, wifiMac, ap)
 

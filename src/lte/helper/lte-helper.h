@@ -134,7 +134,7 @@ public:
    *             inheriting from ns3::PropagationLossModel, for example:
    *             "ns3::FriisPropagationLossModel"
    */
-  void SetPathlossModelType (TypeId type);
+  void SetPathlossModelType (std::string type);
 
   /**
    * Set an attribute for the path loss models to be created.
@@ -516,21 +516,6 @@ public:
                         Ptr<NetDevice> sourceEnbDev, Ptr<NetDevice> targetEnbDev);
 
 
-  /**
-   * Manually trigger an X2-based handover.
-   *
-   * \param hoTime when the handover shall be initiated
-   * \param ueDev the UE that hands off, must be of the type LteUeNetDevice
-   * \param sourceEnbDev source eNB, must be of the type LteEnbNetDevice
-   *                     (originally the UE is attached to this eNB)
-   * \param targetCellId target CellId (the UE primary component carrier will
-   *                     be connected to this cell after the handover)
-   *
-   * \warning Requires the use of EPC mode. See SetEpcHelper() method
-   */
-  void HandoverRequest (Time hoTime, Ptr<NetDevice> ueDev,
-                        Ptr<NetDevice> sourceEnbDev, uint16_t targetCellId);
-
   /** 
    * Activate a Data Radio Bearer on a given UE devices (for LTE-only simulation).
    * 
@@ -677,6 +662,14 @@ public:
    */
   Ptr<SpectrumChannel> GetDownlinkSpectrumChannel (void) const;
 
+  /**
+   * Get downlink spectrum channel of a given carrier.
+   *
+   * \param carrierId the carrier ID
+   * \return a pointer to the SpectrumChannel instance used for the downlink on a given carrier
+   */
+  Ptr<SpectrumChannel> GetDownlinkSpectrumChannel (uint8_t carrierId) const;
+
 
 protected:
   // inherited from Object
@@ -712,15 +705,16 @@ private:
    * \param ueDev the UE that hands off, must be of the type LteUeNetDevice
    * \param sourceEnbDev source eNB, must be of the type LteEnbNetDevice
    *                     (originally the UE is attached to this eNB)
-   * \param targetCellId target CellId (the UE primary component carrier will
-   *                     be connected to this cell after the handover)
+   * \param targetEnbDev target eNB, must be of the type LteEnbNetDevice
+   *                     (the UE would be connected to this eNB after the
+   *                     handover)
    *
    * This method is normally scheduled by HandoverRequest() to run at a specific
    * time where a manual handover is desired by the simulation user.
    */
   void DoHandoverRequest (Ptr<NetDevice> ueDev,
                           Ptr<NetDevice> sourceEnbDev,
-                          uint16_t targetCellId);
+                          Ptr<NetDevice> targetEnbDev);
 
 
   /**
@@ -734,7 +728,7 @@ private:
    */
   void DoDeActivateDedicatedEpsBearer (Ptr<NetDevice> ueDevice, Ptr<NetDevice> enbDevice, uint8_t bearerId);
 
-  /// Function that performs a channel model initialization of all component carriers
+  /// Function that performs a channel model initialization of all componment carriers 
   void ChannelModelInitialization (void);
 
   /**
@@ -742,13 +736,13 @@ private:
    */
 
   /// The downlink LTE channel used in the simulation.
-  Ptr<SpectrumChannel> m_downlinkChannel;
+  std::vector <Ptr<SpectrumChannel> > m_downlinkChannel;
   /// The uplink LTE channel used in the simulation.
-  Ptr<SpectrumChannel> m_uplinkChannel;
+  std::vector< Ptr<SpectrumChannel> > m_uplinkChannel;
   /// The path loss model used in the downlink channel.
-  Ptr<Object>  m_downlinkPathlossModel;
+  std::vector< Ptr<Object> >  m_downlinkPathlossModel;
   /// The path loss model used in the uplink channel.
-  Ptr<Object> m_uplinkPathlossModel;
+  std::vector< Ptr<Object> > m_uplinkPathlossModel;
 
   /// Factory of MAC scheduler object.
   ObjectFactory m_schedulerFactory;
@@ -768,8 +762,10 @@ private:
   ObjectFactory m_ueNetDeviceFactory;
   /// Factory of antenna object for UE.
   ObjectFactory m_ueAntennaModelFactory;
-  /// Factory of path loss model object.
-  ObjectFactory m_pathlossModelFactory;
+  /// Factory of path loss model object for the downlink channel.
+  ObjectFactory m_dlPathlossModelFactory;
+  /// Factory of path loss model object for the uplink channel.
+  ObjectFactory m_ulPathlossModelFactory;
   /// Factory of both the downlink and uplink LTE channels.
   ObjectFactory m_channelFactory;
 
@@ -839,9 +835,9 @@ private:
 
   /**
    * The `UseCa` attribute. If true, Carrier Aggregation is enabled.
-   * Hence, the helper will expect a valid component carrier map
+   * Hence, the helper will expec a valid component carrier map
    * If it is false, the component carrier will be created within the LteHelper
-   * this is to maintain the backwards compatibility with user script
+   * this is to mantain the backwards compatibility with user script
    */
   bool m_useCa;
 

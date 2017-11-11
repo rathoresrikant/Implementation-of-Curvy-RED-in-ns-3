@@ -276,7 +276,7 @@ public:
 /** @} */
 
 
-}  // unnamed namespace
+}  // anonymous namespace
 
 
 /*
