@@ -14,10 +14,12 @@
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA  02111-1307  USA
+ *  
+ * Authors: Srikant Singh <rathoresrikant@gmail.com>
+ *          Vipin Singh <vipin.singh289@gmail.com>
+ *          Mohit P. Tahiliani <tahiliani@nitk.edu.in>
  *
-
- *
- */
+*/
 
 #ifndef DUAL_Q_COUPLED_CURVY_RED_QUEUE_DISC_H
 #define DUAL_Q_COUPLED_CURVY_RED_QUEUE_DISC_H
