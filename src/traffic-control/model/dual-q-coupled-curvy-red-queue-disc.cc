@@ -138,17 +138,17 @@ TypeId DualQCoupledCurvyRedQueueDisc::GetTypeId (void)
                    MakeEnumChecker (QUEUE_DISC_MODE_BYTES, "QUEUE_DISC_MODE_BYTES",
                                     QUEUE_DISC_MODE_PACKETS, "QUEUE_DISC_MODE_PACKETS"))    
     .AddAttribute ("K0",
-                   "Constant used in the calculation of L4SQueueScalingFactor ",
+                   "Constant used to calculate L4SQueueScalingFactor ",
                    UintegerValue (1),
                    MakeUintegerAccessor (&DualQCoupledCurvyRedQueueDisc::m_k0),
                    MakeUintegerChecker<uint32_t> ())
     .AddAttribute ("ClassicQueueScalingFactor",
-                   "Scaling factor for Classic Queuing time",
+                   "Scaling factor for drop probabilty in classic queue",
                    DoubleValue (-1),
                    MakeDoubleAccessor (&DualQCoupledCurvyRedQueueDisc::m_classicQScalingFact),
                    MakeDoubleChecker<double> ())
     .AddAttribute ("Curviness",
-                   "curviness Parameter",
+                   "Curviness Parameter",
                    UintegerValue (1),
                    MakeUintegerAccessor (&DualQCoupledCurvyRedQueueDisc::m_curviness),
                    MakeUintegerChecker<uint32_t> ())
@@ -158,7 +158,7 @@ TypeId DualQCoupledCurvyRedQueueDisc::GetTypeId (void)
                    MakeUintegerAccessor (&DualQCoupledCurvyRedQueueDisc::m_l4SQSizeThreshold),
                    MakeUintegerChecker<uint32_t> ())
     .AddAttribute ("Fc",
-                   "Used in the EWMA equation to calculate alpha",
+                   "Constant to calculate alpha",
                    UintegerValue (5),
                    MakeUintegerAccessor (&DualQCoupledCurvyRedQueueDisc::m_calcAlpha),
                    MakeUintegerChecker<uint32_t> ())
@@ -302,7 +302,7 @@ double
 DualQCoupledCurvyRedQueueDisc::MaxRand (int u)
 {
   NS_LOG_FUNCTION (this);
-  double maxr = 0;
+  double maxr = 0.0;
   while (u-- > 0)
     {
       maxr = max (maxr, m_uv->GetValue ());
@@ -318,11 +318,11 @@ DualQCoupledCurvyRedQueueDisc::DoDequeue ()
   if (GetInternalQueue (1)->Peek () != 0)
     {
       Ptr<const QueueDiscItem> item1 = GetInternalQueue (0)->Peek ();
+      DualQCoupledCurvyRedTimestampTag tag;
       Time classicQueueTime;
       double l4sDropProb;
       if (item1 != 0)
-        {
-          DualQCoupledCurvyRedTimestampTag tag;
+        {         
           item1->GetPacket ()->PeekPacketTag (tag);
           classicQueueTime = tag.GetTxTime ();                             //arrival time of the packet at the head of classic queue
         }
@@ -338,7 +338,7 @@ DualQCoupledCurvyRedQueueDisc::DoDequeue ()
           item->Mark ();
           m_stats.unforcedL4SMark++;
         }
-     
+      item->GetPacket ()->RemovePacketTag (tag); 
       return item;
     }
 
@@ -346,11 +346,12 @@ DualQCoupledCurvyRedQueueDisc::DoDequeue ()
     {
       Ptr<QueueDiscItem> item = GetInternalQueue (0)->Dequeue ();
       DualQCoupledCurvyRedTimestampTag tag;
+      double sqrtClassicDropProb;
       item->GetPacket ()->PeekPacketTag (tag);
-
+      
       Time classicQueueDelay = Simulator::Now () - tag.GetTxTime ();             //instantaneous queuing time of the current classic packet
       m_avgQueuingTime += (classicQueueDelay - m_avgQueuingTime) / pow(2,m_calcAlpha);           //classic Queue EWMA
-      double sqrtClassicDropProb = m_avgQueuingTime.GetSeconds () / pow (2, m_classicQScalingFact);
+      sqrtClassicDropProb = (double) m_avgQueuingTime.GetSeconds () / pow (2, m_classicQScalingFact);
 
       if (sqrtClassicDropProb > MaxRand (2 * m_curviness))
         {
@@ -358,7 +359,8 @@ DualQCoupledCurvyRedQueueDisc::DoDequeue ()
           m_stats.unforcedClassicDrop++;
         }
       else
-        {
+        { 
+          item->GetPacket ()->RemovePacketTag (tag);
           return item; 
         }  
     }
