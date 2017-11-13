@@ -143,7 +143,7 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
   uint32_t qSize = 50;
   Ptr<DualQCoupledCurvyRedQueueDisc> queue = CreateObject<DualQCoupledCurvyRedQueueDisc> ();
 
-/*
+
   // test 1: simple enqueue/dequeue with defaults, no drops
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,
                          "Verify that we can actually set the attribute Mode");
@@ -207,7 +207,6 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
 
   item = queue->Dequeue ();
   NS_TEST_EXPECT_MSG_EQ ((item == 0), true, "There are really no packets in there");
-*/
   
   // test 2: more data with defaults, unforced drops but no forced drops
   queue = CreateObject<DualQCoupledCurvyRedQueueDisc> ();
@@ -240,7 +239,7 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
   NS_TEST_EXPECT_MSG_NE (test2L4SMark, 0, "There should some unforced l4s marks");
   ///NS_TEST_EXPECT_MSG_GT (test2L4SMark, test2ClassicMark, "Packets of L4S traffic should have more unforced marks than packets of Classic traffic");
   NS_TEST_EXPECT_MSG_NE (st.forcedDrop, 0, "There should be some forced drops");
-/*
+
   // test 3: Test by sending L4S traffic only
   queue = CreateObject<DualQCoupledCurvyRedQueueDisc> ();
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,

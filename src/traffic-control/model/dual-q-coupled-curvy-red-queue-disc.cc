@@ -356,9 +356,11 @@ DualQCoupledCurvyRedQueueDisc::DoDequeue ()
         {
           Drop (item);
           m_stats.unforcedClassicDrop++;
-          return 0;
         }
-       return item;   
+      else
+        {
+          return item; 
+        }  
     }
   return 0;
 }

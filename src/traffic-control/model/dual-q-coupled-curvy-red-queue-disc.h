@@ -174,16 +174,15 @@ private:
 
   // ** Variables supplied by user
   QueueDiscMode m_mode;                         //!< Mode (bytes or packets)
-  Time m_classicQueueDelayRef;                  //!< Queue delay target for Classic traffic
   uint32_t m_l4SQSizeThreshold;                 //!< L4S marking threshold (in bytes)
   uint32_t m_k0;                                //!< constant to adjust the value of m_k
   uint32_t m_queueLimit;                        //!< Queue limit in bytes / packets
   double m_classicQScalingFact;                 //!< scaling factor for Classic queuing time
   uint32_t m_calcAlpha;                         //!< parameter used to calculate alpha
-  double  m_l4sQScalingFact;                    //! <scaling factor for L4S queuing time
   uint32_t m_curviness;                         //!< curviness parameter for Curvy RED 
   // ** Variables maintained by DualQ Coupled Curvy RED
   Time m_avgQueuingTime;                        //!< Averaged Queuing time
+  double  m_l4sQScalingFact;                    //!<scaling factor for L4S queuing time
   Ptr<UniformRandomVariable> m_uv;              //!< Rng stream
 };
 
