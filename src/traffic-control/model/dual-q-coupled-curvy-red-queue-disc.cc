@@ -258,7 +258,6 @@ void DualQCoupledCurvyRedQueueDisc::InitializeParams (void)
   m_l4sQScalingFact = m_classicQScalingFact + m_k0;
   m_stats.forcedDrop = 0;
   m_stats.unforcedClassicDrop = 0;
-  m_stats.unforcedClassicMark = 0;
   m_stats.unforcedL4SMark = 0;
   m_avgQueuingTime = Time (Seconds (0));
 }

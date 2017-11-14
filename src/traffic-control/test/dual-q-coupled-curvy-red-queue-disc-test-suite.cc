@@ -19,7 +19,7 @@
  *          Vipin Singh <vipin.singh289@gmail.com>
  *          Mohit P. Tahiliani <tahiliani@nitk.edu.in>
  *
-*/
+ */
 
 #include "ns3/test.h"
 #include "ns3/dual-q-coupled-curvy-red-queue-disc.h"
@@ -32,84 +32,84 @@
 
 using namespace ns3;
 
-class DualQueueL4SQueueDiscTestItem : public QueueDiscItem
+class DualQueueL4SQueueDiscTestItem1 : public QueueDiscItem
 {
 public:
-  DualQueueL4SQueueDiscTestItem (Ptr<Packet> p, const Address & addr, uint16_t protocol);
-  virtual ~DualQueueL4SQueueDiscTestItem ();
+  DualQueueL4SQueueDiscTestItem1 (Ptr<Packet> p, const Address & addr, uint16_t protocol);
+  virtual ~DualQueueL4SQueueDiscTestItem1 ();
   virtual void AddHeader (void);
   virtual bool Mark (void);
   virtual bool IsL4S (void);
 
 private:
-  DualQueueL4SQueueDiscTestItem ();
-  DualQueueL4SQueueDiscTestItem (const DualQueueL4SQueueDiscTestItem &);
-  DualQueueL4SQueueDiscTestItem &operator = (const DualQueueL4SQueueDiscTestItem &);
+  DualQueueL4SQueueDiscTestItem1 ();
+  DualQueueL4SQueueDiscTestItem1 (const DualQueueL4SQueueDiscTestItem1 &);
+  DualQueueL4SQueueDiscTestItem1 &operator = (const DualQueueL4SQueueDiscTestItem1 &);
 };
 
-DualQueueL4SQueueDiscTestItem::DualQueueL4SQueueDiscTestItem (Ptr<Packet> p, const Address & addr, uint16_t protocol)
+DualQueueL4SQueueDiscTestItem1::DualQueueL4SQueueDiscTestItem1 (Ptr<Packet> p, const Address & addr, uint16_t protocol)
   : QueueDiscItem (p, addr, protocol)
 {
 }
 
-DualQueueL4SQueueDiscTestItem::~DualQueueL4SQueueDiscTestItem ()
+DualQueueL4SQueueDiscTestItem1::~DualQueueL4SQueueDiscTestItem1 ()
 {
 }
 
 void
-DualQueueL4SQueueDiscTestItem::AddHeader (void)
+DualQueueL4SQueueDiscTestItem1::AddHeader (void)
 {
 }
 
 bool
-DualQueueL4SQueueDiscTestItem::Mark (void)
+DualQueueL4SQueueDiscTestItem1::Mark (void)
 {
   return true;
 }
 
 bool
-DualQueueL4SQueueDiscTestItem::IsL4S (void)
+DualQueueL4SQueueDiscTestItem1::IsL4S (void)
 {
   return true;
 }
 
-class DualQueueClassicQueueDiscTestItem : public QueueDiscItem
+class DualQueueClassicQueueDiscTestItem1 : public QueueDiscItem
 {
 public:
-  DualQueueClassicQueueDiscTestItem (Ptr<Packet> p, const Address & addr, uint16_t protocol);
-  virtual ~DualQueueClassicQueueDiscTestItem ();
+  DualQueueClassicQueueDiscTestItem1 (Ptr<Packet> p, const Address & addr, uint16_t protocol);
+  virtual ~DualQueueClassicQueueDiscTestItem1 ();
   virtual void AddHeader (void);
   virtual bool Mark (void);
   virtual bool IsL4S (void);
 
 private:
-  DualQueueClassicQueueDiscTestItem ();
-  DualQueueClassicQueueDiscTestItem (const DualQueueClassicQueueDiscTestItem &);
-  DualQueueClassicQueueDiscTestItem &operator = (const DualQueueClassicQueueDiscTestItem &);
+  DualQueueClassicQueueDiscTestItem1 ();
+  DualQueueClassicQueueDiscTestItem1 (const DualQueueClassicQueueDiscTestItem1 &);
+  DualQueueClassicQueueDiscTestItem1 &operator = (const DualQueueClassicQueueDiscTestItem1 &);
 };
 
-DualQueueClassicQueueDiscTestItem::DualQueueClassicQueueDiscTestItem (Ptr<Packet> p, const Address & addr, uint16_t protocol)
+DualQueueClassicQueueDiscTestItem1::DualQueueClassicQueueDiscTestItem1 (Ptr<Packet> p, const Address & addr, uint16_t protocol)
   : QueueDiscItem (p, addr, protocol)
 {
 }
 
-DualQueueClassicQueueDiscTestItem::~DualQueueClassicQueueDiscTestItem ()
+DualQueueClassicQueueDiscTestItem1::~DualQueueClassicQueueDiscTestItem1 ()
 {
 }
 
 void
-DualQueueClassicQueueDiscTestItem::AddHeader (void)
+DualQueueClassicQueueDiscTestItem1::AddHeader (void)
 {
 }
 
 bool
-DualQueueClassicQueueDiscTestItem::Mark (void)
+DualQueueClassicQueueDiscTestItem1::Mark (void)
 {
   return true;
 }
 
 bool
-DualQueueClassicQueueDiscTestItem::IsL4S (void)
+DualQueueClassicQueueDiscTestItem1::IsL4S (void)
 {
   return false;
 }
@@ -173,16 +173,16 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
 
   queue->Initialize ();
   NS_TEST_EXPECT_MSG_EQ (queue->GetQueueSize (), 0 * modeSize, "There should be no packets in there");
-  queue->Enqueue (Create<DualQueueClassicQueueDiscTestItem> (p1, dest, 0));
+  queue->Enqueue (Create<DualQueueClassicQueueDiscTestItem1> (p1, dest, 0));
   NS_TEST_EXPECT_MSG_EQ (queue->GetQueueSize (), 1 * modeSize, "There should be one packet in there");
-  queue->Enqueue (Create<DualQueueClassicQueueDiscTestItem> (p2, dest, 0));
+  queue->Enqueue (Create<DualQueueClassicQueueDiscTestItem1> (p2, dest, 0));
   NS_TEST_EXPECT_MSG_EQ (queue->GetQueueSize (), 2 * modeSize, "There should be two packets in there");
-  queue->Enqueue (Create<DualQueueClassicQueueDiscTestItem> (p3, dest, 0));
-  queue->Enqueue (Create<DualQueueClassicQueueDiscTestItem> (p4, dest, 0));
-  queue->Enqueue (Create<DualQueueL4SQueueDiscTestItem> (p5, dest, 0));
-  queue->Enqueue (Create<DualQueueL4SQueueDiscTestItem> (p6, dest, 0));
-  queue->Enqueue (Create<DualQueueL4SQueueDiscTestItem> (p7, dest, 0));
-  queue->Enqueue (Create<DualQueueL4SQueueDiscTestItem> (p8, dest, 0));
+  queue->Enqueue (Create<DualQueueClassicQueueDiscTestItem1> (p3, dest, 0));
+  queue->Enqueue (Create<DualQueueClassicQueueDiscTestItem1> (p4, dest, 0));
+  queue->Enqueue (Create<DualQueueL4SQueueDiscTestItem1> (p5, dest, 0));
+  queue->Enqueue (Create<DualQueueL4SQueueDiscTestItem1> (p6, dest, 0));
+  queue->Enqueue (Create<DualQueueL4SQueueDiscTestItem1> (p7, dest, 0));
+  queue->Enqueue (Create<DualQueueL4SQueueDiscTestItem1> (p8, dest, 0));
   NS_TEST_EXPECT_MSG_EQ (queue->GetQueueSize (), 8 * modeSize, "There should be eight packets in there");
 
   Ptr<QueueDiscItem> item;
@@ -215,7 +215,7 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
                          "Verify that we can actually set the attribute Mode");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("QueueLimit", UintegerValue (qSize)), true,
                          "Verify that we can actually set the attribute QueueLimit");
-  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("K0)", UintegerValue (1)), true,
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("K0", UintegerValue (1)), true,
                          "Verify that we can actually set the attribute K0");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("ClassicQueueScalingFactor", DoubleValue (-1)), true,
                          "Verify that we can actually set the attribute ClassicQueueScalingFactor");
@@ -233,11 +233,8 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
   Simulator::Stop (Seconds (8.0));
   Simulator::Run ();
   DualQCoupledCurvyRedQueueDisc::Stats st = StaticCast<DualQCoupledCurvyRedQueueDisc> (queue)->GetStats ();
-  uint32_t test2ClassicMark = st.unforcedClassicMark;
   uint32_t test2L4SMark = st.unforcedL4SMark;
-  //NS_TEST_EXPECT_MSG_NE (test2ClassicMark, 0, "There should some unforced classic marks");
   NS_TEST_EXPECT_MSG_NE (test2L4SMark, 0, "There should some unforced l4s marks");
-  ///NS_TEST_EXPECT_MSG_GT (test2L4SMark, test2ClassicMark, "Packets of L4S traffic should have more unforced marks than packets of Classic traffic");
   NS_TEST_EXPECT_MSG_NE (st.forcedDrop, 0, "There should be some forced drops");
 
   // test 3: Test by sending L4S traffic only
@@ -246,7 +243,7 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
                          "Verify that we can actually set the attribute Mode");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("QueueLimit", UintegerValue (qSize)), true,
                          "Verify that we can actually set the attribute QueueLimit");
-  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("K0)", UintegerValue (1)), true,
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("K0", UintegerValue (1)), true,
                          "Verify that we can actually set the attribute K0");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("ClassicQueueScalingFactor", DoubleValue (-1)), true,
                          "Verify that we can actually set the attribute ClassicQueueScalingFactor");
@@ -254,7 +251,7 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
                          "Verify that we can actually set the attribute Curviness");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("L4SQueueSizeThreshold", UintegerValue (5*1500)), true,
                          "Verify that we can actually set the attribute L4SQueueSizeThreshold");
-  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Fc", UintegerValue (5)), true,
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Fc",UintegerValue (5)), true,
                          "Verify that we can actually set the attribute Fc");
 
   queue->Initialize ();
@@ -264,7 +261,6 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
   Simulator::Run ();
   st = StaticCast<DualQCoupledCurvyRedQueueDisc> (queue)->GetStats ();
   NS_TEST_EXPECT_MSG_EQ (st.unforcedClassicDrop, 0, "There should be zero unforced classic drops since only L4S traffic is pumped ");
-  //NS_TEST_EXPECT_MSG_EQ (st.unforcedClassicMark, 0, "There should be zero unforced classic marks since only L4S traffic is pumped");
   NS_TEST_EXPECT_MSG_NE (st.unforcedL4SMark, 0, "There should be some L4S marks");
 
   // test 4: Test by sending Classic traffic only
@@ -273,7 +269,7 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
                          "Verify that we can actually set the attribute Mode");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("QueueLimit", UintegerValue (qSize)), true,
                          "Verify that we can actually set the attribute QueueLimit");
-  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("K0)", UintegerValue (1)), true,
+  NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("K0", UintegerValue (1)), true,
                          "Verify that we can actually set the attribute K0");
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("ClassicQueueScalingFactor", DoubleValue (-1)), true,
                          "Verify that we can actually set the attribute ClassicQueueScalingFactor");
@@ -290,9 +286,8 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
   Simulator::Stop (Seconds (8.0));
   Simulator::Run ();
   st = StaticCast<DualQCoupledCurvyRedQueueDisc> (queue)->GetStats ();
-  NS_TEST_EXPECT_MSG_EQ (st.unforcedClassicDrop, 0, "There should be zero unforced classic drops since packets are ECN capable ");
-  //NS_TEST_EXPECT_MSG_NE (st.unforcedClassicMark, 0, "There should be some unforced classic marks");
-  NS_TEST_EXPECT_MSG_EQ (st.unforcedL4SMark, 0, "There should be zero L4S marks since only Classic traffic is pumped"); */
+ // NS_TEST_EXPECT_MSG_EQ (st.unforcedClassicDrop, 0, "There should be zero unforced classic drops since packets are ECN capable ");
+  NS_TEST_EXPECT_MSG_EQ (st.unforcedL4SMark, 0, "There should be zero L4S marks since only Classic traffic is pumped"); 
 }
 
 void
@@ -303,11 +298,11 @@ DualQCoupledCurvyRedQueueDiscTestCase::Enqueue (Ptr<DualQCoupledCurvyRedQueueDis
     {
       if (trafficType.Get () == "L4S")
         {
-          queue->Enqueue (Create<DualQueueL4SQueueDiscTestItem> (Create<Packet> (size), dest, 0));
+          queue->Enqueue (Create<DualQueueL4SQueueDiscTestItem1> (Create<Packet> (size), dest, 0));
         }
       else if (trafficType.Get () == "Classic")
         {
-          queue->Enqueue (Create<DualQueueClassicQueueDiscTestItem> (Create<Packet> (size), dest, 0));
+          queue->Enqueue (Create<DualQueueClassicQueueDiscTestItem1> (Create<Packet> (size), dest, 0));
         }
     }
 }
