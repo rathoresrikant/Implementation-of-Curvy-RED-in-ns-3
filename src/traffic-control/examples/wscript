@@ -30,7 +30,6 @@ def build(bld):
     obj = bld.create_ns3_program('dual-q-coupled-pi-square-example', ['point-to-point', 'internet', 'applications', 'flow-monitor', 'traffic-control'])
     obj.source = 'dual-q-coupled-pi-square-example.cc'
 
-    obj = bld.create_ns3_program('dual-q-coupled-curvy-red-example', ['point-to-point', 'internet', 'applications', 'flow-monitor', 'traffic-control'])
-    obj.source = 'dual-q-coupled-curvy-red-example.cc'
+    
 
 
