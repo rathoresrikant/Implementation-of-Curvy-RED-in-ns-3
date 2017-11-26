@@ -286,7 +286,7 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
   Simulator::Stop (Seconds (8.0));
   Simulator::Run ();
   st = StaticCast<DualQCoupledCurvyRedQueueDisc> (queue)->GetStats ();
- // NS_TEST_EXPECT_MSG_EQ (st.unforcedClassicDrop, 0, "There should be zero unforced classic drops since packets are ECN capable ");
+  NS_TEST_EXPECT_MSG_EQ (st.unforcedClassicDrop, 0, "There should be zero unforced classic drops since packets are ECN capable ");
   NS_TEST_EXPECT_MSG_EQ (st.unforcedL4SMark, 0, "There should be zero L4S marks since only Classic traffic is pumped"); 
 }
 
