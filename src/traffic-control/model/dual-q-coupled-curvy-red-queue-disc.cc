@@ -260,7 +260,7 @@ void DualQCoupledCurvyRedQueueDisc::InitializeParams (void)
   m_stats.forcedDrop = 0;
   m_stats.unforcedClassicDrop = 0;
   m_stats.unforcedL4SMark = 0;
-  m_avgQueuingTime = Time (Seconds (0));
+  avgQueuingTime = Time (Seconds (0));
 }
 
 bool
@@ -350,8 +350,8 @@ DualQCoupledCurvyRedQueueDisc::DoDequeue ()
       item->GetPacket ()->PeekPacketTag (tag);
       
       Time classicQueueDelay = Simulator::Now () - tag.GetTxTime ();             //instantaneous queuing time of the current classic packet
-      m_avgQueuingTime += (classicQueueDelay - m_avgQueuingTime) / pow(2,m_calcAlpha);           //classic Queue EWMA
-      sqrtClassicDropProb = (double) m_avgQueuingTime.GetSeconds () / pow (2, m_classicQScalingFact);
+      avgQueuingTime += (classicQueueDelay - avgQueuingTime) / pow(2,m_calcAlpha);           //classic Queue EWMA
+      sqrtClassicDropProb = (double) avgQueuingTime.GetSeconds () / pow (2, m_classicQScalingFact);
 
       if (sqrtClassicDropProb > MaxRand (2 * m_curviness))
         {
