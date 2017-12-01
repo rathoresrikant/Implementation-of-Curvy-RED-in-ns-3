@@ -139,22 +139,22 @@ TypeId DualQCoupledCurvyRedQueueDisc::GetTypeId (void)
                    MakeEnumChecker (QUEUE_DISC_MODE_BYTES, "QUEUE_DISC_MODE_BYTES",
                                     QUEUE_DISC_MODE_PACKETS, "QUEUE_DISC_MODE_PACKETS"))    
     .AddAttribute ("K0",
-                   "Constant used to calculate L4SQueueScalingFactor ",
+                   "Constant used to calculate L4SQueueScalingFactor",
                    UintegerValue (1),
                    MakeUintegerAccessor (&DualQCoupledCurvyRedQueueDisc::m_k0),
                    MakeUintegerChecker<uint32_t> ())
     .AddAttribute ("ClassicQueueScalingFactor",
-                   "Scaling factor for drop probabilty in classic queue",
+                   "Scaling factor of dropping function in classic queue",
                    DoubleValue (-1),
                    MakeDoubleAccessor (&DualQCoupledCurvyRedQueueDisc::m_classicQScalingFact),
                    MakeDoubleChecker<double> ())
     .AddAttribute ("Curviness",
-                   "Curviness Parameter",
+                   "Curviness parameter used in MaxRand() function",
                    UintegerValue (1),
                    MakeUintegerAccessor (&DualQCoupledCurvyRedQueueDisc::m_curviness),
                    MakeUintegerChecker<uint32_t> ())
     .AddAttribute ("L4SQueueSizeThreshold",
-                   "Queue size in bytes at which the marking starts in the L4S queue.",
+                   "Queue size in bytes at which the marking starts in the L4S queue",
                    UintegerValue (5*1500),
                    MakeUintegerAccessor (&DualQCoupledCurvyRedQueueDisc::m_l4SQSizeThreshold),
                    MakeUintegerChecker<uint32_t> ())
