@@ -19,7 +19,7 @@
  *          Vipin Singh <vipin.singh289@gmail.com>
  *          Mohit P. Tahiliani <tahiliani@nitk.edu.in>
  *
-*/
+ */
 
 #include "math.h"
 #include "ns3/log.h"
@@ -45,6 +45,7 @@ public:
   DualQCoupledCurvyRedTimestampTag ();
   /**
    * \brief Get the type ID.
+   *
    * \return the object TypeId
    */
   static TypeId GetTypeId (void);

@@ -19,7 +19,7 @@
  *          Vipin Singh <vipin.singh289@gmail.com>
  *          Mohit P. Tahiliani <tahiliani@nitk.edu.in>
  *
-*/
+ */
 
 #ifndef DUAL_Q_COUPLED_CURVY_RED_QUEUE_DISC_H
 #define DUAL_Q_COUPLED_CURVY_RED_QUEUE_DISC_H
