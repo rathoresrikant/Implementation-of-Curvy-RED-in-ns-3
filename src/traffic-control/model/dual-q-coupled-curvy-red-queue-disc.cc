@@ -333,6 +333,10 @@ DualQCoupledCurvyRedQueueDisc::DoDequeue ()
   
       Ptr<QueueDiscItem> item = GetInternalQueue (1)->Dequeue ();
       l4sDropProb = (Simulator::Now ().GetSeconds () - classicQueueTime.GetSeconds ()) / pow (2, m_l4sQScalingFact);
+      if(classicQueueTime.GetSeconds ()) == 0)
+      {
+        l4sDropProb = 0;
+      }
       if (Getl4sQueueSize () > m_l4SQSizeThreshold || l4sDropProb > MaxRand (m_curviness))
         {
           item->Mark ();
