@@ -181,7 +181,7 @@ private:
   uint32_t m_calcAlpha;                         //!< parameter used to calculate alpha
   uint32_t m_curviness;                         //!< curviness parameter for Curvy RED 
   // ** Variables maintained by DualQ Coupled Curvy RED
-  Time m_avgQueuingTime;                        //!< Averaged Queuing time
+  Time avgQueuingTime;                        //!< Averaged Queuing time
   double  m_l4sQScalingFact;                    //!<scaling factor for L4S queuing time
   Ptr<UniformRandomVariable> m_uv;              //!< Rng stream
 };
