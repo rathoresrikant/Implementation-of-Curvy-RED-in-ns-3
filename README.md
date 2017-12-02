@@ -12,7 +12,7 @@ DualQ Coupled Curvy RED [1] is an extension of Random Early Detection (RED) [2] 
 
 An example program for DualQ Coupled Curvy RED has been provided in
 
-`src/traffic-control/examples/dual-q-coupled-curvy-red-example.cc`
+`examples/traffic-control/dual-q-coupled-curvy-red-example.cc`
 
 and should be executed as
 
