@@ -208,7 +208,7 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
   item = queue->Dequeue ();
   NS_TEST_EXPECT_MSG_EQ ((item == 0), true, "There are really no packets in there");
   
-  // test 2: more data with defaults, unforced drops but no forced drops
+  // test 2: Test by sending both L4S traffic and classic traffic
   queue = CreateObject<DualQCoupledCurvyRedQueueDisc> ();
   pktSize = 1000;  // pktSize != 0 because DequeueThreshold always works in bytes
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,
@@ -235,6 +235,7 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
   DualQCoupledCurvyRedQueueDisc::Stats st = StaticCast<DualQCoupledCurvyRedQueueDisc> (queue)->GetStats ();
   uint32_t test2L4SMark = st.unforcedL4SMark;
   NS_TEST_EXPECT_MSG_NE (test2L4SMark, 0, "There should some unforced l4s marks");
+  NS_TEST_EXPECT_MSG_NE (st.unforcedClassicDrop, 0, "There should some unforced classic drops");
   NS_TEST_EXPECT_MSG_NE (st.forcedDrop, 0, "There should be some forced drops");
 
   // test 3: Test by sending L4S traffic only
@@ -262,7 +263,7 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
   st = StaticCast<DualQCoupledCurvyRedQueueDisc> (queue)->GetStats ();
   NS_TEST_EXPECT_MSG_EQ (st.unforcedClassicDrop, 0, "There should be zero unforced classic drops since only L4S traffic is pumped ");
   NS_TEST_EXPECT_MSG_NE (st.unforcedL4SMark, 0, "There should be some L4S marks");
-
+ 
   // test 4: Test by sending Classic traffic only
   queue = CreateObject<DualQCoupledCurvyRedQueueDisc> ();
   NS_TEST_EXPECT_MSG_EQ (queue->SetAttributeFailSafe ("Mode", mode), true,
@@ -286,7 +287,7 @@ DualQCoupledCurvyRedQueueDiscTestCase::RunCurvyRedTest (StringValue mode)
   Simulator::Stop (Seconds (8.0));
   Simulator::Run ();
   st = StaticCast<DualQCoupledCurvyRedQueueDisc> (queue)->GetStats ();
-  NS_TEST_EXPECT_MSG_EQ (st.unforcedClassicDrop, 0, "There should be zero unforced classic drops since packets are ECN capable ");
+  NS_TEST_EXPECT_MSG_NE (st.unforcedClassicDrop, 0, "There should be some unforced classic drops since we are not marking classic packets ");
   NS_TEST_EXPECT_MSG_EQ (st.unforcedL4SMark, 0, "There should be zero L4S marks since only Classic traffic is pumped"); 
 }
 
