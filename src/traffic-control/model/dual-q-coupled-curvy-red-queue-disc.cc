@@ -315,7 +315,7 @@ DualQCoupledCurvyRedQueueDisc::DoDequeue ()
 {
   NS_LOG_FUNCTION (this);
 
-  if (GetInternalQueue (1)->GetNBytes () != 0)
+  if (GetInternalQueue (1)->Peek () != 0)
     {
       Ptr<const QueueDiscItem> item1 = GetInternalQueue (0)->Peek ();
       DualQCoupledCurvyRedTimestampTag tag;
@@ -342,7 +342,7 @@ DualQCoupledCurvyRedQueueDisc::DoDequeue ()
       return item;
     }
 
-  while (GetInternalQueue (0)->GetNBytes () != 0)                 //if there is a packet in classic queue to drop
+  while (GetInternalQueue (0)->Peek () != 0)                 //if there is a packet in classic queue to drop
     {
       Ptr<QueueDiscItem> item = GetInternalQueue (0)->Dequeue ();
       DualQCoupledCurvyRedTimestampTag tag;
